@@ -7,22 +7,34 @@
   <title>Braindex — Master AI, one game at a time</title>
   <meta name="description" content="Daily AI vocabulary game in the spirit of Wordle. 6 words, 20 seconds each. Master AI fluency in tiny daily doses." />
 
-  <!-- Open Graph / social previews — pink brain character is the
-       brand mascot. Absolute URL required for Facebook/iMessage/
-       WhatsApp/Slack/etc. scrapers; they don't resolve relative paths. -->
+  <!-- Open Graph / social previews. Two image flavours so the right
+       one shows up per platform:
+       - Default og:image is the WIDE Braindex logo (1536×1024). LinkedIn,
+         Facebook, Slack, iMessage, and Twitter's summary_large_image card
+         all render wide and will pick this up. We declare exact dimensions
+         so scrapers don't reject it.
+       - We also expose the SQUARE brain mascot as a second og:image so
+         platforms that prefer 1:1 (older Slack, some chat clients) can
+         pick the square version. Most modern platforms will use the first
+         (wide) image; the square is a fallback, not a primary preview.
+       Absolute URLs required — scrapers don't resolve relative paths. -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Braindex — Daily AI vocabulary game" />
   <meta property="og:description" content="Master AI, one word at a time. 3 minutes a day." />
-  <meta property="og:image" content="https://braindexapp.com/brain-character.png" />
-  <meta property="og:image:width" content="1024" />
+  <meta property="og:image" content="https://braindexapp.com/braindex_logo.png" />
+  <meta property="og:image:width" content="1536" />
   <meta property="og:image:height" content="1024" />
-  <meta property="og:image:alt" content="Braindex pink brain mascot waving" />
+  <meta property="og:image:alt" content="Braindex logo" />
+  <meta property="og:image" content="https://braindexapp.com/brain-character.png" />
+  <meta property="og:image:width" content="500" />
+  <meta property="og:image:height" content="500" />
+  <meta property="og:image:alt" content="Braindex pink brain mascot" />
   <meta property="og:url" content="https://braindexapp.com" />
   <meta property="og:site_name" content="Braindex" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Braindex — Daily AI vocabulary game" />
   <meta name="twitter:description" content="Master AI, one word at a time. 3 minutes a day." />
-  <meta name="twitter:image" content="https://braindexapp.com/brain-character.png" />
+  <meta name="twitter:image" content="https://braindexapp.com/braindex_logo.png" />
 
   <!-- Favicon — the same brain character. -->
   <link rel="icon" type="image/png" href="brain-character.png" />
