@@ -20,7 +20,7 @@
        Absolute URLs required — scrapers don't resolve relative paths. -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Braindex — Daily AI vocabulary game" />
-  <meta property="og:description" content="Master AI, one word at a time. 3 minutes a day." />
+  <meta property="og:description" content="Master AI, one word at a time. 2 minutes a day." />
   <meta property="og:image" content="https://braindexapp.com/braindex_logo.png" />
   <meta property="og:image:width" content="1536" />
   <meta property="og:image:height" content="1024" />
@@ -33,7 +33,7 @@
   <meta property="og:site_name" content="Braindex" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Braindex — Daily AI vocabulary game" />
-  <meta name="twitter:description" content="Master AI, one word at a time. 3 minutes a day." />
+  <meta name="twitter:description" content="Master AI, one word at a time. 2 minutes a day." />
   <meta name="twitter:image" content="https://braindexapp.com/braindex_logo.png" />
 
   <!-- Favicon — the same brain character. -->
@@ -388,7 +388,7 @@
       align-items: center;
       gap: 16px;
     }
-    footer img.logo { height: 40px; }
+    footer img.logo { height: 72px; }
     footer nav a {
       color: var(--text-muted);
       text-decoration: none;
@@ -405,6 +405,7 @@
 
     @media (max-width: 600px) {
       header nav a { margin-left: 12px; font-size: 13px; }
+      footer img.logo { height: 56px; }
       section.hero { padding: 56px 0 40px; }
       .signup-form button { flex: 1 1 100%; }
     }
@@ -419,7 +420,7 @@
     <div class="container">
       <img class="bighero" src="braindex_logo.png" alt="Braindex" />
       <h1>Master AI,<br><span class="gradient-text">one word at a time.</span></h1>
-      <p class="tagline">Daily AI vocabulary in the spirit of Wordle. Six new words every day, 20 seconds each. Three minutes a day, fluent in AI in a year.</p>
+      <p class="tagline">Daily AI vocabulary in the spirit of Wordle. Six new words every day, 20 seconds each. Two minutes a day, fluent in AI in a year.</p>
 
       <!-- Newsletter signup — POSTs to /api/newsletter (Vercel
            serverless function that writes to Firestore /newsletter). -->
@@ -504,10 +505,11 @@
   <section class="founder">
     <div class="container">
       <h2>A note from the founder</h2>
-      <p>Hi, I'm David. I built Braindex because the AI world is moving faster than anyone can read about it, and most people I talk to feel a step behind. I wanted something tiny and daily &mdash; the way Wordle made vocabulary fun &mdash; that could quietly turn anyone into someone who understands the AI conversation, three minutes at a time.</p>
-      <p>The goal is simple: one year of daily play and you can hold your own in any conversation about modern AI. Whether you're a student, a marketer, a curious parent, or working in tech and tired of pretending you know what RAG means &mdash; this is for you.</p>
-      <p>Every word in Braindex is hand-picked. Every bug report I read personally. The roadmap is public-ish in the sense that if you email me, I'll tell you what's coming next.</p>
-      <p>Thanks for being here early. &mdash; David</p>
+      <p>Hi, I&rsquo;m David. Really, genuinely &mdash; thank you for joining us on this journey. Braindex is still early, and every person who signs up, plays a round, or sends a note makes a real difference. We&rsquo;re slowly growing a small, loyal community of people who want to have fun <em>and</em> get a little sharper on AI every day. That&rsquo;s the whole goal: have fun, improve, upskill together.</p>
+      <p>I read every piece of feedback personally, and I&rsquo;m committing to iterating on the app every week &mdash; new words, small tweaks, real fixes &mdash; based on what you tell me. If something feels off, or you&rsquo;ve got an idea, please email me. It really does shape what gets built next.</p>
+      <p>A little context: I&rsquo;m the founder of <strong>Pi-Squared</strong>, and Braindex is my latest project. It came out of two things I love &mdash; the quiet power of gamification, and the daily-game habit (Wordle, the Mini, Connections). I wanted to put those together to help people feel less behind on AI, one tiny daily session at a time.</p>
+      <p>So &mdash; thanks so much for being here early. I really appreciate it.</p>
+      <p>&mdash; David Carr, founder of Pi-Squared</p>
       <p class="founder-contact">Reach me directly: <a href="mailto:david@movietoons.co">david@movietoons.co</a></p>
     </div>
   </section>

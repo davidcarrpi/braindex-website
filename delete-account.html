@@ -25,7 +25,7 @@
 
     /* sticky brand header */
     header.site {
-      padding: 18px 0; border-bottom: 1px solid var(--border);
+      padding: 10px 0; border-bottom: 1px solid var(--border);
       position: sticky; top: 0;
       background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px);
       z-index: 10;
@@ -34,7 +34,7 @@
       max-width: 1100px; margin: 0 auto; padding: 0 24px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    header.site img.logo { height: 60px; display: block; }
+    header.site img.logo { height: 96px; display: block; }
     header.site nav a {
       color: var(--text-muted); text-decoration: none;
       font-size: 14px; font-weight: 500; margin-left: 24px;
@@ -138,7 +138,7 @@
       display: flex; flex-wrap: wrap;
       justify-content: space-between; align-items: center; gap: 16px;
     }
-    footer.site img.logo { height: 40px; }
+    footer.site img.logo { height: 72px; }
     footer.site nav a {
       color: var(--text-muted); text-decoration: none;
       font-size: 14px; margin-left: 18px;
@@ -152,7 +152,8 @@
 
     @media (max-width: 600px) {
       header.site nav { display: none; }
-      header.site img.logo { height: 44px; }
+      header.site img.logo { height: 64px; }
+      footer.site img.logo { height: 56px; }
       .page-title { padding: 28px 20px 16px; }
       main { padding: 0 20px 60px; }
       th, td { padding: 10px 12px; font-size: 13px; }
@@ -211,7 +212,7 @@
     </div>
     <p>Include in the email:</p>
     <ul>
-      <li>The email address you used to sign in to Braindex (Apple or Google)</li>
+      <li>The email address you used to sign in to Braindex (Apple, Google, or email/password)</li>
       <li>Your in-app display name, if you remember it</li>
       <li>Approximate date you started using Braindex (helps us locate the account if you used a private-relay Apple ID)</li>
     </ul>
@@ -230,42 +231,58 @@
       </thead>
       <tbody>
         <tr>
-          <td><strong>Account profile</strong><br/>(display name, email, sign-in provider, sign-up date)</td>
-          <td>Permanently deleted</td>
-          <td>None</td>
+          <td><strong>Account profile</strong><br/>(display name, email, sign-in provider, account creation date)</td>
+          <td>Permanently deleted.</td>
+          <td>None.</td>
         </tr>
         <tr>
-          <td><strong>Authentication record</strong><br/>(Firebase user, OAuth tokens)</td>
+          <td><strong>Username reservation</strong><br/>(if you set a custom unique username)</td>
+          <td>Released. The username becomes available for someone else to claim.</td>
+          <td>None.</td>
+        </tr>
+        <tr>
+          <td><strong>Authentication record</strong><br/>(Firebase Auth user + OAuth tokens)</td>
           <td>Permanently deleted. If you signed in with Apple, the Apple authorization token is also <em>revoked</em> automatically.</td>
-          <td>None</td>
+          <td>None.</td>
+        </tr>
+        <tr>
+          <td><strong>Optional profile answers</strong><br/>(age range, gender, student level, &ldquo;why Braindex&rdquo;, plus &mdash; for adults &mdash; optional email, phone, AI-Zoom-call preference)</td>
+          <td>Permanently deleted alongside the account record.</td>
+          <td>None.</td>
         </tr>
         <tr>
           <td><strong>Daily leaderboard entries</strong><br/>(scores you submitted on past days)</td>
-          <td>By default, past leaderboard entries keep the display name you played under. The entries themselves are not removed automatically &mdash; this lets the historical leaderboard stay intact. <strong>You can ask us to anonymise or remove specific entries</strong> by emailing <a href="mailto:david@movietoons.co">david@movietoons.co</a>; we process those within 30 days.</td>
+          <td>Past entries are <em>not</em> auto-removed &mdash; this keeps the historical leaderboard intact. They stay attached to the display name you played under, not to your private identity. <strong>You can ask us to anonymise or remove specific entries</strong> by emailing <a href="mailto:david@movietoons.co">david@movietoons.co</a>.</td>
+          <td>Kept under the display name until you request removal.</td>
+        </tr>
+        <tr>
+          <td><strong>Top-streaks leaderboard entry</strong><br/>(your current streak + display name)</td>
+          <td>Not auto-removed for the same reason as daily scores. Email us to anonymise or remove it.</td>
+          <td>Kept under the display name until you request removal.</td>
+        </tr>
+        <tr>
+          <td><strong>Per-word right/wrong logs</strong><br/>(which AI terms you got right or wrong, used internally to tune future puzzles)</td>
+          <td>Not auto-removed. These are only readable by us, never by other players. Email us to remove them along with your account.</td>
           <td>Kept until you request removal.</td>
         </tr>
         <tr>
-          <td><strong>Optional profile data</strong><br/>(age range, gender, student level, &ldquo;why Braindex&rdquo;, phone, AI-Zoom-call preference, if you filled in any of those)</td>
-          <td>Permanently deleted along with your account record.</td>
-          <td>None</td>
-        </tr>
-        <tr>
           <td><strong>Feedback messages</strong><br/>(anything you submitted via the in-app feedback form)</td>
-          <td>The link from each message to your user identifier becomes orphaned the moment your account is deleted (the identifier no longer resolves to a real person). The text of the messages themselves is kept.</td>
-          <td>Up to 12 months, to inform product decisions. Email us if you want specific feedback messages removed sooner.</td>
+          <td>Not auto-removed when the account is deleted. The link from each message to your user identifier becomes orphaned the moment the account record is gone.</td>
+          <td>Held until we&rsquo;ve acted on it, then archived. Email us to remove specific messages sooner.</td>
         </tr>
         <tr>
-          <td><strong>Crash and diagnostic logs</strong><br/>(error reports, device type, app version)</td>
-          <td>Cannot always be tied back to an individual user. Anything that can be tied to you is removed.</td>
-          <td>Aggregate crash data: up to 90 days.</td>
+          <td><strong>Newsletter signup</strong><br/>(if you entered your email on braindexapp.com&rsquo;s &ldquo;Get notified at launch&rdquo; form)</td>
+          <td>Not deleted automatically by the in-app account delete &mdash; the newsletter list is a separate website-side record. Email us to remove it.</td>
+          <td>Held until launch emails are sent, or until you ask us to remove it.</td>
         </tr>
         <tr>
-          <td><strong>On-device data</strong><br/>(streak, last-played date, reminder time, cached daily session)</td>
+          <td><strong>On-device data</strong><br/>(reminder time, cached daily session, locally stored preferences)</td>
           <td>Removed automatically the next time you open the app after deletion. Uninstalling the app removes all of it immediately.</td>
           <td>None &mdash; stored only on your device.</td>
         </tr>
       </tbody>
     </table>
+    <p><strong>For complete erasure</strong> &mdash; including leaderboard rows, streak entries, per-word logs, feedback, and any newsletter record &mdash; the cleanest path is: (1) delete your account in-app to wipe your profile and revoke your Apple token immediately, then (2) email <a href="mailto:david@movietoons.co">david@movietoons.co</a> asking us to remove the remaining records. We process those within 30 days.</p>
   </section>
 
   <section>
