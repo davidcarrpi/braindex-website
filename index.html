@@ -349,7 +349,25 @@
       background: var(--bg);
       border-top: 1px solid var(--border);
     }
-    section.founder .container { max-width: 720px; }
+    section.founder .container { max-width: 880px; }
+    section.founder .founder-row {
+      display: flex; gap: 36px; align-items: flex-start;
+    }
+    section.founder .founder-photo {
+      flex: 0 0 220px;
+    }
+    section.founder .founder-photo img {
+      width: 100%; height: auto; aspect-ratio: 4 / 5;
+      object-fit: cover; border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(14, 26, 74, 0.12);
+      display: block;
+    }
+    section.founder .founder-photo .caption {
+      font-size: 12px; color: var(--text-faint);
+      letter-spacing: 0.2px;
+      margin-top: 10px; text-align: center;
+    }
+    section.founder .founder-body { flex: 1 1 auto; min-width: 0; }
     section.founder h2 {
       font-size: 22px;
       font-weight: 800;
@@ -374,6 +392,15 @@
       font-weight: 600;
     }
     section.founder p.founder-contact a:hover { text-decoration: underline; }
+    @media (max-width: 720px) {
+      section.founder .founder-row {
+        flex-direction: column; gap: 20px; align-items: stretch;
+      }
+      section.founder .founder-photo {
+        flex: 0 0 auto;
+        max-width: 180px; margin: 0 auto;
+      }
+    }
 
     /* ─── Footer ───────────────────────────────────────── */
     footer {
@@ -504,13 +531,21 @@
   <!-- ────────────────── MESSAGE FROM FOUNDER ────────────────── -->
   <section class="founder">
     <div class="container">
-      <h2>A note from the founder</h2>
-      <p>Hi, I&rsquo;m David. Really, genuinely &mdash; thank you for joining us on this journey. Braindex is still early, and every person who signs up, plays a round, or sends a note makes a real difference. We&rsquo;re slowly growing a small, loyal community of people who want to have fun <em>and</em> get a little sharper on AI every day. That&rsquo;s the whole goal: have fun, improve, upskill together.</p>
-      <p>I read every piece of feedback personally, and I&rsquo;m committing to iterating on the app every week &mdash; new words, small tweaks, real fixes &mdash; based on what you tell me. If something feels off, or you&rsquo;ve got an idea, please email me. It really does shape what gets built next.</p>
-      <p>A little context: I&rsquo;m the founder of <strong>Pi-Squared</strong>, and Braindex is my latest project. It came out of two things I love &mdash; the quiet power of gamification, and the daily-game habit (Wordle, the Mini, Connections). I wanted to put those together to help people feel less behind on AI, one tiny daily session at a time.</p>
-      <p>So &mdash; thanks so much for being here early. I really appreciate it.</p>
-      <p>&mdash; David Carr, founder of Pi-Squared</p>
-      <p class="founder-contact">Reach me directly: <a href="mailto:david@movietoons.co">david@movietoons.co</a></p>
+      <div class="founder-row">
+        <div class="founder-photo">
+          <img src="david-carr.jpg" alt="David Carr, founder of Pi-Squared" />
+          <p class="caption">David Carr &mdash; founder, Pi-Squared</p>
+        </div>
+        <div class="founder-body">
+          <h2>A note from the founder</h2>
+          <p>Hi, I&rsquo;m David. Really, genuinely &mdash; thank you for joining us on this journey. Braindex is still early, and every person who signs up, plays a round, or sends a note makes a real difference. We&rsquo;re slowly growing a small, loyal community of people who want to have fun <em>and</em> get a little sharper on AI every day. That&rsquo;s the whole goal: have fun, improve, upskill together.</p>
+          <p>I read every piece of feedback personally, and I&rsquo;m committing to iterating on the app every week &mdash; new words, small tweaks, real fixes &mdash; based on what you tell me. If something feels off, or you&rsquo;ve got an idea, please email me. It really does shape what gets built next.</p>
+          <p>A little context: I&rsquo;m the founder of <strong>Pi-Squared</strong>, and Braindex is my latest project. It came out of two things I love &mdash; the quiet power of gamification, and the daily-game habit. I wanted to put those together to help people feel less behind on AI, one tiny daily session at a time.</p>
+          <p>So &mdash; thanks so much for being here early. I really appreciate it.</p>
+          <p>&mdash; David Carr, founder of Pi-Squared</p>
+          <p class="founder-contact">Reach me directly: <a href="mailto:david@movietoons.co">david@movietoons.co</a></p>
+        </div>
+      </div>
     </div>
   </section>
 
