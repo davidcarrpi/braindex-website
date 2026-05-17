@@ -124,6 +124,23 @@
     }
 
     /* ─── Newsletter ───────────────────────────────────────── */
+    /* Wrapper that holds the newsletter card + the "play online" card
+       side by side on desktop and stacks them on mobile. */
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+      max-width: 1060px;
+      margin: 0 auto 18px;
+      align-items: stretch;
+    }
+    .cta-row > .signup-card,
+    .cta-row > .play-card {
+      flex: 1 1 380px;
+      max-width: 520px;
+      margin: 0;
+    }
     .signup-card {
       max-width: 520px;
       margin: 0 auto 18px;
@@ -133,6 +150,34 @@
       padding: 20px 22px;
       text-align: left;
     }
+    .play-card {
+      background: linear-gradient(135deg, #fff6fa 0%, #ffe7f1 100%);
+      border: 1px solid rgba(236, 26, 111, 0.25);
+      border-radius: 16px;
+      padding: 20px 22px;
+      text-align: left;
+      display: flex; flex-direction: column;
+    }
+    .play-card h3 {
+      font-size: 17px; font-weight: 700;
+      color: var(--text); margin-bottom: 6px;
+    }
+    .play-card p.sub {
+      font-size: 14px; color: var(--text-muted);
+      margin-bottom: 18px; flex: 1 1 auto;
+    }
+    .play-card .play-btn {
+      display: inline-block;
+      padding: 14px 24px;
+      font-size: 15px; font-weight: 700;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 10px;
+      text-decoration: none; text-align: center;
+      cursor: pointer; font-family: inherit;
+      transition: background-color 0.15s, transform 0.05s;
+    }
+    .play-card .play-btn:hover { background: var(--primary-dark); }
+    .play-card .play-btn:active { transform: scale(0.98); }
     .signup-card h3 {
       font-size: 17px;
       font-weight: 700;
@@ -449,31 +494,41 @@
       <h1>Master AI,<br><span class="gradient-text">one word at a time.</span></h1>
       <p class="tagline">Daily AI vocabulary game. Six new words every day, 20 seconds each. Two minutes a day, fluent in AI in a year.</p>
 
-      <!-- Newsletter signup — POSTs to /api/newsletter (Vercel
-           serverless function that writes to Firestore /newsletter). -->
-      <div class="signup-card">
-        <h3>Get notified at launch</h3>
-        <p class="sub">We'll email you the moment Braindex is live on the App Store.</p>
-        <form
-          id="signup-form"
-          class="signup-form"
-          novalidate
-        >
-          <!-- Spam honeypot — bots fill this; humans don't see it. -->
-          <p style="display:none;">
-            <label>Don't fill this out: <input name="bot-field" /></label>
-          </p>
-          <input
-            id="signup-email"
-            type="email"
-            name="email"
-            placeholder="you@example.com"
-            autocomplete="email"
-            required
-          />
-          <button id="signup-button" type="submit">Notify me</button>
-        </form>
-        <div id="signup-msg" class="signup-msg" role="status" aria-live="polite"></div>
+      <!-- Newsletter signup + Play-online cards, side by side on desktop. -->
+      <div class="cta-row">
+        <!-- Newsletter signup — POSTs to /api/newsletter (Vercel
+             serverless function that writes to Firestore /newsletter). -->
+        <div class="signup-card">
+          <h3>Get notified at launch</h3>
+          <p class="sub">We'll email you the moment Braindex is live on the App Store.</p>
+          <form
+            id="signup-form"
+            class="signup-form"
+            novalidate
+          >
+            <!-- Spam honeypot — bots fill this; humans don't see it. -->
+            <p style="display:none;">
+              <label>Don't fill this out: <input name="bot-field" /></label>
+            </p>
+            <input
+              id="signup-email"
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              required
+            />
+            <button id="signup-button" type="submit">Notify me</button>
+          </form>
+          <div id="signup-msg" class="signup-msg" role="status" aria-live="polite"></div>
+        </div>
+
+        <!-- Play online as a guest — points to the Flutter web build at /play/. -->
+        <div class="play-card">
+          <h3>Try it right now</h3>
+          <p class="sub">Play today&rsquo;s 6 words as a guest &mdash; no account, no install. The full app (with streaks &amp; leaderboards) is on the App Store.</p>
+          <a class="play-btn" href="/play/">Play online as a guest →</a>
+        </div>
       </div>
 
       <!-- Store badges -->
@@ -533,16 +588,16 @@
     <div class="container">
       <div class="founder-row">
         <div class="founder-photo">
-          <img src="david-carr.jpg" alt="David Carr, founder of Pi-Squared" />
-          <p class="caption">David Carr &mdash; founder, Pi-Squared</p>
+          <img src="david-carr.jpg" alt="David Carr, creator of Braindex" />
+          <p class="caption">David Carr &mdash; creator of Braindex</p>
         </div>
         <div class="founder-body">
           <h2>A note from the founder</h2>
-          <p>Hi, I&rsquo;m David. Really, genuinely &mdash; thank you for joining us on this journey. Braindex is still early, and every person who signs up, plays a round, or sends a note makes a real difference. We&rsquo;re slowly growing a small, loyal community of people who want to have fun <em>and</em> get a little sharper on AI every day. That&rsquo;s the whole goal: have fun, improve, upskill together.</p>
-          <p>I read every piece of feedback personally, and I&rsquo;m committing to iterating on the app every week &mdash; new words, small tweaks, real fixes &mdash; based on what you tell me. If something feels off, or you&rsquo;ve got an idea, please email me. It really does shape what gets built next.</p>
-          <p>A little context: I&rsquo;m the founder of <strong>Pi-Squared</strong>, and Braindex is my latest project. It came out of two things I love &mdash; the quiet power of gamification, and the daily-game habit. I wanted to put those together to help people feel less behind on AI, one tiny daily session at a time.</p>
-          <p>So &mdash; thanks so much for being here early. I really appreciate it.</p>
-          <p>&mdash; David Carr, founder of Pi-Squared</p>
+          <p>Hi, I&rsquo;m David. Really, genuinely &mdash; thank you for joining us on this journey! Braindex is still in its infancy, and every person who signs up, plays, shares their scores, or sends a note makes a huge difference. We&rsquo;re slowly growing a small, loyal community of people who want to have fun <em>and</em> get a little sharper at AI every day. That&rsquo;s the goal: have fun &amp; upskill together.</p>
+          <p>I read every piece of feedback personally, and I&rsquo;m committing to iterating on the app every week &mdash; new words, new game modes, app improvements &mdash; based on what you tell me. If something feels off, or you&rsquo;ve got an idea, please do let me know! It really does shape what gets built next.</p>
+          <p>A little about me for those who might not know me: I previously created <strong>Pi-Squared</strong> &amp; <strong>MovieToons</strong>, and Braindex is now my latest project. It came out of two things I love &mdash; education through competitive gamification, and the daily-game habit. I wanted to put those together to help people feel less behind on AI, one tiny daily session at a time.</p>
+          <p>So &mdash; thanks so much for being here early. I really appreciate it!</p>
+          <p>&mdash; David Carr, creator of Braindex</p>
           <p class="founder-contact">Reach me directly: <a href="mailto:david@movietoons.co">david@movietoons.co</a></p>
         </div>
       </div>
