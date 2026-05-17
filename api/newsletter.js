@@ -70,11 +70,17 @@ export default async function handler(req, res) {
     const db = getDb();
     const id = createHash('sha256').update(email).digest('hex');
 
+    // Allow the caller to tell us where the signup came from (landing
+    // page newsletter card vs. post-play prompt). Allowlist to known
+    // values so the field stays clean.
+    const rawSource = String(req.body?.source || 'landing');
+    const source = ['landing', 'play-result'].includes(rawSource) ? rawSource : 'landing';
+
     await db.collection('newsletter').doc(id).set(
       {
         email,
         subscribedAt: admin.firestore.FieldValue.serverTimestamp(),
-        source: 'landing',
+        source,
         userAgent: String(req.headers['user-agent'] || '').slice(0, 200),
       },
       { merge: true },

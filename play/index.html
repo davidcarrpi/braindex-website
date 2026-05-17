@@ -304,6 +304,81 @@
       letter-spacing: 0.2px;
     }
 
+    /* Share + email CTAs on the result page. */
+    .result .post-row {
+      display: grid; gap: 10px;
+      margin-bottom: 16px;
+    }
+    .share-btn {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px;
+      background: var(--surface);
+      color: var(--accent);
+      border: 1.5px solid var(--border);
+      padding: 14px 18px;
+      font-family: inherit; font-size: 15px; font-weight: 700;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, transform 0.05s;
+    }
+    .share-btn:hover { border-color: var(--primary); background: var(--primary-soft); }
+    .share-btn:active { transform: scale(0.99); }
+    .share-feedback {
+      font-size: 12px; color: var(--text-faint);
+      text-align: center; min-height: 16px;
+      letter-spacing: 0.2px;
+    }
+    .share-feedback.shown { color: var(--correct); }
+    .email-cta {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    .email-cta h4 {
+      font-size: 14px; font-weight: 800;
+      color: var(--text); margin-bottom: 4px;
+      letter-spacing: 0.1px;
+    }
+    .email-cta p.sub {
+      font-size: 13px; color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .email-cta form { display: flex; gap: 8px; flex-wrap: wrap; }
+    .email-cta input {
+      flex: 1 1 200px;
+      padding: 12px 14px;
+      font-size: 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text);
+      font-family: inherit;
+    }
+    .email-cta input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(236, 26, 111, 0.15);
+    }
+    .email-cta button {
+      padding: 12px 18px;
+      font-size: 14px; font-weight: 700;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 10px;
+      cursor: pointer; font-family: inherit;
+      transition: background 0.15s, transform 0.05s;
+    }
+    .email-cta button:hover { background: var(--primary-dark); }
+    .email-cta button:active { transform: scale(0.99); }
+    .email-cta button:disabled { opacity: 0.55; cursor: not-allowed; }
+    .email-cta .msg {
+      font-size: 12px; color: var(--text-muted);
+      margin-top: 8px; min-height: 16px;
+    }
+    .email-cta .msg.success { color: var(--correct); }
+    .email-cta .msg.error { color: var(--wrong); }
+
     /* ─── Loading + error states ───────────────────────────────── */
     .loading {
       display: flex; flex-direction: column;
@@ -780,6 +855,21 @@
           }).join('')}
         </div>
 
+        <div class="post-row">
+          <button class="share-btn" id="share-btn">📣 Share my score</button>
+          <div class="share-feedback" id="share-feedback" aria-live="polite"></div>
+        </div>
+
+        <div class="email-cta">
+          <h4>Want to know when the app drops?</h4>
+          <p class="sub">We&rsquo;ll email you once Braindex is live on the App Store. No spam, just the launch ping.</p>
+          <form id="result-email-form" novalidate>
+            <input id="result-email-input" type="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+            <button type="submit">Notify me</button>
+          </form>
+          <p class="msg" id="result-email-msg" role="status" aria-live="polite"></p>
+        </div>
+
         <div class="locked-card">
           <h3>Enjoyed that?</h3>
           <p style="color: rgba(255,255,255,0.82); font-size: 14px; margin: 0 0 16px;">
@@ -802,6 +892,67 @@
       state.status = 'playing';
       startTicker();
       render();
+    });
+
+    // ── Share my score ─────────────────────────────────────────
+    const shareBtn = document.getElementById('share-btn');
+    const shareFeedback = document.getElementById('share-feedback');
+    shareBtn.addEventListener('click', async () => {
+      const grid = state.questions.map((q, i) =>
+        state.attempts[i].chosen === q.correctIndex ? '🟢' : '🔴'
+      ).join('');
+      const dateLabel = new Date().toLocaleDateString(undefined, {
+        weekday: 'short', month: 'short', day: 'numeric',
+      });
+      const shareText =
+        `Braindex · ${dateLabel}\n` +
+        `${score} / 1000 — ${correct}/6 correct\n` +
+        `${grid}\n` +
+        `Play: https://braindexapp.com/play`;
+      // navigator.share works on mobile + some desktop; fall back to clipboard.
+      try {
+        if (navigator.share) {
+          await navigator.share({ text: shareText });
+          shareFeedback.textContent = 'Shared!';
+        } else {
+          await navigator.clipboard.writeText(shareText);
+          shareFeedback.textContent = 'Copied to clipboard';
+        }
+        shareFeedback.classList.add('shown');
+        setTimeout(() => shareFeedback.classList.remove('shown'), 2400);
+      } catch (_) {
+        // User cancelled share or clipboard blocked — silent.
+      }
+    });
+
+    // ── Result-page newsletter signup ──────────────────────────
+    const emailForm = document.getElementById('result-email-form');
+    const emailInput = document.getElementById('result-email-input');
+    const emailMsg = document.getElementById('result-email-msg');
+    emailForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      if (!email || !/^.+@.+\..+$/.test(email)) {
+        emailMsg.textContent = 'Enter a valid email address.';
+        emailMsg.className = 'msg error';
+        return;
+      }
+      emailMsg.textContent = 'Sending…';
+      emailMsg.className = 'msg';
+      try {
+        const res = await fetch('/api/newsletter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, source: 'play-result' }),
+        });
+        if (!res.ok) throw new Error('Server responded ' + res.status);
+        emailMsg.textContent = 'You’re on the list. Thanks!';
+        emailMsg.className = 'msg success';
+        emailInput.value = '';
+      } catch (_) {
+        emailMsg.textContent = 'Couldn’t save that — try again later.';
+        emailMsg.className = 'msg error';
+      }
     });
   }
 
