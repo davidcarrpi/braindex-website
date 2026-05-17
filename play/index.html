@@ -409,7 +409,26 @@
     return arr;
   }
 
+  // Pick `count` items from `arr` using `rng`. If the array is smaller
+  // than `count`, loop through it as many laps as needed, reshuffling
+  // each lap so repeated items don't appear back-to-back in the same
+  // order. Guarantees `count` results as long as `arr` is non-empty.
+  function pickLoopingShuffle(arr, count, rng) {
+    if (arr.length === 0) return [];
+    const out = [];
+    while (out.length < count) {
+      const lap = shuffleInPlace(arr.slice(), rng);
+      for (const item of lap) {
+        out.push(item);
+        if (out.length === count) break;
+      }
+    }
+    return out;
+  }
+
   // Build today's 6-question session — same shape as Dart buildDailyDefineSession.
+  // If the active word pool is too small to fill a session, the looper
+  // wraps around so we never short-change the player on questions.
   function buildSession(words, today) {
     const startOfYear = new Date(today.getFullYear(), 0, 1);
     const dayOfYear = Math.floor((today - startOfYear) / 86400000);
@@ -418,12 +437,14 @@
     const rng = mulberry32(seed);
 
     const inTier = words.filter(w => allowedTiers.includes(w.t));
-    const pool = inTier.length >= QUESTION_COUNT ? inTier : words.slice();
-
-    const idxs = shuffleInPlace(pool.map((_, i) => i), rng);
-    const selected = idxs.slice(0, QUESTION_COUNT).map(i => pool[i]);
+    const pool = inTier.length > 0 ? inTier : words.slice();
+    const selected = pickLoopingShuffle(pool, QUESTION_COUNT, rng);
 
     return selected.map(target => {
+      // Distractor candidates: same tier, different word. Fall back to
+      // any-tier if the same-tier slice is too thin. Final loop guarantee:
+      // if the whole bank has fewer than 3 distinct definitions, we let
+      // duplicates through rather than rendering blank options.
       const sameTier = shuffleInPlace(
         words.filter(w => w.t === target.t && w.w !== target.w).slice(),
         rng,
@@ -442,6 +463,15 @@
           if (distractors.length === 3) break;
           distractors.push(c.d);
         }
+      }
+      if (distractors.length < 3) {
+        // Truly tiny bank — pad with looping picks from anything.
+        const padding = pickLoopingShuffle(
+          words.filter(w => w.w !== target.w).slice(),
+          3 - distractors.length,
+          rng,
+        );
+        for (const c of padding) distractors.push(c.d);
       }
       const options = shuffleInPlace([target.d, ...distractors], rng);
       return {
