@@ -892,16 +892,16 @@
           </div>
         </div>
 
-        <button class="primary-btn" id="play-again-btn">Try a fresh round</button>
+        <button class="primary-btn" id="play-again-btn">Back to start</button>
       </div>
     `;
     document.getElementById('play-again-btn').addEventListener('click', () => {
-      // Practice round: re-build with current time as seed (different words).
-      state.questions = buildSession(state.words, new Date(Date.now() + Math.random()*86400000));
-      state.attempts = state.questions.map(() => ({ chosen: null, secondsUsed: 0, timedOut: false, locked: false }));
-      state.currentIndex = 0;
-      state.status = 'playing';
-      startTicker();
+      // Return to the intro screen rather than auto-starting another
+      // round — the user reaches the result page and may want to share,
+      // sign up for the newsletter, or just exit gracefully. From the
+      // intro they can tap Play if they want to go again.
+      stopTicker();
+      state.status = 'intro';
       render();
     });
 
