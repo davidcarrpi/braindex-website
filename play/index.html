@@ -1,46 +1,805 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#EC1A6F" />
+  <title>Play Braindex — daily AI vocabulary game</title>
+  <meta name="description" content="A sample of today's Braindex puzzle. 6 AI words, 20 seconds each. Get the app for the full daily, streaks, and leaderboards." />
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+  <link rel="icon" type="image/png" href="/brain-character.png" />
+  <link rel="apple-touch-icon" href="/brain-character.png" />
 
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet" />
 
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="/play/">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+    :root {
+      --primary: #EC1A6F;
+      --primary-dark: #C2185B;
+      --primary-soft: #FFE7F1;
+      --accent: #0E1A4A;
+      --text: #1A1A2E;
+      --text-muted: #5A5A73;
+      --text-faint: #9A9AAE;
+      --bg: #FAF9FC;
+      --surface: #FFFFFF;
+      --border: #E8E6EE;
+      --correct: #1D8A44;
+      --wrong: #C2185B;
+      --tile: #F4F2F8;
+    }
 
-  <!-- iOS meta tags & icons -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="braindex">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+    html, body { height: 100%; }
+    body {
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 16px; line-height: 1.5;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      display: flex; flex-direction: column;
+      min-height: 100vh;
+    }
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+    /* ─── Top bar ──────────────────────────────────────────────── */
+    header.bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 22px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      position: sticky; top: 0; z-index: 10;
+    }
+    header.bar a.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    header.bar a.logo img { height: 38px; display: block; }
+    header.bar .right a {
+      color: var(--text-muted); text-decoration: none;
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    header.bar .right a:hover { color: var(--primary); }
 
-  <title>braindex</title>
-  <link rel="manifest" href="manifest.json">
+    /* ─── Centered game stage ──────────────────────────────────── */
+    main.stage {
+      flex: 1 1 auto;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 28px 16px 60px;
+    }
+    .card {
+      width: 100%; max-width: 560px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 28px 32px;
+      box-shadow: 0 12px 40px rgba(14, 26, 74, 0.05);
+    }
+
+    /* ─── Intro view ───────────────────────────────────────────── */
+    .intro .eyebrow {
+      font-size: 11px; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--primary);
+      font-weight: 800; margin-bottom: 8px;
+    }
+    .intro h1 {
+      font-size: clamp(28px, 4vw, 34px);
+      font-weight: 800; letter-spacing: -0.5px;
+      color: var(--accent); margin-bottom: 12px;
+      line-height: 1.15;
+    }
+    .intro p.lede {
+      font-size: 15px; color: var(--text-muted);
+      margin-bottom: 22px;
+    }
+    .intro .meta-row {
+      display: flex; gap: 14px; flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+    .intro .pill {
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      font-size: 12px; font-weight: 700;
+      padding: 6px 12px; border-radius: 999px;
+      letter-spacing: 0.3px;
+    }
+    .intro .pill.muted {
+      background: var(--tile); color: var(--text-muted);
+    }
+    button.primary-btn, a.primary-btn {
+      display: inline-block;
+      background: var(--primary); color: #fff;
+      border: none;
+      padding: 16px 24px;
+      font-family: inherit; font-size: 15px; font-weight: 700;
+      letter-spacing: 0.2px;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none; text-align: center;
+      transition: background 0.15s, transform 0.05s;
+      width: 100%;
+    }
+    button.primary-btn:hover, a.primary-btn:hover { background: var(--primary-dark); }
+    button.primary-btn:active, a.primary-btn:active { transform: scale(0.99); }
+    button.primary-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    button.secondary-btn {
+      display: inline-block;
+      background: var(--tile); color: var(--text);
+      border: none;
+      padding: 14px 22px;
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.15s;
+    }
+    button.secondary-btn:hover { background: #ECE9F0; }
+
+    /* ─── Game view ────────────────────────────────────────────── */
+    .question-boxes {
+      display: flex; gap: 6px; justify-content: center;
+      margin-bottom: 18px;
+    }
+    .qbox {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: var(--tile); color: var(--text-faint);
+      font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; user-select: none;
+      transition: background 0.15s, color 0.15s, transform 0.05s;
+    }
+    .qbox.answered { background: var(--accent); color: #fff; }
+    .qbox.current  { background: var(--primary); color: #fff; transform: scale(1.1); }
+    .qbox.timeout  { background: var(--tile); color: var(--text-faint); opacity: 0.4; }
+
+    .timer-bar {
+      position: relative;
+      height: 6px; border-radius: 999px;
+      background: var(--tile);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .timer-fill {
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      transform-origin: left center;
+      transform: scaleX(1);
+      transition: transform 0.1s linear;
+    }
+    .timer-fill.low { background: linear-gradient(90deg, #F9A825, var(--wrong)); }
+
+    .word-display {
+      text-align: center;
+      padding: 18px 0 28px;
+    }
+    .word-display .label {
+      font-size: 11px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--text-faint);
+      font-weight: 700; margin-bottom: 8px;
+    }
+    .word-display .word {
+      font-size: clamp(34px, 6vw, 48px);
+      font-weight: 800; letter-spacing: -0.5px;
+      color: var(--accent);
+      word-break: break-word;
+    }
+
+    .options { display: grid; gap: 10px; }
+    .option {
+      text-align: left;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-family: inherit; font-size: 15px;
+      color: var(--text);
+      cursor: pointer; line-height: 1.4;
+      transition: border-color 0.15s, background 0.15s, transform 0.05s;
+    }
+    .option:hover { border-color: var(--primary); }
+    .option:active { transform: scale(0.99); }
+    .option.selected {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      font-weight: 600;
+    }
+
+    .submit-row {
+      margin-top: 22px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .progress-note {
+      text-align: center;
+      font-size: 12px; color: var(--text-faint);
+      letter-spacing: 0.2px;
+    }
+
+    /* ─── Result view ──────────────────────────────────────────── */
+    .result .score-row {
+      display: flex; align-items: baseline; justify-content: center;
+      gap: 8px; margin-bottom: 6px;
+    }
+    .result .score-row .num {
+      font-size: 72px; font-weight: 800; letter-spacing: -2px;
+      color: var(--primary); line-height: 1;
+    }
+    .result .score-row .denom {
+      font-size: 22px; color: var(--text-faint); font-weight: 700;
+    }
+    .result .accuracy {
+      text-align: center;
+      font-size: 14px; color: var(--text-muted);
+      margin-bottom: 24px;
+      letter-spacing: 0.2px;
+    }
+    .answers {
+      display: flex; flex-direction: column; gap: 8px;
+      margin-bottom: 24px;
+    }
+    .answer-row {
+      display: flex; flex-direction: column; gap: 4px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: var(--tile);
+      border-left: 4px solid var(--text-faint);
+    }
+    .answer-row.correct { border-left-color: var(--correct); background: #E6F4EC; }
+    .answer-row.wrong   { border-left-color: var(--wrong);   background: #FBE8EF; }
+    .answer-row .word-line {
+      font-size: 14px; font-weight: 700; color: var(--text);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .answer-row .mark {
+      font-size: 14px; font-weight: 800;
+    }
+    .answer-row.correct .mark { color: var(--correct); }
+    .answer-row.wrong .mark { color: var(--wrong); }
+    .answer-row .def-line {
+      font-size: 13px; color: var(--text-muted); line-height: 1.4;
+    }
+
+    .locked-card {
+      background: linear-gradient(135deg, #0E1A4A 0%, #1A2B66 100%);
+      border-radius: 16px;
+      padding: 22px 24px;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    .locked-card h3 {
+      font-size: 17px; font-weight: 800;
+      letter-spacing: -0.2px; margin-bottom: 10px;
+    }
+    .locked-card ul {
+      list-style: none; padding: 0; margin-bottom: 18px;
+      font-size: 14px; color: rgba(255,255,255,0.82);
+    }
+    .locked-card ul li {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 6px 0;
+    }
+    .locked-card ul li::before {
+      content: "🔒"; font-size: 13px; flex-shrink: 0;
+    }
+    .locked-card .store-row {
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .locked-card .store-btn {
+      flex: 1 1 0; min-width: 140px;
+      background: #fff; color: var(--accent);
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 13px; font-weight: 700;
+      text-align: center; text-decoration: none;
+      letter-spacing: 0.2px;
+      transition: background 0.15s, transform 0.05s;
+    }
+    .locked-card .store-btn:hover { background: var(--primary-soft); }
+    .locked-card .store-btn:active { transform: scale(0.99); }
+    .locked-card .small {
+      font-size: 11px; color: rgba(255,255,255,0.55);
+      margin-top: 12px; text-align: center;
+      letter-spacing: 0.2px;
+    }
+
+    /* ─── Loading + error states ───────────────────────────────── */
+    .loading {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 16px;
+      padding: 60px 0;
+    }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--tile);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── Footer ───────────────────────────────────────────────── */
+    footer.foot {
+      text-align: center;
+      padding: 18px 16px 28px;
+      font-size: 12px; color: var(--text-faint);
+      border-top: 1px solid var(--border);
+    }
+    footer.foot a { color: var(--text-muted); text-decoration: none; margin: 0 8px; }
+    footer.foot a:hover { color: var(--primary); }
+
+    /* ─── Responsive ───────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      header.bar { padding: 12px 16px; }
+      header.bar a.logo img { height: 32px; }
+      main.stage { padding: 18px 12px 40px; }
+      .card { padding: 22px 18px 26px; border-radius: 16px; }
+      .result .score-row .num { font-size: 60px; }
+    }
+  </style>
 </head>
 <body>
-  <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
 
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
-  -->
-  <script src="flutter_bootstrap.js" async></script>
+<header class="bar">
+  <a class="logo" href="/" aria-label="Back to braindexapp.com">
+    <img src="/brain-character.png" alt="Braindex" />
+  </a>
+  <div class="right">
+    <a href="/">← braindexapp.com</a>
+  </div>
+</header>
+
+<main class="stage">
+  <section class="card" id="root">
+    <div class="loading">
+      <div class="spinner" aria-hidden="true"></div>
+      <p class="progress-note">Loading today&rsquo;s puzzle…</p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <a href="/">Home</a>
+  <a href="/privacy-policy">Privacy</a>
+  <a href="/support">Support</a>
+</footer>
+
+<script>
+(() => {
+  'use strict';
+
+  // ────────────────────────────────────────────────────────────────
+  // CONSTANTS — must match lib/data/define_question.dart and lib/providers/define_provider.dart
+  // ────────────────────────────────────────────────────────────────
+  const QUESTION_COUNT = 6;
+  const QUESTION_SECONDS = 20;
+  const TICK_MS = 100;
+
+  // Tier curve by day-of-year — identical to _tiersForDay in Dart.
+  function tiersForDay(dayOfYear) {
+    if (dayOfYear < 30)  return [1];
+    if (dayOfYear < 60)  return [1, 2];
+    if (dayOfYear < 100) return [2, 3];
+    if (dayOfYear < 140) return [3, 4];
+    if (dayOfYear < 180) return [4, 5];
+    return [1, 2, 3, 4, 5];
+  }
+
+  // Mulberry32: deterministic JS PRNG. NOT the same sequence as Dart's
+  // Random(seed), so the 6 chosen words won't match the iPhone app for a
+  // given day — but every web user on the same date gets the same 6.
+  // (For 1:1 parity we'd need a server-side puzzle generator; see README.)
+  function mulberry32(seed) {
+    let t = seed >>> 0;
+    return function() {
+      t = (t + 0x6D2B79F5) >>> 0;
+      let r = t;
+      r = Math.imul(r ^ (r >>> 15), r | 1);
+      r ^= r + Math.imul(r ^ (r >>> 7), r | 61);
+      return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function shuffleInPlace(arr, rng) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // Build today's 6-question session — same shape as Dart buildDailyDefineSession.
+  function buildSession(words, today) {
+    const startOfYear = new Date(today.getFullYear(), 0, 1);
+    const dayOfYear = Math.floor((today - startOfYear) / 86400000);
+    const seed = today.getFullYear() * 1000 + dayOfYear;
+    const allowedTiers = tiersForDay(dayOfYear);
+    const rng = mulberry32(seed);
+
+    const inTier = words.filter(w => allowedTiers.includes(w.t));
+    const pool = inTier.length >= QUESTION_COUNT ? inTier : words.slice();
+
+    const idxs = shuffleInPlace(pool.map((_, i) => i), rng);
+    const selected = idxs.slice(0, QUESTION_COUNT).map(i => pool[i]);
+
+    return selected.map(target => {
+      const sameTier = shuffleInPlace(
+        words.filter(w => w.t === target.t && w.w !== target.w).slice(),
+        rng,
+      );
+      const distractors = [];
+      for (const c of sameTier) {
+        if (distractors.length === 3) break;
+        distractors.push(c.d);
+      }
+      if (distractors.length < 3) {
+        const extra = shuffleInPlace(
+          words.filter(w => w.w !== target.w && !distractors.includes(w.d)).slice(),
+          rng,
+        );
+        for (const c of extra) {
+          if (distractors.length === 3) break;
+          distractors.push(c.d);
+        }
+      }
+      const options = shuffleInPlace([target.d, ...distractors], rng);
+      return {
+        word: target.w,
+        correctDefinition: target.d,
+        options,
+        correctIndex: options.indexOf(target.d),
+      };
+    });
+  }
+
+  // Same scoring formula as Dart calculateScore().
+  function calculateScore({ correct, total, totalSecondsUsed, secondsPerQuestion }) {
+    if (total === 0) return 0;
+    const accuracy = (correct / total) * 800;
+    const maxTime = secondsPerQuestion * total;
+    const used = Math.max(0, Math.min(totalSecondsUsed, maxTime));
+    const timeFactor = 1 - (used / maxTime);
+    const timePoints = Math.max(0, Math.min(1, timeFactor)) * 200;
+    return Math.round(accuracy + timePoints);
+  }
+
+  // ────────────────────────────────────────────────────────────────
+  // WORD LOAD — prefer cloud /config/words via REST (no SDK), fall back
+  // to local words.json (bundled when iOS shipped, ~270 words).
+  // ────────────────────────────────────────────────────────────────
+  const FIREBASE_PROJECT = 'braindexapp';
+  const FIREBASE_API_KEY = 'AIzaSyCW-crxgYTrrvIleqdz2YIou0CPpOZIwR8';
+  const CLOUD_DOC_URL =
+    `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents/config/words?key=${FIREBASE_API_KEY}`;
+
+  async function loadCloudWords() {
+    // /config/{doc} rule is "allow read if request.auth != null" — public
+    // REST without auth returns 403. To stay zero-SDK we sign in
+    // anonymously over REST and pass the idToken. Sign-up is cheap.
+    try {
+      const tokenRes = await fetch(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${FIREBASE_API_KEY}`,
+        { method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ returnSecureToken: true }) }
+      );
+      if (!tokenRes.ok) return null;
+      const { idToken } = await tokenRes.json();
+      if (!idToken) return null;
+
+      const docRes = await fetch(CLOUD_DOC_URL, {
+        headers: { Authorization: `Bearer ${idToken}` },
+      });
+      if (!docRes.ok) return null;
+      const doc = await docRes.json();
+      const raw = doc?.fields?.words?.arrayValue?.values;
+      if (!Array.isArray(raw)) return null;
+      const parsed = [];
+      for (const e of raw) {
+        const m = e?.mapValue?.fields;
+        if (!m) continue;
+        const w = m.word?.stringValue;
+        const t = parseInt(m.tier?.integerValue ?? '', 10);
+        const d = m.definition?.stringValue;
+        if (w && Number.isFinite(t) && d) parsed.push({ w, t, d });
+      }
+      return parsed.length >= QUESTION_COUNT ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+
+  async function loadLocalWords() {
+    const res = await fetch('words.json', { cache: 'force-cache' });
+    return res.json();
+  }
+
+  async function loadWords() {
+    // Kick off both. Cloud may win and we use those; otherwise fall back.
+    const cloud = await loadCloudWords();
+    if (cloud) return { source: 'cloud', words: cloud };
+    const local = await loadLocalWords();
+    return { source: 'bundled', words: local };
+  }
+
+  // ────────────────────────────────────────────────────────────────
+  // STATE
+  // ────────────────────────────────────────────────────────────────
+  const state = {
+    words: null,
+    wordSource: null,
+    questions: null,
+    attempts: null,       // [{ chosen: int|null, secondsUsed: int, timedOut: bool }, ...]
+    currentIndex: 0,
+    status: 'intro',      // intro | playing | results
+    tickerId: null,
+  };
+
+  // ────────────────────────────────────────────────────────────────
+  // RENDER
+  // ────────────────────────────────────────────────────────────────
+  const root = document.getElementById('root');
+
+  function render() {
+    if (state.status === 'intro') renderIntro();
+    else if (state.status === 'playing') renderGame();
+    else if (state.status === 'results') renderResults();
+  }
+
+  function todayLabel() {
+    return new Date().toLocaleDateString(undefined, {
+      weekday: 'long', month: 'long', day: 'numeric',
+    });
+  }
+
+  function renderIntro() {
+    root.innerHTML = `
+      <div class="intro">
+        <p class="eyebrow">Sample puzzle · ${todayLabel()}</p>
+        <h1>Today&rsquo;s Braindex<br/>practice round</h1>
+        <p class="lede">Six AI words. Pick the right definition. Twenty seconds each. Then download the app to play the official daily and join the leaderboards.</p>
+        <div class="meta-row">
+          <span class="pill">6 words</span>
+          <span class="pill">20s each</span>
+          <span class="pill muted">No login · No ads</span>
+        </div>
+        <button class="primary-btn" id="start-btn">Start sample puzzle →</button>
+      </div>
+    `;
+    document.getElementById('start-btn').addEventListener('click', startGame);
+  }
+
+  function startGame() {
+    state.questions = buildSession(state.words, new Date());
+    state.attempts = state.questions.map(() => ({ chosen: null, secondsUsed: 0, timedOut: false }));
+    state.currentIndex = 0;
+    state.status = 'playing';
+    startTicker();
+    render();
+  }
+
+  function renderGame() {
+    const q = state.questions[state.currentIndex];
+    const a = state.attempts[state.currentIndex];
+    const remaining = Math.max(0, QUESTION_SECONDS - a.secondsUsed);
+    const fillScale = remaining / QUESTION_SECONDS;
+    const low = remaining < 5;
+
+    root.innerHTML = `
+      <div class="game">
+        <div class="question-boxes" id="qboxes">
+          ${state.questions.map((_, i) => {
+            const att = state.attempts[i];
+            const cls =
+              i === state.currentIndex ? 'qbox current' :
+              att.chosen !== null      ? 'qbox answered' :
+              att.timedOut             ? 'qbox timeout'  : 'qbox';
+            return `<div class="${cls}" data-idx="${i}">${i+1}</div>`;
+          }).join('')}
+        </div>
+        <div class="timer-bar">
+          <div class="timer-fill ${low ? 'low' : ''}" id="timer-fill" style="transform: scaleX(${fillScale})"></div>
+        </div>
+        <div class="word-display">
+          <p class="label">Define</p>
+          <div class="word">${escapeHtml(q.word)}</div>
+        </div>
+        <div class="options" id="options">
+          ${q.options.map((opt, i) => `
+            <button class="option ${a.chosen === i ? 'selected' : ''}" data-i="${i}">${escapeHtml(opt)}</button>
+          `).join('')}
+        </div>
+        <div class="submit-row">
+          <button class="primary-btn" id="submit-btn"
+            ${allAnswered() ? '' : 'disabled'}>
+            ${allAnswered() ? 'Submit' : `Answer all 6 to submit (${answeredCount()}/6)`}
+          </button>
+          <p class="progress-note">Tap an answer to lock it in. You can revisit any question to change your pick before submitting.</p>
+        </div>
+      </div>
+    `;
+    document.getElementById('options').addEventListener('click', onOptionClick);
+    document.getElementById('qboxes').addEventListener('click', onQBoxClick);
+    document.getElementById('submit-btn').addEventListener('click', onSubmit);
+  }
+
+  function answeredCount() { return state.attempts.filter(a => a.chosen !== null).length; }
+  function allAnswered() { return answeredCount() === state.questions.length; }
+
+  function onOptionClick(e) {
+    const btn = e.target.closest('.option');
+    if (!btn) return;
+    const i = parseInt(btn.dataset.i, 10);
+    const a = state.attempts[state.currentIndex];
+    if (a.timedOut) return;
+    a.chosen = i;
+    // Auto-advance to next UNANSWERED question (no feedback shown yet).
+    const next = findNextActive(state.currentIndex + 1);
+    if (next !== -1 && next !== state.currentIndex) {
+      state.currentIndex = next;
+    }
+    render();
+  }
+
+  function onQBoxClick(e) {
+    const box = e.target.closest('.qbox');
+    if (!box) return;
+    const i = parseInt(box.dataset.idx, 10);
+    if (state.attempts[i].timedOut) return;
+    state.currentIndex = i;
+    render();
+  }
+
+  function findNextActive(fromIdx) {
+    const n = state.questions.length;
+    for (let step = 0; step < n; step++) {
+      const i = (fromIdx + step) % n;
+      const a = state.attempts[i];
+      if (a.chosen === null && !a.timedOut) return i;
+    }
+    return -1;
+  }
+
+  function startTicker() {
+    stopTicker();
+    state.tickerId = setInterval(() => {
+      const a = state.attempts[state.currentIndex];
+      if (state.status !== 'playing') return;
+      if (a.chosen !== null || a.timedOut) return;
+      a.secondsUsed += TICK_MS / 1000;
+      if (a.secondsUsed >= QUESTION_SECONDS) {
+        a.secondsUsed = QUESTION_SECONDS;
+        a.timedOut = true;
+        const next = findNextActive(state.currentIndex + 1);
+        if (next !== -1) state.currentIndex = next;
+      }
+      // Light DOM updates without full re-render where possible.
+      const fill = document.getElementById('timer-fill');
+      if (fill) {
+        const remaining = Math.max(0, QUESTION_SECONDS - a.secondsUsed);
+        fill.style.transform = `scaleX(${remaining / QUESTION_SECONDS})`;
+        if (remaining < 5) fill.classList.add('low');
+      }
+      // Full re-render only when current question or boxes need updating
+      if (a.timedOut) render();
+    }, TICK_MS);
+  }
+  function stopTicker() {
+    if (state.tickerId) { clearInterval(state.tickerId); state.tickerId = null; }
+  }
+
+  function onSubmit() {
+    if (!allAnswered()) return;
+    stopTicker();
+    state.status = 'results';
+    render();
+  }
+
+  function renderResults() {
+    const correct = state.questions.reduce((sum, q, i) => {
+      const a = state.attempts[i];
+      return sum + (a.chosen === q.correctIndex ? 1 : 0);
+    }, 0);
+    const totalSecondsUsed = state.attempts.reduce((s, a) => s + a.secondsUsed, 0);
+    const score = calculateScore({
+      correct,
+      total: state.questions.length,
+      totalSecondsUsed,
+      secondsPerQuestion: QUESTION_SECONDS,
+    });
+
+    root.innerHTML = `
+      <div class="result">
+        <div class="score-row">
+          <div class="num">${score}</div>
+          <div class="denom">/ 1000</div>
+        </div>
+        <p class="accuracy">${correct} of ${state.questions.length} correct · ${formatSeconds(totalSecondsUsed)} used</p>
+
+        <div class="answers">
+          ${state.questions.map((q, i) => {
+            const a = state.attempts[i];
+            const got = a.chosen === q.correctIndex;
+            const mark = got ? '✓' : '✗';
+            const cls = got ? 'correct' : 'wrong';
+            return `
+              <div class="answer-row ${cls}">
+                <div class="word-line">
+                  <span class="mark">${mark}</span>
+                  ${escapeHtml(q.word)}
+                </div>
+                <div class="def-line">${escapeHtml(q.correctDefinition)}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        <div class="locked-card">
+          <h3>Want today&rsquo;s official puzzle?</h3>
+          <ul>
+            <li>Same daily words as the iPhone app (this was a sample)</li>
+            <li>Daily score leaderboard against everyone playing</li>
+            <li>Streaks &amp; Top-Streaks leaderboard</li>
+            <li>Personal stats &amp; difficulty curve</li>
+          </ul>
+          <div class="store-row">
+            <a class="store-btn" href="/" aria-disabled="true">App Store · Coming soon</a>
+            <a class="store-btn" href="/" aria-disabled="true">Google Play · Coming soon</a>
+          </div>
+          <p class="small">Get notified on launch at braindexapp.com</p>
+        </div>
+
+        <button class="primary-btn" id="play-again-btn">Try a fresh round</button>
+      </div>
+    `;
+    document.getElementById('play-again-btn').addEventListener('click', () => {
+      // Practice round: re-build with current time as seed (different words).
+      state.questions = buildSession(state.words, new Date(Date.now() + Math.random()*86400000));
+      state.attempts = state.questions.map(() => ({ chosen: null, secondsUsed: 0, timedOut: false }));
+      state.currentIndex = 0;
+      state.status = 'playing';
+      startTicker();
+      render();
+    });
+  }
+
+  function formatSeconds(s) {
+    const total = Math.floor(s);
+    const m = Math.floor(total / 60);
+    const sec = total % 60;
+    if (m === 0) return `${sec}s`;
+    return `${m}m ${sec}s`;
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  // ────────────────────────────────────────────────────────────────
+  // BOOT
+  // ────────────────────────────────────────────────────────────────
+  loadWords().then(({ source, words }) => {
+    state.words = words;
+    state.wordSource = source;
+    state.status = 'intro';
+    render();
+  }).catch(err => {
+    console.error('Failed to load words:', err);
+    root.innerHTML = `
+      <div class="intro">
+        <h1 style="color: var(--wrong);">Couldn&rsquo;t load the puzzle</h1>
+        <p class="lede">Refresh to try again. The full Braindex app works offline once installed.</p>
+        <a class="primary-btn" href="/">← Back to braindexapp.com</a>
+      </div>
+    `;
+  });
+})();
+</script>
+
 </body>
 </html>
