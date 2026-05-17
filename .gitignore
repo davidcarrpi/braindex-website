@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Local previews / build outputs
+.netlify/
+.vercel/
+node_modules/
+
+# Logs
+*.log

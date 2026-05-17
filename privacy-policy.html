@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — Braindex by Braindex</title>
+  <link rel="icon" type="image/png" href="braindex_logo.png" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #EC1A6F;
+      --primary-light: #F06292;
+      --primary-dark: #C2185B;
+      --accent: #0E1A4A;
+      --text: #1a1a2e;
+      --text-muted: #5a5a73;
+      --text-faint: #9a9aae;
+      --bg: #ffffff;
+      --surface: #faf9fc;
+      --border: #e8e6ee;
+    }
+
+    body {
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 16px; line-height: 1.7;
+      color: var(--text); background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Sticky header chrome (matches index.html) ───────────── */
+    header.site {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+    header.site .row {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    header.site img.logo { height: 60px; display: block; }
+    header.site nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px; font-weight: 500;
+      margin-left: 24px;
+      transition: color 0.15s;
+    }
+    header.site nav a:hover { color: var(--primary); }
+
+    /* ─── Page title ──────────────────────────────────────────── */
+    .page-title {
+      max-width: 780px; margin: 0 auto;
+      padding: 40px 24px 24px;
+      text-align: left;
+    }
+    .page-title .back {
+      display: inline-flex; align-items: center; gap: 4px;
+      color: var(--primary); text-decoration: none;
+      font-size: 14px; font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .page-title .back:hover { text-decoration: underline; }
+    .page-title h1 {
+      font-size: clamp(32px, 4vw, 44px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .page-title .meta {
+      font-size: 13px;
+      color: var(--text-faint);
+      letter-spacing: 0.2px;
+    }
+
+    /* ─── Main content ────────────────────────────────────────── */
+    main { max-width: 780px; margin: 0 auto; padding: 8px 24px 80px; }
+
+    .summary-box {
+      background: rgba(236, 26, 111, 0.05);
+      border-left: 4px solid var(--primary);
+      border-radius: 0 12px 12px 0;
+      padding: 18px 22px; margin: 24px 0 40px;
+    }
+    .summary-box .label {
+      font-size: 11px; font-weight: 800; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--primary); margin-bottom: 6px;
+    }
+    .summary-box p { color: var(--text); margin: 0; }
+
+    nav.toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 26px; margin-bottom: 48px;
+    }
+    nav.toc h2 {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--text-faint); margin-bottom: 12px;
+      border: none; padding: 0;
+    }
+    nav.toc ol { padding-left: 18px; }
+    nav.toc li { margin-bottom: 5px; }
+    nav.toc a {
+      color: var(--primary); text-decoration: none; font-size: 15px;
+      font-weight: 500;
+    }
+    nav.toc a:hover { text-decoration: underline; }
+
+    section { margin-bottom: 40px; }
+    section h2 {
+      font-size: 22px; font-weight: 800;
+      color: var(--accent);
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 10px; margin-bottom: 18px;
+      letter-spacing: -0.3px;
+    }
+    section h3 {
+      font-size: 16px; font-weight: 700; color: var(--text);
+      margin: 22px 0 8px;
+    }
+    p { margin-bottom: 14px; color: var(--text-muted); }
+    p strong { color: var(--text); font-weight: 700; }
+    a { color: var(--primary); }
+    ul, ol { padding-left: 22px; margin-bottom: 14px; }
+    li { margin-bottom: 7px; color: var(--text-muted); }
+    li strong { color: var(--text); }
+
+    .notice-box {
+      background: #fff8e1; border-left: 4px solid #f9a825;
+      border-radius: 0 12px 12px 0;
+      padding: 16px 20px; margin: 20px 0;
+    }
+    .notice-box .label {
+      font-size: 11px; font-weight: 800; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #f57f17; margin-bottom: 5px;
+    }
+    .notice-box p { color: #4e342e; margin: 0; }
+
+    .contact-card {
+      background: var(--accent); border-radius: 14px;
+      padding: 24px 28px; margin: 16px 0;
+    }
+    .contact-card .name {
+      font-size: 17px; font-weight: 700; color: #fff;
+      margin-bottom: 10px;
+    }
+    .contact-card p {
+      color: rgba(255, 255, 255, 0.75);
+      margin-bottom: 6px; font-size: 15px;
+    }
+    .contact-card p:last-child { margin-bottom: 0; }
+    .contact-card a {
+      color: var(--primary-light); text-decoration: none;
+    }
+    .contact-card a:hover { text-decoration: underline; }
+
+    /* ─── Footer (matches index.html) ─────────────────────────── */
+    footer.site {
+      padding: 40px 0 32px;
+      border-top: 1px solid var(--border);
+    }
+    footer.site .row {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px;
+      display: flex; flex-wrap: wrap;
+      justify-content: space-between; align-items: center;
+      gap: 16px;
+    }
+    footer.site img.logo { height: 40px; }
+    footer.site nav a {
+      color: var(--text-muted); text-decoration: none;
+      font-size: 14px; margin-left: 18px;
+    }
+    footer.site nav a:hover { color: var(--primary); }
+    footer.site .copyright {
+      max-width: 1100px; margin: 18px auto 0;
+      padding: 0 24px;
+      font-size: 12px; color: var(--text-faint);
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      /* On phones, hide the top nav links — the logo + the "Back to
+         home" link inside the page-title block are enough to get
+         around. Keeps the mobile header clean. */
+      header.site nav { display: none; }
+      header.site img.logo { height: 44px; }
+      .page-title { padding: 28px 20px 16px; }
+      main { padding: 0 20px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site">
+  <div class="row">
+    <a href="index.html"><img class="logo" src="braindex_logo.png" alt="Braindex" /></a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="support.html">Support</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-title">
+  <a href="index.html" class="back">&larr; Back to home</a>
+  <h1>Privacy Policy</h1>
+  <p class="meta">Effective May 12, 2026 &middot; Version 1.2</p>
+</div>
+
+<main>
+
+  <div class="summary-box">
+    <div class="label">Summary</div>
+    <p>Braindex is designed to be a safe, private experience. We collect only what is needed to run the game &mdash; your scores, streaks, and gameplay progress. We do not sell your data. We do not serve ads. Children under 13 can use Braindex without providing personal information.</p>
+  </div>
+
+  <nav class="toc">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#s1">Who We Are</a></li>
+      <li><a href="#s2">Information We Collect</a></li>
+      <li><a href="#s3">How We Use Your Information</a></li>
+      <li><a href="#s4">How We Share Information</a></li>
+      <li><a href="#s5">Leaderboards &amp; Social Features</a></li>
+      <li><a href="#s6">Children&rsquo;s Privacy (COPPA)</a></li>
+      <li><a href="#s7">Data Retention</a></li>
+      <li><a href="#s8">Your Rights &amp; Choices</a></li>
+      <li><a href="#s9">Security</a></li>
+      <li><a href="#s10">Changes to This Policy</a></li>
+      <li><a href="#s11">Contact Us</a></li>
+    </ol>
+  </nav>
+
+  <section id="s1">
+    <h2>1. Who We Are</h2>
+    <p>Braindex is developed and published by <strong>Braindex</strong> (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;). Braindex is an educational puzzle game for iOS and iPadOS that teaches artificial intelligence concepts through daily interactive challenges.</p>
+    <p>This Privacy Policy explains how we collect, use, and protect information when you use the Braindex mobile application (the &ldquo;App&rdquo;). By using the App, you agree to the practices described here.</p>
+  </section>
+
+  <section id="s2">
+    <h2>2. Information We Collect</h2>
+    <h3>2.1 Information You Provide</h3>
+    <p>On first launch Braindex asks you to choose one of three sign-in paths. Each provides us with a different amount of information:</p>
+    <ul>
+      <li><strong>Sign in with Apple</strong> &mdash; Apple sends us a stable user identifier and, if you allow it, an email address (which may be a private relay address that forwards to your real email). We never see your Apple ID password.</li>
+      <li><strong>Sign in with Google</strong> &mdash; Google sends us your account email, full name, and a stable user identifier. We never see your Google password.</li>
+      <li><strong>Continue as guest</strong> &mdash; we generate an anonymous user identifier with no personal information attached. You can upgrade to a real account later from Settings; your scores carry over.</li>
+    </ul>
+    <ul>
+      <li><strong>Display name</strong> &mdash; auto-generated by us on first launch (e.g. &ldquo;AI Learner #4821&rdquo;). You can edit it any time in Settings. It does not need to be your real name and is the only identifier visible to other players on the leaderboard.</li>
+    </ul>
+    <h3>2.2 Information Generated by Gameplay</h3>
+    <ul>
+      <li><strong>Define-It daily result</strong> &mdash; number of correct answers (0&ndash;6), total seconds used, and a computed score (0&ndash;1000) for each day you play. Stored against your user identifier under the relevant date.</li>
+      <li><strong>Streak data</strong> &mdash; consecutive days of play and Freeze Token balance. Stored <em>only on your device</em> (not synced to our servers).</li>
+      <li><strong>Share cards</strong> &mdash; result images are generated entirely on your device. We do not see or store the content of anything you share.</li>
+    </ul>
+    <h3>2.3 Optional Profile Information (Sign-in Only)</h3>
+    <p>After signing in with Apple or Google, we ask a short set of optional questions to help us understand who plays Braindex. <strong>Every field is skippable</strong>; you can also tap &ldquo;Skip for now&rdquo; to bypass the entire screen.</p>
+    <ul>
+      <li><strong>Age range</strong> &mdash; under 13, 13&ndash;17, 18&ndash;24, 25&ndash;34, 35&ndash;44, or 45+.</li>
+      <li><strong>Student level</strong> &mdash; primary, secondary, undergraduate, postgraduate, or &ldquo;not a student&rdquo;.</li>
+      <li><strong>Gender</strong> &mdash; female, male, non-binary, or &ldquo;prefer not to say&rdquo;.</li>
+      <li><strong>Why you joined Braindex</strong> &mdash; a single multiple-choice answer (love daily games, want to learn AI, both, supporting the developer, or other with free text).</li>
+    </ul>
+    <p><strong>Adults only (18+).</strong> The following fields are <em>not</em> shown to users who indicate they are under 18:</p>
+    <ul>
+      <li><strong>Email address</strong> &mdash; pre-filled from your Apple or Google account if available; you can edit, clear, or leave blank.</li>
+      <li><strong>Phone number</strong> &mdash; always optional. Left blank by default.</li>
+      <li><strong>Interest in free AI Zoom sessions</strong> &mdash; yes, maybe, or no thanks. We use this only to decide who to email or message about upcoming sessions; tick &ldquo;no thanks&rdquo; (or leave it blank) and you will never hear from us about Zoom sessions.</li>
+    </ul>
+    <p>Guests (users who chose &ldquo;Continue as guest&rdquo;) are <em>not</em> asked any of these questions. You will only see the screen if you later upgrade to a signed-in account.</p>
+    <h3>2.4 Feedback You Send Us</h3>
+    <ul>
+      <li><strong>Feedback messages</strong> &mdash; if you tap the chat icon in the app and submit feedback, we store the free-text message you typed (up to 2000 characters), an optional 1&ndash;5 star rating, your user identifier, and a timestamp. We use this only to fix bugs and prioritise what to build next. We will never publish or sell what you write.</li>
+    </ul>
+    <h3>2.5 Daily Reminder (Local Only)</h3>
+    <ul>
+      <li><strong>Reminder time</strong> &mdash; if you turn on daily reminders in Settings and pick a time, that time is stored <em>only on your device</em>. The notification is scheduled by your iPhone&rsquo;s operating system; nothing about your reminder is sent to our servers.</li>
+    </ul>
+    <h3>2.6 Technical Information</h3>
+    <ul>
+      <li><strong>Device type and operating system version</strong> &mdash; used to ensure compatibility.</li>
+      <li><strong>App version.</strong></li>
+      <li><strong>Crash reports and error logs</strong> &mdash; collected to diagnose and fix technical problems. These do not include personal information beyond device type and app state at the time of the crash.</li>
+      <li><strong>Gameplay session timestamps</strong> &mdash; used to manage daily puzzle resets and streak tracking.</li>
+    </ul>
+    <h3>2.7 Information We Do Not Collect</h3>
+    <ul>
+      <li>We do not collect your real name (you choose a display name) or physical address.</li>
+      <li>We do not collect your precise location.</li>
+      <li>We do not access your contacts, camera, microphone, or photos.</li>
+      <li>We do not use third-party advertising SDKs or tracking pixels.</li>
+      <li>We do not collect payment information. Any in-app purchases are processed entirely by Apple through the App Store.</li>
+      <li>We do not request a phone number from anyone under 18, and we do not request an email address through the optional profile screen from anyone under 18.</li>
+    </ul>
+  </section>
+
+  <section id="s3">
+    <h2>3. How We Use Your Information</h2>
+    <p>We use the information we collect solely to:</p>
+    <ul>
+      <li><strong>Operate the game</strong> &mdash; save your progress, maintain your streak, deliver the correct daily puzzle, and display your scores.</li>
+      <li><strong>Calculate and display your Braindex Score</strong> &mdash; a personal performance metric stored in your profile.</li>
+      <li><strong>Power leaderboards and friend challenges</strong> &mdash; if you opt in to these social features.</li>
+      <li><strong>Diagnose technical problems</strong> &mdash; crash data and error logs help us ship fixes quickly.</li>
+      <li><strong>Improve the game</strong> &mdash; aggregate, anonymized gameplay data informs balance decisions. This data cannot be traced back to individual players.</li>
+      <li><strong>Send you notifications</strong> &mdash; only with your permission. Limited to daily challenge reminders and streak warnings. Disable in iOS Settings &rarr; Notifications &rarr; Braindex at any time.</li>
+    </ul>
+    <p>We do not use your data for advertising, profiling, or sale to third parties.</p>
+  </section>
+
+  <section id="s4">
+    <h2>4. How We Share Information</h2>
+    <p>We do not sell, rent, or trade your personal information. We share data only in the following limited circumstances:</p>
+    <h3>4.1 Service Providers</h3>
+    <p>We use the following third-party services to operate Braindex. Each is bound by its own privacy policy and is only permitted to process your data on our behalf for the purposes described.</p>
+    <ul>
+      <li><strong>Google Firebase</strong> (Authentication, Cloud Firestore) &mdash; powers sign-in and stores your display name, account email (if you signed in with Apple or Google), and your daily Define-It scores. Hosted on Google Cloud. <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">Firebase privacy</a>.</li>
+      <li><strong>Apple App Store</strong> &mdash; distributes the App and handles Sign in with Apple. Apple may collect aggregate App Store analytics. We have no access to your Apple ID password.</li>
+    </ul>
+    <p>We do not share data with advertising networks, data brokers, or analytics platforms beyond Firebase Crashlytics (used only for crash diagnostics).</p>
+    <h3>4.2 Leaderboards</h3>
+    <p>If you participate in leaderboards, your display name and scores are visible to other players. See Section 5 for details.</p>
+    <h3>4.3 Legal Requirements</h3>
+    <p>We may disclose information if required by law, court order, or to protect the rights and safety of Braindex, our users, or the public.</p>
+    <h3>4.4 Business Transfers</h3>
+    <p>If Braindex is acquired or merges with another company, user data may be transferred as part of that transaction. We will notify you before your data becomes subject to a different privacy policy.</p>
+  </section>
+
+  <section id="s5">
+    <h2>5. Leaderboards &amp; Social Features</h2>
+    <p>Braindex includes optional social features:</p>
+    <ul>
+      <li><strong>Daily leaderboards</strong> &mdash; your display name and daily challenge score may be visible to other players. Only first-attempt scores are ranked.</li>
+      <li><strong>Friend challenges</strong> &mdash; challenge links encode only the puzzle seed and your score. Recipients see your display name and score only.</li>
+      <li><strong>Share cards</strong> &mdash; result images are created on your device. Sharing them is governed by the destination platform&rsquo;s own privacy policies, not ours.</li>
+    </ul>
+    <p>All leaderboard and social features are <strong>opt-in</strong>. You can play Braindex as a guest without a display name or leaderboard participation.</p>
+  </section>
+
+  <section id="s6">
+    <h2>6. Children&rsquo;s Privacy (COPPA)</h2>
+    <div class="notice-box">
+      <div class="label">Important &mdash; Parents &amp; Guardians</div>
+      <p>Braindex is rated 4+ on the App Store and is designed for all ages, including children. We comply with the Children&rsquo;s Online Privacy Protection Act (COPPA) and take children&rsquo;s privacy seriously.</p>
+    </div>
+    <p>Braindex can be played fully without creating an account or providing any personal information. All core gameplay, daily challenges, and streaks work entirely on-device using locally stored data.</p>
+    <p><strong>For children under 13:</strong></p>
+    <ul>
+      <li>We do not knowingly collect personal information from children under 13 without verifiable parental consent.</li>
+      <li>If a child under 13 creates an account or joins leaderboards, we require parental consent in accordance with COPPA.</li>
+      <li>We do not use behavioral advertising or share children&rsquo;s data with third parties for commercial purposes.</li>
+      <li>Parents or guardians may request deletion of their child&rsquo;s account data at any time by contacting us at <a href="mailto:david@movietoons.co">david@movietoons.co</a>.</li>
+    </ul>
+    <p>If you believe we have inadvertently collected personal information from a child under 13 without appropriate consent, please contact us immediately and we will delete it promptly.</p>
+  </section>
+
+  <section id="s7">
+    <h2>7. Data Retention</h2>
+    <p>We retain your data for as long as your account is active or as needed to provide the App&rsquo;s features.</p>
+    <ul>
+      <li><strong>Guest play data</strong> is stored only on your device. Deleting the App removes it completely.</li>
+      <li><strong>Account data</strong> (scores, streaks, Braindex Score) is retained until you request deletion.</li>
+      <li><strong>Crash and diagnostic logs</strong> are retained for up to 90 days, then automatically deleted.</li>
+    </ul>
+    <p>You can request full deletion of your account and all associated data at any time. See Section 8.</p>
+  </section>
+
+  <section id="s8">
+    <h2>8. Your Rights &amp; Choices</h2>
+    <p>Depending on your location, you may have the following rights regarding your personal data:</p>
+    <ul>
+      <li><strong>Access</strong> &mdash; request a copy of the personal data we hold about you.</li>
+      <li><strong>Correction</strong> &mdash; edit your display name any time in Settings, or ask us to correct other inaccurate data.</li>
+      <li><strong>Deletion</strong> &mdash; tap <em>Settings &rarr; Delete account</em> inside the App. This permanently removes your account profile, your optional profile answers, and (if you signed in with Apple) revokes the Apple authentication token automatically. Past leaderboard entries remain under the display name you played them with so the historical leaderboard stays intact &mdash; <strong>email <a href="mailto:david@movietoons.co">david@movietoons.co</a> to request anonymisation or removal of specific entries</strong>. Full details are on our <a href="delete-account.html">Delete your account</a> page.</li>
+      <li><strong>Opt out of notifications</strong> &mdash; disable in iOS Settings &rarr; Notifications &rarr; Braindex at any time.</li>
+      <li><strong>Continue as guest</strong> &mdash; play without an Apple or Google account. We still create an anonymous user identifier so we can save your scores to the cloud, but no personal information (name, email) is collected.</li>
+    </ul>
+    <p>To exercise any of these rights, contact us at <a href="mailto:david@movietoons.co">david@movietoons.co</a>. We will respond within 30 days.</p>
+    <p><strong>California Residents (CCPA):</strong> You have the right to know what personal information we collect, to request deletion, and to opt out of any sale. We do not sell personal information.</p>
+    <p><strong>EEA/UK Residents (GDPR):</strong> Our legal basis for processing your data is legitimate interest in operating the game you downloaded. You may withdraw consent at any time by deleting your account.</p>
+  </section>
+
+  <section id="s9">
+    <h2>9. Security</h2>
+    <p>We take reasonable technical and organizational measures to protect your information against unauthorized access, alteration, disclosure, or destruction. These include encrypted data transmission (TLS), access controls on our backend systems, and regular security reviews.</p>
+    <p>No method of internet transmission is 100% secure. If you become aware of any security concern, please contact us immediately at <a href="mailto:david@movietoons.co">david@movietoons.co</a>.</p>
+  </section>
+
+  <section id="s10">
+    <h2>10. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. When we do, we will revise the effective date at the top of this page. For material changes, we will provide an in-app notification.</p>
+    <p>Continued use of the App after a policy update constitutes your acceptance of the revised terms.</p>
+  </section>
+
+  <section id="s11">
+    <h2>11. Contact Us</h2>
+    <p>Questions, data rights requests, or children&rsquo;s privacy concerns:</p>
+    <div class="contact-card">
+      <div class="name">Braindex</div>
+      <p>Privacy inquiries: <a href="mailto:david@movietoons.co">david@movietoons.co</a></p>
+      <p>General support: <a href="mailto:david@movietoons.co">david@movietoons.co</a></p>
+      <p>Website: <a href="https://braindexapp.com" target="_blank" rel="noopener">braindexapp.com</a></p>
+    </div>
+    <p style="font-size:14px; color:#888;">We aim to respond to all privacy-related inquiries within 30 days.</p>
+  </section>
+
+
+</main>
+
+<footer class="site">
+  <div class="row">
+    <a href="index.html"><img class="logo" src="braindex_logo.png" alt="Braindex" /></a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="support.html">Support</a>
+    </nav>
+  </div>
+  <p class="copyright">© 2026 Braindex. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

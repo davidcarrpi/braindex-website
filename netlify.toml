@@ -1,0 +1,13 @@
+# Netlify config — the form on index.html auto-registers on first deploy.
+# Form submissions land in: Netlify dashboard → Site → Forms → "newsletter".
+
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
