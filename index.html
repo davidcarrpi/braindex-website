@@ -92,25 +92,47 @@
     /* Tight vertical rhythm so logo + headline + signup card sit
        above the fold on a standard laptop viewport (700-900px tall). */
     section.hero {
-      padding: 16px 0 24px;
+      /* Fill the viewport on first paint so the App Store / Play badges
+         sit at the bottom of the visible area. min-height vs height
+         lets short content still grow if the user zooms text or shows a
+         long form-error message. */
+      min-height: 100vh;
+      padding: 24px 0 32px;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+    }
+    section.hero .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    /* Center the upper content block (logo + headline + CTA + signup)
+       inside the free space, with store badges anchored at the bottom. */
+    section.hero .hero-top {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: 14px;
     }
     section.hero img.bighero {
-      max-width: 520px;
-      width: 80%;
+      max-width: 640px;
+      width: 86%;
       height: auto;
-      margin-bottom: 8px;
       display: block;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 0 auto;
     }
     section.hero h1 {
-      font-size: clamp(26px, 3.6vw, 40px);
+      font-size: clamp(30px, 4.4vw, 48px);
       font-weight: 800;
       line-height: 1.08;
       letter-spacing: -1.2px;
       color: var(--accent);
-      margin-bottom: 18px;
+      margin: 0;
     }
     section.hero h1 .gradient-text {
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -487,6 +509,7 @@
   <!-- ────────────────── HERO ────────────────── -->
   <section class="hero">
     <div class="container">
+     <div class="hero-top">
       <img class="bighero" src="braindex_logo_tight.png" alt="Braindex" />
       <h1>Master AI,<br><span class="gradient-text">one word at a time.</span></h1>
 
@@ -520,8 +543,10 @@
         </form>
         <div id="signup-msg" class="signup-msg" role="status" aria-live="polite"></div>
       </div>
+     </div><!-- /.hero-top -->
 
-      <!-- Store badges -->
+      <!-- Store badges — anchored at the bottom of the hero so they sit
+           at the bottom of the visible viewport on first paint. -->
       <div class="store-row">
         <!-- App Store badge — link goes live after App Store approval. -->
         <a class="store-badge disabled" href="#" aria-label="Download on the App Store (coming soon)">

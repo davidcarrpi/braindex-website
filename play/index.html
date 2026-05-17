@@ -260,6 +260,16 @@
     .answer-row .def-line {
       font-size: 13px; color: var(--text-muted); line-height: 1.4;
     }
+    .answer-row .label {
+      font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      font-size: 10px; margin-right: 6px;
+    }
+    .answer-row .pick-line {
+      font-size: 12px; color: var(--text-faint); line-height: 1.4;
+      margin-top: 4px;
+    }
+    .answer-row.wrong .pick-line .picked { color: var(--wrong); font-weight: 600; }
 
     .locked-card {
       background: linear-gradient(135deg, #0E1A4A 0%, #1A2B66 100%);
@@ -843,13 +853,22 @@
             const got = a.chosen === q.correctIndex;
             const mark = got ? '✓' : '✗';
             const cls = got ? 'correct' : 'wrong';
+            // For wrong answers, surface what they picked so they can see
+            // *why* it was wrong — alongside the right definition.
+            const pickedHtml = (!got && a.chosen !== null)
+              ? `<div class="pick-line"><span class="label">You picked</span><span class="picked">${escapeHtml(q.options[a.chosen])}</span></div>`
+              : (!got && a.chosen === null)
+                ? `<div class="pick-line"><span class="label">No answer</span> (time ran out)</div>`
+                : '';
+            const correctLabel = got ? '' : `<span class="label">Correct</span>`;
             return `
               <div class="answer-row ${cls}">
                 <div class="word-line">
                   <span class="mark">${mark}</span>
                   ${escapeHtml(q.word)}
                 </div>
-                <div class="def-line">${escapeHtml(q.correctDefinition)}</div>
+                <div class="def-line">${correctLabel}${escapeHtml(q.correctDefinition)}</div>
+                ${pickedHtml}
               </div>
             `;
           }).join('')}
@@ -862,7 +881,7 @@
 
         <div class="email-cta">
           <h4>Want to know when the app drops?</h4>
-          <p class="sub">We&rsquo;ll email you once Braindex is live on the App Store. No spam, just the launch ping.</p>
+          <p class="sub">We&rsquo;ll email you once Braindex is live on the App Store.</p>
           <form id="result-email-form" novalidate>
             <input id="result-email-input" type="email" name="email" placeholder="you@example.com" autocomplete="email" required />
             <button type="submit">Notify me</button>
