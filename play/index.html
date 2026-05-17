@@ -912,14 +912,26 @@
       const grid = state.questions.map((q, i) =>
         state.attempts[i].chosen === q.correctIndex ? '🟢' : '🔴'
       ).join('');
-      const dateLabel = new Date().toLocaleDateString(undefined, {
-        weekday: 'short', month: 'short', day: 'numeric',
-      });
+      // Long-form date ("Sunday May 17"), but with zero-width spaces
+      // injected between weekday/month/day so iOS / WhatsApp / Slack
+      // data-detectors don't turn it into a tappable "add to calendar"
+      // link. The U+200B characters render invisibly but break the
+      // date-pattern match. Same trick is mirrored in the iOS app.
+      const now = new Date();
+      const weekday = now.toLocaleDateString(undefined, { weekday: 'long' });
+      const month = now.toLocaleDateString(undefined, { month: 'long' });
+      const day = now.getDate();
+      const Z = '​';
+      const dateStr = `${weekday}${Z} ${month}${Z} ${day}`;
+      // ZWSPs also injected around the score numbers — iOS / iMessage
+      // sometimes parses "463 / 1000" as a ratio or addresses-style
+      // string and underlines it. Breaking the pattern keeps the line
+      // plain text.
       const shareText =
-        `Braindex · ${dateLabel}\n` +
-        `${score} / 1000 — ${correct}/6 correct\n` +
-        `${grid}\n` +
-        `Play: https://braindexapp.com/play`;
+        `Braindex · ${dateStr}\n` +
+        `${score}${Z} / ${Z}1000${Z} — ${Z}${correct}/${Z}6 correct\n\n` +
+        `${grid}\n\n` +
+        `https://braindexapp.com/play`;
       // navigator.share works on mobile + some desktop; fall back to clipboard.
       try {
         if (navigator.share) {
