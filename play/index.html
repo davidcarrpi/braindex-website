@@ -601,7 +601,7 @@
 
   function startGame() {
     state.questions = buildSession(state.words, new Date());
-    state.attempts = state.questions.map(() => ({ chosen: null, secondsUsed: 0, timedOut: false }));
+    state.attempts = state.questions.map(() => ({ chosen: null, secondsUsed: 0, timedOut: false, locked: false }));
     state.currentIndex = 0;
     state.status = 'playing';
     startTicker();
@@ -641,10 +641,10 @@
         </div>
         <div class="submit-row">
           <button class="primary-btn" id="submit-btn"
-            ${allAnswered() ? '' : 'disabled'}>
-            ${allAnswered() ? 'Submit' : `Answer all 6 to submit (${answeredCount()}/6)`}
+            ${allDone() ? '' : 'disabled'}>
+            ${allDone() ? 'Submit' : `Finish all 6 to submit (${doneCount()}/6)`}
           </button>
-          <p class="progress-note">Tap an answer to lock it in. You can revisit any question to change your pick before submitting.</p>
+          <p class="progress-note">Each question is 20s total — you can revisit answers before time runs out.</p>
         </div>
       </div>
     `;
@@ -655,13 +655,18 @@
 
   function answeredCount() { return state.attempts.filter(a => a.chosen !== null).length; }
   function allAnswered() { return answeredCount() === state.questions.length; }
+  // A question is "done" if it has an answer OR if its timer ran out
+  // with no answer (timedOut). Used to enable submit even when a
+  // question times out unanswered — otherwise the player gets stuck.
+  function doneCount() { return state.attempts.filter(a => a.chosen !== null || a.timedOut).length; }
+  function allDone() { return doneCount() === state.questions.length; }
 
   function onOptionClick(e) {
     const btn = e.target.closest('.option');
     if (!btn) return;
     const i = parseInt(btn.dataset.i, 10);
     const a = state.attempts[state.currentIndex];
-    if (a.timedOut) return;
+    if (a.locked) return;
     a.chosen = i;
     // Auto-advance to next UNANSWERED question (no feedback shown yet).
     const next = findNextActive(state.currentIndex + 1);
@@ -693,25 +698,36 @@
   function startTicker() {
     stopTicker();
     state.tickerId = setInterval(() => {
-      const a = state.attempts[state.currentIndex];
       if (state.status !== 'playing') return;
-      if (a.chosen !== null || a.timedOut) return;
+      const a = state.attempts[state.currentIndex];
+      // Each question has 20s TOTAL across all visits. So even after the
+      // player has tapped an answer, the timer keeps ticking while
+      // they're on that question — preventing "unlimited time" if they
+      // navigate back and try to revise an answer.
+      if (a.locked) return;
       a.secondsUsed += TICK_MS / 1000;
       if (a.secondsUsed >= QUESTION_SECONDS) {
         a.secondsUsed = QUESTION_SECONDS;
-        a.timedOut = true;
-        const next = findNextActive(state.currentIndex + 1);
-        if (next !== -1) state.currentIndex = next;
+        a.locked = true;
+        if (a.chosen === null) a.timedOut = true;
+        // Only auto-advance when the question hit 20s with no answer
+        // — i.e. the natural first-time-through flow. If the user was
+        // deliberately revisiting an answered question, leave them
+        // where they are; their last answer stays locked in.
+        if (a.timedOut) {
+          const next = findNextActive(state.currentIndex + 1);
+          if (next !== -1) state.currentIndex = next;
+        }
+        render();
+        return;
       }
-      // Light DOM updates without full re-render where possible.
+      // Light DOM update on every tick — just the timer bar's scale.
       const fill = document.getElementById('timer-fill');
       if (fill) {
         const remaining = Math.max(0, QUESTION_SECONDS - a.secondsUsed);
         fill.style.transform = `scaleX(${remaining / QUESTION_SECONDS})`;
         if (remaining < 5) fill.classList.add('low');
       }
-      // Full re-render only when current question or boxes need updating
-      if (a.timedOut) render();
     }, TICK_MS);
   }
   function stopTicker() {
@@ -719,7 +735,7 @@
   }
 
   function onSubmit() {
-    if (!allAnswered()) return;
+    if (!allDone()) return;
     stopTicker();
     state.status = 'results';
     render();
@@ -765,18 +781,14 @@
         </div>
 
         <div class="locked-card">
-          <h3>Want today&rsquo;s official puzzle?</h3>
-          <ul>
-            <li>Same daily words as the iPhone app (this was a sample)</li>
-            <li>Daily score leaderboard against everyone playing</li>
-            <li>Streaks &amp; Top-Streaks leaderboard</li>
-            <li>Personal stats &amp; difficulty curve</li>
-          </ul>
+          <h3>Enjoyed that?</h3>
+          <p style="color: rgba(255,255,255,0.82); font-size: 14px; margin: 0 0 16px;">
+            If you&rsquo;d like to see the leaderboards, keep a daily streak, and play the same official puzzle as everyone else &mdash; download the app!
+          </p>
           <div class="store-row">
             <a class="store-btn" href="/" aria-disabled="true">App Store · Coming soon</a>
             <a class="store-btn" href="/" aria-disabled="true">Google Play · Coming soon</a>
           </div>
-          <p class="small">Get notified on launch at braindexapp.com</p>
         </div>
 
         <button class="primary-btn" id="play-again-btn">Try a fresh round</button>
@@ -785,7 +797,7 @@
     document.getElementById('play-again-btn').addEventListener('click', () => {
       // Practice round: re-build with current time as seed (different words).
       state.questions = buildSession(state.words, new Date(Date.now() + Math.random()*86400000));
-      state.attempts = state.questions.map(() => ({ chosen: null, secondsUsed: 0, timedOut: false }));
+      state.attempts = state.questions.map(() => ({ chosen: null, secondsUsed: 0, timedOut: false, locked: false }));
       state.currentIndex = 0;
       state.status = 'playing';
       startTicker();
