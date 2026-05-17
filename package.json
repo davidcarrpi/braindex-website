@@ -1,0 +1,10 @@
+{
+  "name": "braindex-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Braindex marketing website. Static HTML + one Vercel serverless function for the newsletter signup.",
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  }
+}

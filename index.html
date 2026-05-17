@@ -397,24 +397,16 @@
       <h1>Master AI,<br><span class="gradient-text">one word at a time.</span></h1>
       <p class="tagline">Daily AI vocabulary in the spirit of Wordle. Six new words every day, 20 seconds each. Three minutes a day, fluent in AI in a year.</p>
 
-      <!-- Newsletter signup — submits to Netlify Forms.
-           Netlify auto-detects forms with `data-netlify` on deploy and
-           captures submissions in the dashboard (Site → Forms). The
-           hidden form-name field is required for AJAX submission. -->
+      <!-- Newsletter signup — POSTs to /api/newsletter (Vercel
+           serverless function that writes to Firestore /newsletter). -->
       <div class="signup-card">
         <h3>Get notified at launch</h3>
         <p class="sub">We'll email you the moment Braindex is live on the App Store. No spam, ever.</p>
         <form
           id="signup-form"
           class="signup-form"
-          name="newsletter"
-          method="POST"
-          data-netlify="true"
-          data-netlify-honeypot="bot-field"
           novalidate
         >
-          <!-- Hidden field Netlify uses to identify the form on submission. -->
-          <input type="hidden" name="form-name" value="newsletter" />
           <!-- Spam honeypot — bots fill this; humans don't see it. -->
           <p style="display:none;">
             <label>Don't fill this out: <input name="bot-field" /></label>
@@ -510,15 +502,13 @@
     </div>
   </footer>
 
-  <!-- ────────────────── NEWSLETTER (Netlify Forms) ────────────────── -->
+  <!-- ────────────────── NEWSLETTER (Vercel + Firestore) ────────────────── -->
   <!--
-    Submissions go to Netlify Forms. View them in the Netlify dashboard:
-    Site → Forms → "newsletter". Free tier covers 100 submissions/month;
-    plenty for a launch list. You can export CSV or forward to email
-    from the same dashboard.
-
-    Zero config needed beyond deploying this file to Netlify — they
-    auto-detect any form with data-netlify="true".
+    Submits to /api/newsletter (Vercel serverless function in
+    api/newsletter.js). The function writes to Firestore
+    /newsletter/{sha256-of-email}. View submissions at:
+    https://console.firebase.google.com/project/braindexapp/firestore
+    /databases/-default-/data → newsletter collection.
   -->
   <script>
     const form = document.getElementById('signup-form');
@@ -543,21 +533,15 @@
       setMsg('Saving…', '');
 
       try {
-        // AJAX POST to Netlify Forms. The form-name + data-netlify
-        // attributes on the <form> tell Netlify how to handle this.
-        // application/x-www-form-urlencoded is what Netlify expects.
-        const data = new URLSearchParams();
-        data.append('form-name', 'newsletter');
-        data.append('email', email);
-        // honeypot intentionally empty — bots fill it, real users don't
-        data.append('bot-field', '');
-
-        const res = await fetch('/', {
+        const res = await fetch('/api/newsletter', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: data.toString(),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, 'bot-field': '' }),
         });
-        if (!res.ok) throw new Error('netlify returned ' + res.status);
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body.error || ('HTTP ' + res.status));
+        }
         setMsg("You're on the list. We'll be in touch.", 'success');
         input.value = '';
       } catch (err) {
