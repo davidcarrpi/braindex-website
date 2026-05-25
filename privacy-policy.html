@@ -281,6 +281,7 @@
       <li><strong>Student level</strong> &mdash; primary, secondary, undergraduate, postgraduate, &ldquo;not a student&rdquo;, or &ldquo;other&rdquo;.</li>
       <li><strong>Gender</strong> &mdash; female, male, non-binary, or &ldquo;prefer not to say&rdquo;.</li>
       <li><strong>Why you joined Braindex</strong> &mdash; a single multiple-choice answer (love daily games, want to learn AI, both, supporting the developer, or &ldquo;other&rdquo; with free text).</li>
+      <li><strong>Country</strong> &mdash; self-reported country (a two-letter ISO code like &ldquo;IE&rdquo; or &ldquo;US&rdquo;). We use this only to understand which markets our users come from. This is <em>not</em> precise location and is not derived from your IP or GPS &mdash; you choose it from a list.</li>
     </ul>
     <p><strong>Adults only (18+).</strong> The following fields are <em>not</em> shown to users who indicate they are under 18:</p>
     <ul>
@@ -301,7 +302,7 @@
 
     <h3>2.7 Newsletter signups (website only)</h3>
     <ul>
-      <li><strong>Email address</strong> &mdash; if you enter your email into the &ldquo;Get notified at launch&rdquo; form on braindexapp.com, we store the email you typed, a submission timestamp, the first 200 characters of your browser&rsquo;s user-agent string, and the source (&ldquo;landing&rdquo;). The form is served by a small Vercel function that writes the record into our Firebase database. This data is only used to email you when Braindex is live in the App Store or Google Play; you can ask us to delete it any time by emailing <a href="mailto:david@movietoons.co">david@movietoons.co</a>.</li>
+      <li><strong>Email address</strong> &mdash; if you enter your email into the &ldquo;Subscribe to the newsletter&rdquo; form on braindexapp.com (or the equivalent form on the post-play results screen at /play), we store the email you typed, a submission timestamp, the first 200 characters of your browser&rsquo;s user-agent string, and the source (&ldquo;landing&rdquo; or &ldquo;play-result&rdquo;). The form is served by a small Vercel function that writes the record into our Firebase database. This data is used to send you product updates and (where relevant) to arrange Android beta access; you can ask us to delete it any time by emailing <a href="mailto:david@movietoons.co">david@movietoons.co</a>.</li>
     </ul>
 
     <h3>2.8 Technical information</h3>
@@ -333,7 +334,7 @@
       <li><strong>Tune future puzzles</strong> &mdash; per-word right/wrong logs let us spot AI terms that are too easy or too hard. This data is never published.</li>
       <li><strong>Read your feedback</strong> &mdash; messages you submit in the in-app feedback form help us fix bugs and prioritise what to build next.</li>
       <li><strong>Invite you to free AI Zoom sessions</strong> &mdash; only if you opted in on the profile screen (adults 18+ only) and only if we have an email or phone number you provided.</li>
-      <li><strong>Send the launch email</strong> &mdash; only if you entered your email into the &ldquo;Get notified at launch&rdquo; form on braindexapp.com.</li>
+      <li><strong>Send newsletter updates</strong> &mdash; only if you entered your email into the &ldquo;Subscribe to the newsletter&rdquo; form on braindexapp.com (or the equivalent on /play). Used for product updates and Android beta access requests.</li>
       <li><strong>Send your daily reminder</strong> &mdash; only with your permission, and only as a local notification scheduled by your own phone. We never push notifications from our servers.</li>
     </ul>
     <p>We do not use your data for advertising, profiling, or sale to third parties.</p>
@@ -348,7 +349,7 @@
       <li><strong>Google Firebase</strong> (Authentication and Cloud Firestore) &mdash; this is our entire backend. It holds your account record, your daily scores, your streak, your per-word right/wrong logs, your optional profile answers, your feedback, and the website newsletter signups. Hosted on Google Cloud. <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">Firebase privacy</a>.</li>
       <li><strong>Apple</strong> &mdash; distributes the App through the App Store and provides Sign in with Apple. Apple may collect aggregate App Store analytics. We never see your Apple ID password.</li>
       <li><strong>Google</strong> &mdash; provides Sign in with Google. When you sign in this way, Google returns your account email, full name, and a stable user identifier. We never see your Google password. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google privacy</a>.</li>
-      <li><strong>Vercel</strong> &mdash; hosts braindexapp.com and the small serverless function that handles the &ldquo;Get notified at launch&rdquo; newsletter form. Vercel processes the form submission and forwards it into our Firebase database; it does not retain a separate copy. <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Vercel privacy</a>.</li>
+      <li><strong>Vercel</strong> &mdash; hosts braindexapp.com and the small serverless function that handles the newsletter signup form. Vercel processes the form submission and forwards it into our Firebase database; it does not retain a separate copy. <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Vercel privacy</a>.</li>
     </ul>
     <p>We do not share data with advertising networks, data brokers, or third-party analytics platforms. We do not use Firebase Analytics, Firebase Crashlytics, or any other crash- or behaviour-tracking SDK in the current release.</p>
     <h3>4.2 Leaderboards</h3>
@@ -396,7 +397,7 @@
       <li><strong>Daily scores and streaks</strong> &mdash; held indefinitely so the leaderboards stay intact. Tied to the display name you played under, not your private identity.</li>
       <li><strong>Per-word right/wrong logs</strong> &mdash; held indefinitely; used only by us to tune future puzzles.</li>
       <li><strong>Feedback submissions</strong> &mdash; held until we&rsquo;ve acted on them, then archived.</li>
-      <li><strong>Newsletter email addresses</strong> (website only) &mdash; held until launch emails go out, or until you ask us to delete them.</li>
+      <li><strong>Newsletter email addresses</strong> (website only) &mdash; held until you ask us to delete them.</li>
       <li><strong>Reminder time</strong> &mdash; lives only on your device. Uninstalling the App removes it. We never see it.</li>
     </ul>
     <p>We do not retain crash or diagnostic logs because we do not collect them in the current release.</p>
