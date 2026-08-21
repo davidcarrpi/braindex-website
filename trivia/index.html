@@ -457,7 +457,8 @@
       text-decoration: none; font-weight: 600; font-size: 16px;
       transition: transform 0.1s;
     }
-    .dl-popup-cta:hover { transform: translateY(-2px); }
+    /* Popup CTAs: colour only, same reasoning as the store badges. */
+    .dl-popup-cta:hover { filter: brightness(1.12); }
     .dl-popup-cta svg { width: 24px; height: 24px; }
     .dl-popup-android { margin: 18px 0 0; font-size: 13px; color: var(--text-faint); }
     .dl-popup-android a { color: var(--primary); text-decoration: none; font-weight: 600; }
@@ -554,6 +555,16 @@
       }
     }
     return out;
+  }
+
+  function calculateScore({ correct, total, totalSecondsUsed, secondsPerQuestion }) {
+    if (total === 0) return 0;
+    const accuracy = (correct / total) * 800;
+    const maxTime = secondsPerQuestion * total;
+    const used = Math.max(0, Math.min(totalSecondsUsed, maxTime));
+    const timeFactor = 1 - (used / maxTime);
+    const timePoints = Math.max(0, Math.min(1, timeFactor)) * 200;
+    return Math.round(accuracy + timePoints);
   }
 
   // Today's 6 questions. Trivia items already carry their own options and

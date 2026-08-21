@@ -302,7 +302,10 @@
       font-size: 15px;
       transition: transform 0.1s, opacity 0.15s;
     }
-    .store-badge:hover { transform: translateY(-2px); }
+    /* Colour only, no transform: a lift on the store badges makes the
+       row twitch under the cursor, on the one element people are aiming
+       for. */
+    .store-badge:hover { filter: brightness(1.12); }
     .store-badge.disabled {
       opacity: 0.5;
       pointer-events: none;
@@ -414,7 +417,8 @@
       font-size: 16px;
       transition: transform 0.1s;
     }
-    .dl-popup-cta:hover { transform: translateY(-2px); }
+    /* Popup CTAs: colour only, same reasoning as the store badges. */
+    .dl-popup-cta:hover { filter: brightness(1.12); }
     .dl-popup-cta svg { width: 24px; height: 24px; }
     .dl-popup-android {
       margin-top: 18px;
