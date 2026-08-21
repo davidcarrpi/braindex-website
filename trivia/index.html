@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#EC1A6F" />
+  <title>Play Braindex — the daily trivia game</title>
+  <meta name="description" content="Try today's Braindex trivia. 6 questions, 20 seconds each. Same questions for everyone. Get the app for streaks, leaderboards and more games." />
+
+  <link rel="icon" type="image/png" href="/brain-character.png" />
+  <link rel="apple-touch-icon" href="/brain-character.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #EC1A6F;
+      --primary-dark: #C2185B;
+      --primary-soft: #FFE7F1;
+      --accent: #0E1A4A;
+      --text: #1A1A2E;
+      --text-muted: #5A5A73;
+      --text-faint: #9A9AAE;
+      --bg: #FAF9FC;
+      --surface: #FFFFFF;
+      --border: #E8E6EE;
+      --correct: #1D8A44;
+      --wrong: #C2185B;
+      --tile: #F4F2F8;
+    }
+
+    html, body { height: 100%; }
+    body {
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 16px; line-height: 1.5;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      display: flex; flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ─── Top bar ──────────────────────────────────────────────── */
+    header.bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 22px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      position: sticky; top: 0; z-index: 10;
+    }
+    header.bar a.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    header.bar a.logo img { height: 38px; display: block; }
+    header.bar .right a {
+      color: var(--text-muted); text-decoration: none;
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    header.bar .right a:hover { color: var(--primary); }
+
+    /* ─── Centered game stage ──────────────────────────────────── */
+    main.stage {
+      flex: 1 1 auto;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 28px 16px 60px;
+    }
+    .card {
+      width: 100%; max-width: 560px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 28px 32px;
+      box-shadow: 0 12px 40px rgba(14, 26, 74, 0.05);
+    }
+
+    /* ─── Intro view ───────────────────────────────────────────── */
+    .intro { text-align: center; }
+    .intro .eyebrow {
+      font-size: 11px; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--primary);
+      font-weight: 800; margin-bottom: 14px;
+    }
+    .intro img.brand-mark {
+      max-width: 320px; width: 78%;
+      height: auto; display: block;
+      margin: 0 auto 20px;
+    }
+    .intro .meta-row {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 22px;
+    }
+    .intro .pill {
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      font-size: 12px; font-weight: 700;
+      padding: 6px 12px; border-radius: 999px;
+      letter-spacing: 0.3px;
+    }
+    button.primary-btn, a.primary-btn {
+      display: inline-block;
+      background: var(--primary); color: #fff;
+      border: none;
+      padding: 16px 24px;
+      font-family: inherit; font-size: 15px; font-weight: 700;
+      letter-spacing: 0.2px;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none; text-align: center;
+      transition: background 0.15s, transform 0.05s;
+      width: 100%;
+    }
+    button.primary-btn:hover, a.primary-btn:hover { background: var(--primary-dark); }
+    button.primary-btn:active, a.primary-btn:active { transform: scale(0.99); }
+    button.primary-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    button.secondary-btn {
+      display: inline-block;
+      background: var(--tile); color: var(--text);
+      border: none;
+      padding: 14px 22px;
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.15s;
+    }
+    button.secondary-btn:hover { background: #ECE9F0; }
+
+    /* ─── Game view ────────────────────────────────────────────── */
+    .question-boxes {
+      display: flex; gap: 6px; justify-content: center;
+      margin-bottom: 18px;
+    }
+    .qbox {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: var(--tile); color: var(--text-faint);
+      font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; user-select: none;
+      transition: background 0.15s, color 0.15s, transform 0.05s;
+    }
+    .qbox.answered { background: var(--accent); color: #fff; }
+    .qbox.current  { background: var(--primary); color: #fff; transform: scale(1.1); }
+    .qbox.timeout  { background: var(--tile); color: var(--text-faint); opacity: 0.4; }
+
+    .timer-bar {
+      position: relative;
+      height: 6px; border-radius: 999px;
+      background: var(--tile);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .timer-fill {
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      transform-origin: left center;
+      transform: scaleX(1);
+      transition: transform 0.1s linear;
+    }
+    .timer-fill.low { background: linear-gradient(90deg, #F9A825, var(--wrong)); }
+
+    .word-display {
+      text-align: center;
+      padding: 18px 0 28px;
+    }
+    .word-display .label {
+      font-size: 11px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--text-faint);
+      font-weight: 700; margin-bottom: 8px;
+    }
+    .word-display .word {
+      font-size: clamp(34px, 6vw, 48px);
+      font-weight: 800; letter-spacing: -0.5px;
+      color: var(--accent);
+      word-break: break-word;
+    }
+
+    .options { display: grid; gap: 10px; }
+    .option {
+      text-align: left;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-family: inherit; font-size: 15px;
+      color: var(--text);
+      cursor: pointer; line-height: 1.4;
+      transition: border-color 0.15s, background 0.15s, transform 0.05s;
+    }
+    .option:hover { border-color: var(--primary); }
+    .option:active { transform: scale(0.99); }
+    .option.selected {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      font-weight: 600;
+    }
+
+    .submit-row {
+      margin-top: 22px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .progress-note {
+      text-align: center;
+      font-size: 12px; color: var(--text-faint);
+      letter-spacing: 0.2px;
+    }
+
+    /* ─── Result view ──────────────────────────────────────────── */
+    .result .score-row {
+      display: flex; align-items: baseline; justify-content: center;
+      gap: 8px; margin-bottom: 6px;
+    }
+    .result .score-row .num {
+      font-size: 72px; font-weight: 800; letter-spacing: -2px;
+      color: var(--primary); line-height: 1;
+    }
+    .result .score-row .denom {
+      font-size: 22px; color: var(--text-faint); font-weight: 700;
+    }
+    .result .accuracy {
+      text-align: center;
+      font-size: 14px; color: var(--text-muted);
+      margin-bottom: 24px;
+      letter-spacing: 0.2px;
+    }
+    .answers {
+      display: flex; flex-direction: column; gap: 8px;
+      margin-bottom: 24px;
+    }
+    .answer-row {
+      display: flex; flex-direction: column; gap: 4px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: var(--tile);
+      border-left: 4px solid var(--text-faint);
+    }
+    .answer-row.correct { border-left-color: var(--correct); background: #E6F4EC; }
+    .answer-row.wrong   { border-left-color: var(--wrong);   background: #FBE8EF; }
+    .answer-row .word-line {
+      font-size: 14px; font-weight: 700; color: var(--text);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .answer-row .mark {
+      font-size: 14px; font-weight: 800;
+    }
+    .answer-row.correct .mark { color: var(--correct); }
+    .answer-row.wrong .mark { color: var(--wrong); }
+    .answer-row .def-line {
+      font-size: 13px; color: var(--text-muted); line-height: 1.4;
+    }
+    .answer-row .label {
+      font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      font-size: 10px; margin-right: 6px;
+    }
+    .answer-row .pick-line {
+      font-size: 12px; color: var(--text-faint); line-height: 1.4;
+      margin-top: 4px;
+    }
+    .answer-row.wrong .pick-line .picked { color: var(--wrong); font-weight: 600; }
+
+    .locked-card {
+      background: linear-gradient(135deg, #0E1A4A 0%, #1A2B66 100%);
+      border-radius: 16px;
+      padding: 22px 24px;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    .locked-card h3 {
+      font-size: 17px; font-weight: 800;
+      letter-spacing: -0.2px; margin-bottom: 10px;
+    }
+    .locked-card ul {
+      list-style: none; padding: 0; margin-bottom: 18px;
+      font-size: 14px; color: rgba(255,255,255,0.82);
+    }
+    .locked-card ul li {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 6px 0;
+    }
+    .locked-card ul li::before {
+      content: "🔒"; font-size: 13px; flex-shrink: 0;
+    }
+    .locked-card .store-row {
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .locked-card .store-btn {
+      flex: 1 1 0; min-width: 140px;
+      background: #fff; color: var(--accent);
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 13px; font-weight: 700;
+      text-align: center; text-decoration: none;
+      letter-spacing: 0.2px;
+      transition: background 0.15s, transform 0.05s;
+    }
+    .locked-card .store-btn:hover { background: var(--primary-soft); }
+    .locked-card .store-btn:active { transform: scale(0.99); }
+    .locked-card .small {
+      font-size: 11px; color: rgba(255,255,255,0.55);
+      margin-top: 12px; text-align: center;
+      letter-spacing: 0.2px;
+    }
+
+    /* Share + email CTAs on the result page. */
+    .result .post-row {
+      display: grid; gap: 10px;
+      margin-bottom: 16px;
+    }
+    .share-btn {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px;
+      background: var(--surface);
+      color: var(--accent);
+      border: 1.5px solid var(--border);
+      padding: 14px 18px;
+      font-family: inherit; font-size: 15px; font-weight: 700;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, transform 0.05s;
+    }
+    .share-btn:hover { border-color: var(--primary); background: var(--primary-soft); }
+    .share-btn:active { transform: scale(0.99); }
+    .share-feedback {
+      font-size: 12px; color: var(--text-faint);
+      text-align: center; min-height: 16px;
+      letter-spacing: 0.2px;
+    }
+    .share-feedback.shown { color: var(--correct); }
+    .email-cta {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    .email-cta h4 {
+      font-size: 14px; font-weight: 800;
+      color: var(--text); margin-bottom: 4px;
+      letter-spacing: 0.1px;
+    }
+    .email-cta p.sub {
+      font-size: 13px; color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .email-cta form { display: flex; gap: 8px; flex-wrap: wrap; }
+    .email-cta input {
+      flex: 1 1 200px;
+      padding: 12px 14px;
+      font-size: 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text);
+      font-family: inherit;
+    }
+    .email-cta input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(236, 26, 111, 0.15);
+    }
+    .email-cta button {
+      padding: 12px 18px;
+      font-size: 14px; font-weight: 700;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 10px;
+      cursor: pointer; font-family: inherit;
+      transition: background 0.15s, transform 0.05s;
+    }
+    .email-cta button:hover { background: var(--primary-dark); }
+    .email-cta button:active { transform: scale(0.99); }
+    .email-cta button:disabled { opacity: 0.55; cursor: not-allowed; }
+    .email-cta .msg {
+      font-size: 12px; color: var(--text-muted);
+      margin-top: 8px; min-height: 16px;
+    }
+    .email-cta .msg.success { color: var(--correct); }
+    .email-cta .msg.error { color: var(--wrong); }
+
+    /* ─── Loading + error states ───────────────────────────────── */
+    .loading {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 16px;
+      padding: 60px 0;
+    }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--tile);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── Footer ───────────────────────────────────────────────── */
+    footer.foot {
+      text-align: center;
+      padding: 18px 16px 28px;
+      font-size: 12px; color: var(--text-faint);
+      border-top: 1px solid var(--border);
+    }
+    footer.foot a { color: var(--text-muted); text-decoration: none; margin: 0 8px; }
+    footer.foot a:hover { color: var(--primary); }
+
+    /* ─── Responsive ───────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      header.bar { padding: 12px 16px; }
+      header.bar a.logo img { height: 32px; }
+      main.stage { padding: 18px 12px 40px; }
+      .card { padding: 22px 18px 26px; border-radius: 16px; }
+      .result .score-row .num { font-size: 60px; }
+    }
+
+    /* ─── Download popup (shown after a play) ──────────────────── */
+    .dl-popup {
+      position: fixed; inset: 0; z-index: 99999;
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .dl-popup.is-open { display: flex; }
+    .dl-popup-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(14, 26, 74, 0.55);
+      backdrop-filter: blur(4px);
+    }
+    .dl-popup-card {
+      position: relative; background: #fff;
+      border-radius: 18px; max-width: 420px; width: 100%;
+      padding: 36px 28px 24px; text-align: center;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.25);
+      animation: dl-popup-in 0.25s ease-out;
+    }
+    @keyframes dl-popup-in {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .dl-popup-close {
+      position: absolute; top: 8px; right: 12px;
+      background: transparent; border: 0;
+      font-size: 28px; line-height: 1;
+      color: var(--text-faint); cursor: pointer; padding: 6px 10px;
+    }
+    .dl-popup-close:hover { color: var(--text); }
+    .dl-popup-logo { width: 64px; height: 64px; margin: 0 auto 14px; display: block; }
+    .dl-popup h3 { font-size: 22px; margin: 0 0 8px; color: var(--text); font-weight: 700; }
+    .dl-popup-body { font-size: 15px; color: var(--text-muted); margin: 0 0 20px; line-height: 1.5; }
+    .dl-popup-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #000; color: #fff;
+      padding: 14px 26px; border-radius: 12px;
+      text-decoration: none; font-weight: 600; font-size: 16px;
+      transition: transform 0.1s;
+    }
+    .dl-popup-cta:hover { transform: translateY(-2px); }
+    .dl-popup-cta svg { width: 24px; height: 24px; }
+    .dl-popup-android { margin: 18px 0 0; font-size: 13px; color: var(--text-faint); }
+    .dl-popup-android a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+
+  <!-- Vercel Web Analytics + Speed Insights. Static-HTML setup — the
+       paths are rewritten by Vercel's edge to load the analytics
+       scripts. Enable in Project Settings → Analytics. -->
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
+</head>
+<body>
+
+<header class="bar">
+  <a class="logo" href="/" aria-label="Back to braindexapp.com">
+    <img src="/brain-character.png" alt="Braindex" />
+  </a>
+  <div class="right">
+    <a href="/">← braindexapp.com</a>
+  </div>
+</header>
+
+<main class="stage">
+  <section class="card" id="root">
+    <div class="loading">
+      <div class="spinner" aria-hidden="true"></div>
+      <p class="progress-note">Loading today&rsquo;s puzzle…</p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <a href="/">Home</a>
+  <a href="/privacy-policy">Privacy</a>
+  <a href="/support">Support</a>
+</footer>
+
+<script>
+(() => {
+  'use strict';
+
+  // ────────────────────────────────────────────────────────────────
+  // CONSTANTS — must match lib/data/define_question.dart and lib/providers/define_provider.dart
+  // ────────────────────────────────────────────────────────────────
+  const QUESTION_COUNT = 6;
+  const QUESTION_SECONDS = 20;
+  const TICK_MS = 100;
+
+  // Tier curve by day-of-year — identical to _tiersForDay in Dart.
+  function tiersForDay(dayOfYear) {
+    if (dayOfYear < 30)  return [1];
+    if (dayOfYear < 60)  return [1, 2];
+    if (dayOfYear < 100) return [2, 3];
+    if (dayOfYear < 140) return [3, 4];
+    if (dayOfYear < 180) return [4, 5];
+    return [1, 2, 3, 4, 5];
+  }
+
+  // Mulberry32: deterministic JS PRNG. NOT the same sequence as Dart's
+  // Random(seed), so the 6 chosen words won't match the iPhone app for a
+  // given day — but every web user on the same date gets the same 6.
+  // (For 1:1 parity we'd need a server-side puzzle generator; see README.)
+  function mulberry32(seed) {
+    let t = seed >>> 0;
+    return function() {
+      t = (t + 0x6D2B79F5) >>> 0;
+      let r = t;
+      r = Math.imul(r ^ (r >>> 15), r | 1);
+      r ^= r + Math.imul(r ^ (r >>> 7), r | 61);
+      return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function shuffleInPlace(arr, rng) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // Pick `count` items from `arr` using `rng`. If the array is smaller
+  // than `count`, loop through it as many laps as needed, reshuffling
+  // each lap so repeated items don't appear back-to-back in the same
+  // order. Guarantees `count` results as long as `arr` is non-empty.
+  function pickLoopingShuffle(arr, count, rng) {
+    if (arr.length === 0) return [];
+    const out = [];
+    while (out.length < count) {
+      const lap = shuffleInPlace(arr.slice(), rng);
+      for (const item of lap) {
+        out.push(item);
+        if (out.length === count) break;
+      }
+    }
+    return out;
+  }
+
+  // Today's 6 questions. Trivia items already carry their own options and
+  // correctIndex, so unlike the word game there are no distractors to
+  // build — just pick and shuffle the option order.
+  //
+  // dayOfYear is computed from CALENDAR FIELDS, not a millisecond
+  // subtraction. `(today - startOfYear) / 86400000` spans the DST
+  // boundary, loses an hour, and rolls the day over at 01:00 in summer —
+  // the same bug that was fixed in the app (see core/utils/daily_seed.dart).
+  function dayOfYearFor(d) {
+    const cum = [0,31,59,90,120,151,181,212,243,273,304,334];
+    const y = d.getFullYear();
+    const leap = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
+    return cum[d.getMonth()] + (d.getDate() - 1) +
+      (leap && d.getMonth() > 1 ? 1 : 0);
+  }
+
+  function buildSession(questions, today) {
+    const seed = today.getFullYear() * 1000 + dayOfYearFor(today);
+    const rng = mulberry32(seed);
+    const selected = pickLoopingShuffle(questions.slice(), QUESTION_COUNT, rng);
+
+    return selected.map(item => {
+      // Shuffle option order so the answer isn't always in the same slot.
+      // The bundled bank is biased: across all questions the correct
+      // answer sits in slot 2 about 43% of the time.
+      const order = item.opts.map((_, i) => i);
+      shuffleInPlace(order, rng);
+      const options = order.map(i => item.opts[i]);
+      const answerIndex = order.indexOf(item.ci);
+      // Field names deliberately match the word game's shape so the
+      // existing renderer works untouched: `word` is the prompt,
+      // `correctDefinition` is the answer text shown on the review screen.
+      return {
+        word: item.q,
+        options,
+        correctIndex: answerIndex,
+        correctDefinition: options[answerIndex],
+        fact: item.fact,
+      };
+    });
+  }
+
+  // ────────────────────────────────────────────────────────────────
+  // WORD LOAD — prefer cloud /config/words via REST (no SDK), fall back
+  // Cloud-only: there is no bundled trivia fallback on the web.
+  // ────────────────────────────────────────────────────────────────
+  const FIREBASE_PROJECT = 'braindexapp';
+  const FIREBASE_API_KEY = 'AIzaSyCW-crxgYTrrvIleqdz2YIou0CPpOZIwR8';
+  const CLOUD_DOC_URL =
+    `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents/config/trivia?key=${FIREBASE_API_KEY}`;
+
+  async function loadCloudWords() {
+    // /config/{doc} is "allow read if request.auth != null", so REST
+    // without a token returns 403. Sign in anonymously over REST to stay
+    // zero-SDK, then read the doc.
+    try {
+      const tokenRes = await fetch(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${FIREBASE_API_KEY}`,
+        { method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ returnSecureToken: true }) }
+      );
+      if (!tokenRes.ok) return null;
+      const { idToken } = await tokenRes.json();
+      if (!idToken) return null;
+
+      const docRes = await fetch(CLOUD_DOC_URL, {
+        headers: { Authorization: `Bearer ${idToken}` },
+      });
+      if (!docRes.ok) return null;
+      const doc = await docRes.json();
+      const raw = doc?.fields?.questions?.arrayValue?.values;
+      if (!Array.isArray(raw)) return null;
+      const parsed = [];
+      for (const e of raw) {
+        const m = e?.mapValue?.fields;
+        if (!m) continue;
+        const q = m.question?.stringValue;
+        const ci = parseInt(m.correctIndex?.integerValue ?? '', 10);
+        const opts = (m.options?.arrayValue?.values ?? [])
+          .map(v => v?.stringValue)
+          .filter(Boolean);
+        const fact = m.fact?.stringValue ?? null;
+        if (q && Number.isFinite(ci) && opts.length >= 2 && ci < opts.length) {
+          parsed.push({ q, opts, ci, fact });
+        }
+      }
+      return parsed.length >= QUESTION_COUNT ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+
+  async function loadLocalWords() {
+    // No bundled fallback for trivia — the cloud bank is the only source.
+    // Returning [] surfaces the error state rather than a blank quiz.
+    return [];
+  }
+
+  async function loadWords() {
+    const cloud = await loadCloudWords();
+    if (cloud) return { source: 'cloud', words: cloud };
+    return { source: 'bundled', words: await loadLocalWords() };
+  }
+
+  // ────────────────────────────────────────────────────────────────
+  // STATE
+  // ────────────────────────────────────────────────────────────────
+  const state = {
+    words: null,
+    wordSource: null,
+    questions: null,
+    attempts: null,       // [{ chosen: int|null, secondsUsed: int, timedOut: bool }, ...]
+    currentIndex: 0,
+    status: 'intro',      // intro | playing | results
+    tickerId: null,
+  };
+
+  // ────────────────────────────────────────────────────────────────
+  // RENDER
+  // ────────────────────────────────────────────────────────────────
+  const root = document.getElementById('root');
+
+  function render() {
+    if (state.status === 'intro') renderIntro();
+    else if (state.status === 'playing') renderGame();
+    else if (state.status === 'results') renderResults();
+  }
+
+  function todayLabel() {
+    return new Date().toLocaleDateString(undefined, {
+      weekday: 'long', month: 'long', day: 'numeric',
+    });
+  }
+
+  function renderIntro() {
+    root.innerHTML = `
+      <div class="intro">
+        <p class="eyebrow">${todayLabel()}</p>
+        <img class="brand-mark" src="/braindex_logo_tight.png" alt="Braindex" />
+        <div class="meta-row">
+          <span class="pill">6 words</span>
+          <span class="pill">20s each</span>
+        </div>
+        <button class="primary-btn" id="start-btn">Play →</button>
+      </div>
+    `;
+    document.getElementById('start-btn').addEventListener('click', startGame);
+  }
+
+  function startGame() {
+    state.questions = buildSession(state.words, new Date());
+    state.attempts = state.questions.map(() => ({ chosen: null, secondsUsed: 0, timedOut: false, locked: false }));
+    state.currentIndex = 0;
+    state.status = 'playing';
+    startTicker();
+    render();
+  }
+
+  function renderGame() {
+    const q = state.questions[state.currentIndex];
+    const a = state.attempts[state.currentIndex];
+    const remaining = Math.max(0, QUESTION_SECONDS - a.secondsUsed);
+    const fillScale = remaining / QUESTION_SECONDS;
+    const low = remaining < 5;
+
+    root.innerHTML = `
+      <div class="game">
+        <div class="question-boxes" id="qboxes">
+          ${state.questions.map((_, i) => {
+            const att = state.attempts[i];
+            const cls =
+              i === state.currentIndex ? 'qbox current' :
+              att.chosen !== null      ? 'qbox answered' :
+              att.timedOut             ? 'qbox timeout'  : 'qbox';
+            return `<div class="${cls}" data-idx="${i}">${i+1}</div>`;
+          }).join('')}
+        </div>
+        <div class="timer-bar">
+          <div class="timer-fill ${low ? 'low' : ''}" id="timer-fill" style="transform: scaleX(${fillScale})"></div>
+        </div>
+        <div class="word-display">
+          <p class="label">Define</p>
+          <div class="word">${escapeHtml(q.word)}</div>
+        </div>
+        <div class="options" id="options">
+          ${q.options.map((opt, i) => `
+            <button class="option ${a.chosen === i ? 'selected' : ''}" data-i="${i}">${escapeHtml(opt)}</button>
+          `).join('')}
+        </div>
+        <div class="submit-row">
+          <button class="primary-btn" id="submit-btn"
+            ${allDone() ? '' : 'disabled'}>
+            ${allDone() ? 'Submit' : `Finish all 6 to submit (${doneCount()}/6)`}
+          </button>
+          <p class="progress-note">Each question is 20s total — you can revisit answers before time runs out.</p>
+        </div>
+      </div>
+    `;
+    document.getElementById('options').addEventListener('click', onOptionClick);
+    document.getElementById('qboxes').addEventListener('click', onQBoxClick);
+    document.getElementById('submit-btn').addEventListener('click', onSubmit);
+  }
+
+  function answeredCount() { return state.attempts.filter(a => a.chosen !== null).length; }
+  function allAnswered() { return answeredCount() === state.questions.length; }
+  // A question is "done" if it has an answer OR if its timer ran out
+  // with no answer (timedOut). Used to enable submit even when a
+  // question times out unanswered — otherwise the player gets stuck.
+  function doneCount() { return state.attempts.filter(a => a.chosen !== null || a.timedOut).length; }
+  function allDone() { return doneCount() === state.questions.length; }
+
+  function onOptionClick(e) {
+    const btn = e.target.closest('.option');
+    if (!btn) return;
+    const i = parseInt(btn.dataset.i, 10);
+    const a = state.attempts[state.currentIndex];
+    if (a.locked) return;
+    a.chosen = i;
+    // Auto-advance to next UNANSWERED question (no feedback shown yet).
+    const next = findNextActive(state.currentIndex + 1);
+    if (next !== -1 && next !== state.currentIndex) {
+      state.currentIndex = next;
+    }
+    render();
+  }
+
+  function onQBoxClick(e) {
+    const box = e.target.closest('.qbox');
+    if (!box) return;
+    const i = parseInt(box.dataset.idx, 10);
+    if (state.attempts[i].timedOut) return;
+    state.currentIndex = i;
+    render();
+  }
+
+  function findNextActive(fromIdx) {
+    const n = state.questions.length;
+    for (let step = 0; step < n; step++) {
+      const i = (fromIdx + step) % n;
+      const a = state.attempts[i];
+      if (a.chosen === null && !a.timedOut) return i;
+    }
+    return -1;
+  }
+
+  function startTicker() {
+    stopTicker();
+    state.tickerId = setInterval(() => {
+      if (state.status !== 'playing') return;
+      const a = state.attempts[state.currentIndex];
+      // Each question has 20s TOTAL across all visits. So even after the
+      // player has tapped an answer, the timer keeps ticking while
+      // they're on that question — preventing "unlimited time" if they
+      // navigate back and try to revise an answer.
+      if (a.locked) return;
+      a.secondsUsed += TICK_MS / 1000;
+      if (a.secondsUsed >= QUESTION_SECONDS) {
+        a.secondsUsed = QUESTION_SECONDS;
+        a.locked = true;
+        if (a.chosen === null) a.timedOut = true;
+        // Only auto-advance when the question hit 20s with no answer
+        // — i.e. the natural first-time-through flow. If the user was
+        // deliberately revisiting an answered question, leave them
+        // where they are; their last answer stays locked in.
+        if (a.timedOut) {
+          const next = findNextActive(state.currentIndex + 1);
+          if (next !== -1) state.currentIndex = next;
+        }
+        render();
+        return;
+      }
+      // Light DOM update on every tick — just the timer bar's scale.
+      const fill = document.getElementById('timer-fill');
+      if (fill) {
+        const remaining = Math.max(0, QUESTION_SECONDS - a.secondsUsed);
+        fill.style.transform = `scaleX(${remaining / QUESTION_SECONDS})`;
+        if (remaining < 5) fill.classList.add('low');
+      }
+    }, TICK_MS);
+  }
+  function stopTicker() {
+    if (state.tickerId) { clearInterval(state.tickerId); state.tickerId = null; }
+  }
+
+  function onSubmit() {
+    if (!allDone()) return;
+    stopTicker();
+    state.status = 'results';
+    render();
+  }
+
+  function renderResults() {
+    const correct = state.questions.reduce((sum, q, i) => {
+      const a = state.attempts[i];
+      return sum + (a.chosen === q.correctIndex ? 1 : 0);
+    }, 0);
+    const totalSecondsUsed = state.attempts.reduce((s, a) => s + a.secondsUsed, 0);
+    const score = calculateScore({
+      correct,
+      total: state.questions.length,
+      totalSecondsUsed,
+      secondsPerQuestion: QUESTION_SECONDS,
+    });
+
+    root.innerHTML = `
+      <div class="result">
+        <div class="score-row">
+          <div class="num">${score}</div>
+          <div class="denom">/ 1000</div>
+        </div>
+        <p class="accuracy">${correct} of ${state.questions.length} correct · ${formatSeconds(totalSecondsUsed)} used</p>
+
+        <div class="answers">
+          ${state.questions.map((q, i) => {
+            const a = state.attempts[i];
+            const got = a.chosen === q.correctIndex;
+            const mark = got ? '✓' : '✗';
+            const cls = got ? 'correct' : 'wrong';
+            // For wrong answers, surface what they picked so they can see
+            // *why* it was wrong — alongside the right definition.
+            const pickedHtml = (!got && a.chosen !== null)
+              ? `<div class="pick-line"><span class="label">You picked</span><span class="picked">${escapeHtml(q.options[a.chosen])}</span></div>`
+              : (!got && a.chosen === null)
+                ? `<div class="pick-line"><span class="label">No answer</span> (time ran out)</div>`
+                : '';
+            const correctLabel = got ? '' : `<span class="label">Correct</span>`;
+            return `
+              <div class="answer-row ${cls}">
+                <div class="word-line">
+                  <span class="mark">${mark}</span>
+                  ${escapeHtml(q.word)}
+                </div>
+                <div class="def-line">${correctLabel}${escapeHtml(q.correctDefinition)}</div>
+                ${pickedHtml}
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        <div class="post-row">
+          <button class="share-btn" id="share-btn">📣 Share my score</button>
+          <div class="share-feedback" id="share-feedback" aria-live="polite"></div>
+        </div>
+
+        <div class="email-cta">
+          <h4>Subscribe to the newsletter</h4>
+          <p class="sub">Occasional updates from David.</p>
+          <form id="result-email-form" novalidate>
+            <input id="result-email-input" type="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+            <button type="submit">Subscribe</button>
+          </form>
+          <p class="msg" id="result-email-msg" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="locked-card">
+          <h3>Enjoy that?</h3>
+          <p style="color: rgba(255,255,255,0.82); font-size: 14px; margin: 0 0 16px;">
+            Enjoy that? There&rsquo;s a lot more in the app: daily trivia, leaderboards, streaks, head-to-head games and leagues with friends. Free on iOS and Android.
+          </p>
+          <div class="store-row">
+            <a class="store-btn" href="https://apps.apple.com/us/app/braindex/id6766744989" target="_blank" rel="noopener">Download on the App Store</a>
+            <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.braindex.app" target="_blank" rel="noopener">Get it on Google Play</a>
+          </div>
+          <!-- Cross-link the other sample. Someone who finished one game
+               is the most likely person to try a second, and it keeps them
+               on site rather than bouncing. -->
+          <p style="margin: 14px 0 0; font-size: 13px;">
+            <a href="/play/" style="color: #fff; text-decoration: underline;">Try the AI word game</a>
+          </p>
+        </div>
+
+        <button class="primary-btn" id="play-again-btn">Back to start</button>
+      </div>
+    `;
+    document.getElementById('play-again-btn').addEventListener('click', () => {
+      // Return to the intro screen rather than auto-starting another
+      // round — the user reaches the result page and may want to share,
+      // sign up for the newsletter, or just exit gracefully. From the
+      // intro they can tap Play if they want to go again.
+      stopTicker();
+      state.status = 'intro';
+      render();
+    });
+
+    // ── Share my score ─────────────────────────────────────────
+    const shareBtn = document.getElementById('share-btn');
+    const shareFeedback = document.getElementById('share-feedback');
+    shareBtn.addEventListener('click', async () => {
+      const grid = state.questions.map((q, i) =>
+        state.attempts[i].chosen === q.correctIndex ? '🟢' : '🔴'
+      ).join('');
+      // Long-form date ("Sunday May 17"), but with zero-width spaces
+      // injected between weekday/month/day so iOS / WhatsApp / Slack
+      // data-detectors don't turn it into a tappable "add to calendar"
+      // link. The U+200B characters render invisibly but break the
+      // date-pattern match. Same trick is mirrored in the iOS app.
+      const now = new Date();
+      const weekday = now.toLocaleDateString(undefined, { weekday: 'long' });
+      const month = now.toLocaleDateString(undefined, { month: 'long' });
+      const day = now.getDate();
+      const Z = '​';
+      const dateStr = `${weekday}${Z} ${month}${Z} ${day}`;
+      // ZWSPs also injected around the score numbers — iOS / iMessage
+      // sometimes parses "463 / 1000" as a ratio or addresses-style
+      // string and underlines it. Breaking the pattern keeps the line
+      // plain text.
+      const shareText =
+        `Braindex · ${dateStr}\n` +
+        `${score}${Z} / ${Z}1000${Z} — ${Z}${correct}/${Z}6 correct\n\n` +
+        `${grid}\n\n` +
+        `https://braindexapp.com/play`;
+      // navigator.share works on mobile + some desktop; fall back to clipboard.
+      try {
+        if (navigator.share) {
+          await navigator.share({ text: shareText });
+          shareFeedback.textContent = 'Shared!';
+        } else {
+          await navigator.clipboard.writeText(shareText);
+          shareFeedback.textContent = 'Copied to clipboard';
+        }
+        shareFeedback.classList.add('shown');
+        setTimeout(() => shareFeedback.classList.remove('shown'), 2400);
+      } catch (_) {
+        // User cancelled share or clipboard blocked — silent.
+      }
+    });
+
+    // ── Result-page newsletter signup ──────────────────────────
+    const emailForm = document.getElementById('result-email-form');
+    const emailInput = document.getElementById('result-email-input');
+    const emailMsg = document.getElementById('result-email-msg');
+    emailForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      if (!email || !/^.+@.+\..+$/.test(email)) {
+        emailMsg.textContent = 'Enter a valid email address.';
+        emailMsg.className = 'msg error';
+        return;
+      }
+      emailMsg.textContent = 'Sending…';
+      emailMsg.className = 'msg';
+      try {
+        const res = await fetch('/api/newsletter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, source: 'play-result' }),
+        });
+        if (!res.ok) throw new Error('Server responded ' + res.status);
+        emailMsg.textContent = 'You’re on the list. Thanks!';
+        emailMsg.className = 'msg success';
+        emailInput.value = '';
+      } catch (_) {
+        emailMsg.textContent = 'Couldn’t save that — try again later.';
+        emailMsg.className = 'msg error';
+      }
+    });
+
+    // Pop up the download CTA a beat after results render. Defined in
+    // the small standalone script near the end of <body>; safe-call
+    // because it self-disables after one show per 7-day window.
+    if (typeof window.__bxShowDownloadPopup === 'function') {
+      setTimeout(() => { window.__bxShowDownloadPopup(); }, 1200);
+    }
+  }
+
+  function formatSeconds(s) {
+    const total = Math.floor(s);
+    const m = Math.floor(total / 60);
+    const sec = total % 60;
+    if (m === 0) return `${sec}s`;
+    return `${m}m ${sec}s`;
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  // ────────────────────────────────────────────────────────────────
+  // BOOT
+  // ────────────────────────────────────────────────────────────────
+  loadWords().then(({ source, words }) => {
+    state.words = words;
+    state.wordSource = source;
+    state.status = 'intro';
+    render();
+  }).catch(err => {
+    console.error('Failed to load words:', err);
+    root.innerHTML = `
+      <div class="intro">
+        <h1 style="color: var(--wrong);">Couldn&rsquo;t load the puzzle</h1>
+        <p class="lede">Refresh to try again. The full Braindex app works offline once installed.</p>
+        <a class="primary-btn" href="/">← Back to braindexapp.com</a>
+      </div>
+    `;
+  });
+})();
+</script>
+
+<!-- ────────────────── DOWNLOAD POPUP ──────────────────
+     Shown after a finished play. Once per 7-day window per browser. -->
+<div id="dl-popup" class="dl-popup" role="dialog" aria-modal="true" aria-labelledby="dl-popup-title" aria-hidden="true">
+  <div class="dl-popup-backdrop" data-dl-dismiss></div>
+  <div class="dl-popup-card">
+    <button class="dl-popup-close" type="button" aria-label="Close" data-dl-dismiss>&times;</button>
+    <img class="dl-popup-logo" src="/brain-character.png" alt="" />
+    <h3 id="dl-popup-title">Nice play. Get Braindex on iOS.</h3>
+    <p class="dl-popup-body">The first daily AI game. 6 questions. 2 minutes a day.</p>
+    <a class="dl-popup-cta" href="https://apps.apple.com/us/app/braindex/id6766744989" target="_blank" rel="noopener" data-dl-cta>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+      <span>Download on the App Store</span>
+    </a>
+    <a class="dl-popup-cta" href="https://play.google.com/store/apps/details?id=com.braindex.app" target="_blank" rel="noopener" data-dl-cta><span>Get it on Google Play</span></a>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const STORAGE_KEY = 'braindex.dlPopup.dismissedAt';
+    const COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
+    const popup = document.getElementById('dl-popup');
+    if (!popup) return;
+
+    const canShow = () => {
+      const at = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
+      return !at || Date.now() - at >= COOLDOWN_MS;
+    };
+    const close = () => {
+      popup.classList.remove('is-open');
+      popup.setAttribute('aria-hidden', 'true');
+      try { localStorage.setItem(STORAGE_KEY, String(Date.now())); } catch (_) {}
+    };
+
+    // Exposed for the main IIFE to call from renderResults().
+    window.__bxShowDownloadPopup = function () {
+      if (!canShow()) return;
+      popup.classList.add('is-open');
+      popup.setAttribute('aria-hidden', 'false');
+    };
+
+    popup.querySelectorAll('[data-dl-dismiss]').forEach((el) => el.addEventListener('click', close));
+    popup.querySelectorAll('[data-dl-cta]').forEach((el) => el.addEventListener('click', () => {
+      try { localStorage.setItem(STORAGE_KEY, String(Date.now())); } catch (_) {}
+    }));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && popup.classList.contains('is-open')) close();
+    });
+  })();
+</script>
+
+</body>
+</html>

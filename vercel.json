@@ -9,6 +9,14 @@
     {
       "source": "/play/",
       "destination": "/play/index.html"
+    },
+    {
+      "source": "/trivia",
+      "destination": "/trivia/index.html"
+    },
+    {
+      "source": "/trivia/",
+      "destination": "/trivia/index.html"
     }
   ],
   "headers": [
