@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#EC1A6F">
+<title>Braindex — Brand Guide</title>
+<style>
+  :root{
+    --primary:#EC1A6F; --primary-light:#F06292; --primary-dark:#C2185B;
+    --accent:#0E1A4A; --text:#1a1a2e; --text-muted:#5a5a73; --text-faint:#9a9aae;
+    --bg:#ffffff; --surface:#faf9fc; --border:#e8e6ee;
+    --success:#1d8a44; --error:#c2185b;
+  }
+  *,*::before,*::after{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth; background:var(--bg);}
+  body{
+    font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    color:var(--text); line-height:1.55; -webkit-font-smoothing:antialiased; background:var(--bg);
+  }
+  .wrap{max-width:920px; margin:0 auto; padding:0 24px 100px;}
+
+  /* Hero */
+  header.hero{
+    text-align:center; color:#fff; padding:72px 24px 60px;
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  }
+  header.hero img{width:120px; height:120px; margin-bottom:18px; filter:drop-shadow(0 8px 24px rgba(0,0,0,.25));}
+  header.hero h1{font-size:clamp(34px,5vw,52px); font-weight:800; letter-spacing:-1.2px; line-height:1.05;}
+  header.hero p{font-size:19px; font-weight:500; opacity:.92; margin-top:10px;}
+  header.hero .meta{margin-top:18px; font-size:13px; opacity:.8; letter-spacing:.04em; text-transform:uppercase;}
+
+  /* TOC */
+  nav.toc{background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    padding:22px 26px; margin:40px 0;}
+  nav.toc h2{font-size:12px; text-transform:uppercase; letter-spacing:.1em; color:var(--text-faint); margin-bottom:12px;}
+  nav.toc ol{list-style:none; columns:2; column-gap:32px;}
+  nav.toc li{margin-bottom:9px;}
+  nav.toc a{color:var(--primary); text-decoration:none; font-weight:600; font-size:15px;}
+  nav.toc a:hover{color:var(--primary-dark); text-decoration:underline;}
+
+  h2.section{font-size:30px; font-weight:800; color:var(--accent); letter-spacing:-.5px;
+    margin:60px 0 6px; padding-top:26px; border-top:1px solid var(--border);}
+  h2.section .n{color:var(--primary);}
+  h3{font-size:20px; font-weight:700; color:var(--accent); margin:32px 0 10px;}
+  p{margin:12px 0; color:var(--text-muted);}
+  p.lead{font-size:17px; color:var(--text);}
+  strong{color:var(--text); font-weight:700;}
+  ul{margin:12px 0 12px 22px;} li{margin:7px 0; color:var(--text-muted);}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.88em;
+    background:#fdeef4; color:var(--primary-dark); padding:2px 7px; border-radius:6px;}
+
+  /* Color grid */
+  .swatches{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:16px; margin:24px 0;}
+  .sw{border:1px solid var(--border); border-radius:14px; overflow:hidden; background:#fff;}
+  .sw .chip{height:88px;}
+  .sw .info{padding:12px 14px;}
+  .sw .name{font-weight:700; font-size:14px; color:var(--text);}
+  .sw .hex{font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--text-muted); margin-top:2px;}
+  .sw .role{font-size:11px; color:var(--text-faint); margin-top:4px; text-transform:uppercase; letter-spacing:.04em;}
+
+  /* Type specimens */
+  .spec{border:1px solid var(--border); border-radius:14px; padding:20px 24px; margin:14px 0; background:#fff;}
+  .spec .label{font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin-bottom:8px;}
+  .spec .demo-h1{font-size:44px; font-weight:800; letter-spacing:-1.2px; color:var(--accent); line-height:1.05;}
+  .grad{background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:var(--primary);}
+  .demo-h2{font-size:32px; font-weight:800; letter-spacing:-.5px; color:var(--accent);}
+  .demo-body{font-size:16px; font-weight:400; color:var(--text);}
+  .demo-muted{font-size:14px; color:var(--text-muted);}
+
+  /* Components */
+  .cta{display:inline-block; background:var(--primary); color:#fff; font-weight:800; font-size:22px;
+    letter-spacing:6px; padding:16px 30px; border-radius:14px; text-decoration:none;
+    box-shadow:0 10px 30px rgba(236,26,111,.30);}
+  .btn{display:inline-block; background:var(--primary); color:#fff; font-weight:700; font-size:15px;
+    padding:14px 24px; border-radius:10px; border:none;}
+  .card-demo{background:#fff; border:1px solid var(--border); border-radius:16px; padding:24px;}
+  .icon-tile{width:44px; height:44px; border-radius:12px; background:rgba(236,26,111,.1);
+    display:flex; align-items:center; justify-content:center; font-size:22px;}
+  .badge{display:inline-flex; align-items:center; gap:10px; background:#000; color:#fff;
+    padding:12px 20px; border-radius:12px; font-weight:600; font-size:15px; text-decoration:none;}
+  .component-row{display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin:16px 0;}
+
+  table{width:100%; border-collapse:collapse; margin:18px 0; font-size:14px; background:#fff;
+    border-radius:12px; overflow:hidden; border:1px solid var(--border);}
+  th{background:var(--accent); color:#fff; text-align:left; padding:10px 14px; font-size:13px; font-weight:700;}
+  td{padding:10px 14px; border-top:1px solid var(--border); color:var(--text-muted);}
+  td strong{color:var(--text);}
+
+  .callout{border-radius:14px; padding:16px 20px; margin:18px 0; font-size:15px;}
+  .callout.do{background:#effaf2; border-left:4px solid var(--success);}
+  .callout.dont{background:#fdeef2; border-left:4px solid var(--error);}
+  .callout.do strong,.callout.dont strong{color:var(--text);}
+
+  .voice-quote{font-size:18px; font-weight:600; color:var(--accent); font-style:italic;
+    border-left:3px solid var(--primary); padding-left:18px; margin:14px 0;}
+
+  footer{text-align:center; color:var(--text-faint); font-size:13px; margin-top:70px;
+    padding-top:24px; border-top:1px solid var(--border);}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <img src="https://braindexapp.com/brain-character.png" alt="Braindex pink brain mascot">
+  <h1>Braindex Brand Guide</h1>
+  <p>Master AI, one word at a time.</p>
+  <div class="meta">Daily AI vocabulary game · braindexapp.com</div>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#s1">1 · Brand at a glance</a></li>
+    <li><a href="#s2">2 · Logo &amp; mascot</a></li>
+    <li><a href="#s3">3 · Color palette</a></li>
+    <li><a href="#s4">4 · Typography</a></li>
+    <li><a href="#s5">5 · Voice &amp; messaging</a></li>
+    <li><a href="#s6">6 · UI components</a></li>
+    <li><a href="#s7">7 · Do &amp; don't</a></li>
+  </ol>
+</nav>
+
+<h2 class="section" id="s1"><span class="n">1 ·</span> Brand at a glance</h2>
+<p class="lead">Braindex is a daily AI vocabulary game — 6 words, 20 seconds each, two minutes a day. The brand is playful, warm, and confident: a hot-pink brain mascot on clean white, personal in voice, and built around a daily-habit loop like Wordle or a daily crossword.</p>
+<table>
+<tr><th>Element</th><th>Value</th></tr>
+<tr><td><strong>Primary color</strong></td><td>Braindex Pink — <code>#EC1A6F</code></td></tr>
+<tr><td><strong>Accent color</strong></td><td>Deep Navy — <code>#0E1A4A</code></td></tr>
+<tr><td><strong>Typeface</strong></td><td>SF Pro Display (system stack)</td></tr>
+<tr><td><strong>Mascot</strong></td><td>Pink brain character</td></tr>
+<tr><td><strong>Tagline</strong></td><td>"Master AI, one word at a time."</td></tr>
+<tr><td><strong>Positioning</strong></td><td>The first daily AI game · 2 minutes a day</td></tr>
+</table>
+
+<h2 class="section" id="s2"><span class="n">2 ·</span> Logo &amp; mascot</h2>
+<p>The pink brain character is the heart of the brand — it's the app icon, the favicon, the Apple touch icon, and the social share image. Give it room to breathe on white or on the pink gradient.</p>
+<div class="component-row">
+  <div class="card-demo" style="text-align:center;">
+    <img src="https://braindexapp.com/brain-character.png" alt="mascot" style="width:120px;height:120px;">
+    <div class="demo-muted" style="margin-top:8px;">Brain mascot (icon / favicon / social)</div>
+  </div>
+  <div class="card-demo" style="text-align:center; flex:1; min-width:260px;">
+    <img src="https://braindexapp.com/braindex_logo.png" alt="wordmark" style="max-width:100%;height:auto;">
+    <div class="demo-muted" style="margin-top:8px;">Wide logo (1536×1024 — social previews, headers)</div>
+  </div>
+</div>
+<table>
+<tr><th>Asset</th><th>Use</th></tr>
+<tr><td><code>brain-character.png</code> (500×500)</td><td>App icon, favicon, square social fallback</td></tr>
+<tr><td><code>braindex_logo.png</code> (1536×1024)</td><td>Wide social preview (LinkedIn, Slack, X)</td></tr>
+<tr><td><code>braindex_logo_hero.png</code></td><td>Landing page hero lockup</td></tr>
+<tr><td><code>braindex_logo_tight.png</code></td><td>Tight-crop wordmark for headers</td></tr>
+</table>
+
+<h2 class="section" id="s3"><span class="n">3 ·</span> Color palette</h2>
+<p>Pink is the identity and the call-to-action color. Navy anchors headlines. Everything else is neutral so the pink pops.</p>
+
+<h3>Brand</h3>
+<div class="swatches">
+  <div class="sw"><div class="chip" style="background:#EC1A6F"></div><div class="info"><div class="name">Braindex Pink</div><div class="hex">#EC1A6F</div><div class="role">Primary / CTA</div></div></div>
+  <div class="sw"><div class="chip" style="background:#F06292"></div><div class="info"><div class="name">Pink Light</div><div class="hex">#F06292</div><div class="role">Highlights</div></div></div>
+  <div class="sw"><div class="chip" style="background:#C2185B"></div><div class="info"><div class="name">Pink Dark</div><div class="hex">#C2185B</div><div class="role">Hover / gradient end</div></div></div>
+  <div class="sw"><div class="chip" style="background:#0E1A4A"></div><div class="info"><div class="name">Deep Navy</div><div class="hex">#0E1A4A</div><div class="role">Accent / headlines</div></div></div>
+</div>
+
+<h3>Text &amp; neutrals</h3>
+<div class="swatches">
+  <div class="sw"><div class="chip" style="background:#1a1a2e"></div><div class="info"><div class="name">Text</div><div class="hex">#1a1a2e</div><div class="role">Body</div></div></div>
+  <div class="sw"><div class="chip" style="background:#5a5a73"></div><div class="info"><div class="name">Text Muted</div><div class="hex">#5a5a73</div><div class="role">Secondary</div></div></div>
+  <div class="sw"><div class="chip" style="background:#9a9aae"></div><div class="info"><div class="name">Text Faint</div><div class="hex">#9a9aae</div><div class="role">Captions</div></div></div>
+  <div class="sw"><div class="chip" style="background:#faf9fc; border-bottom:1px solid #e8e6ee"></div><div class="info"><div class="name">Surface</div><div class="hex">#faf9fc</div><div class="role">Section bg / cards</div></div></div>
+  <div class="sw"><div class="chip" style="background:#e8e6ee"></div><div class="info"><div class="name">Border</div><div class="hex">#e8e6ee</div><div class="role">Dividers / outlines</div></div></div>
+  <div class="sw"><div class="chip" style="background:#ffffff; border-bottom:1px solid #e8e6ee"></div><div class="info"><div class="name">Background</div><div class="hex">#ffffff</div><div class="role">Base</div></div></div>
+</div>
+
+<h3>State</h3>
+<div class="swatches">
+  <div class="sw"><div class="chip" style="background:#1d8a44"></div><div class="info"><div class="name">Success</div><div class="hex">#1d8a44</div><div class="role">Confirmations</div></div></div>
+  <div class="sw"><div class="chip" style="background:#c2185b"></div><div class="info"><div class="name">Error</div><div class="hex">#c2185b</div><div class="role">Errors</div></div></div>
+</div>
+
+<h3>Signature gradient</h3>
+<div class="card-demo" style="background:linear-gradient(135deg,#EC1A6F,#C2185B); color:#fff; font-weight:800; font-size:22px; letter-spacing:-.5px;">
+  linear-gradient(135deg, #EC1A6F → #C2185B)
+</div>
+<p>Used on the hero, gradient headline text, and the primary CTA glow. Pink shadows are pink-tinted, never gray: <code>0 10px 30px rgba(236,26,111,0.30)</code>.</p>
+
+<h2 class="section" id="s4"><span class="n">4 ·</span> Typography</h2>
+<p>One typeface: <strong>SF Pro Display</strong>, falling back through the native system stack — <code>-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif</code>. Headlines are heavy (800) with tight negative letter-spacing; body is regular with a 1.55 line height.</p>
+
+<div class="spec">
+  <div class="label">Headline — 800, letter-spacing -1.2px, navy (with pink gradient span)</div>
+  <div class="demo-h1">Master AI, <span class="grad">one word</span> at a time.</div>
+</div>
+<div class="spec">
+  <div class="label">Section heading — 32px / 800 / -0.5px / navy</div>
+  <div class="demo-h2">How it works</div>
+</div>
+<div class="spec">
+  <div class="label">Body — 16px / 400 / line-height 1.55</div>
+  <div class="demo-body">Pick the correct definition. 20 seconds each, no second tries. Score 0–1000 based on accuracy and speed.</div>
+</div>
+<div class="spec">
+  <div class="label">Muted / caption — 14px / muted</div>
+  <div class="demo-muted">New word set, same time. Streaks make it stick.</div>
+</div>
+
+<table>
+<tr><th>Role</th><th>Weight</th><th>Notes</th></tr>
+<tr><td>Hero headline</td><td>800</td><td>clamp(30–48px), letter-spacing -1.2px, navy + pink gradient span</td></tr>
+<tr><td>Section heading</td><td>800</td><td>32px, letter-spacing -0.5px, navy</td></tr>
+<tr><td>CTA / big button</td><td>800</td><td>letter-spacing 6px, uppercase</td></tr>
+<tr><td>Bold / labels</td><td>700</td><td>card titles, buttons</td></tr>
+<tr><td>Nav / meta</td><td>500–600</td><td>muted color</td></tr>
+<tr><td>Body</td><td>400</td><td>line-height 1.55</td></tr>
+</table>
+
+<h2 class="section" id="s5"><span class="n">5 ·</span> Voice &amp; messaging</h2>
+<p>Warm, personal, and encouraging — often first-person from David, the creator. It's a small community learning together, not a corporate ed-tech product. Playful but never dumbed-down.</p>
+<div class="voice-quote">"Have fun &amp; upskill together."</div>
+<p><strong>Core messages:</strong></p>
+<ul>
+<li>Master AI, one word at a time</li>
+<li>6 words. 20 seconds each. 2 minutes a day.</li>
+<li>The first daily AI game</li>
+<li>Score 0–1000 · live leaderboard · streaks make it stick</li>
+<li>Feel less behind on AI, one tiny daily session at a time</li>
+</ul>
+<div class="callout do"><strong>Tone:</strong> friendly, genuine, energetic. Direct address ("you"), short punchy sentences, real gratitude, a light Irish warmth.</div>
+<div class="callout dont"><strong>Avoid:</strong> jargon, hype-speak, intimidating "for engineers" framing, corporate distance. This is a personal project with a human behind it.</div>
+
+<h2 class="section" id="s6"><span class="n">6 ·</span> UI components</h2>
+
+<h3>Primary CTA</h3>
+<div class="component-row"><a class="cta">PLAY</a></div>
+<p>Pink fill, white text, 800 weight, letter-spacing 6px, 14px radius, pink glow shadow. Hover → Pink Dark.</p>
+
+<h3>Standard button</h3>
+<div class="component-row"><button class="btn">Subscribe</button></div>
+<p>Pink fill, 700 weight, 10px radius. Active state scales to 0.98.</p>
+
+<h3>Card</h3>
+<div class="card-demo" style="max-width:320px;">
+  <div class="icon-tile">🧠</div>
+  <h3 style="margin:14px 0 6px;">Play 6 words</h3>
+  <p style="margin:0;">Pick the correct definition. 20 seconds each, no second tries.</p>
+</div>
+<p>White surface, 1px border <code>#e8e6ee</code>, 16px radius, 28px padding. Icon tiles are 44px, 12px radius, on 10%-pink backgrounds.</p>
+
+<h3>Store badge</h3>
+<div class="component-row"><a class="badge">▶ &nbsp;<span>Download on the App Store</span></a></div>
+<p>Black fill, white text, 12px radius. Lifts 2px on hover.</p>
+
+<h3>Radius &amp; elevation scale</h3>
+<table>
+<tr><th>Token</th><th>Value</th><th>Used on</th></tr>
+<tr><td>Input / button</td><td>10px</td><td>Form fields, standard buttons</td></tr>
+<tr><td>Badge</td><td>12px</td><td>Store badges, icon tiles</td></tr>
+<tr><td>Big CTA</td><td>14px</td><td>Hero PLAY button</td></tr>
+<tr><td>Card</td><td>16px</td><td>Feature cards, signup card</td></tr>
+<tr><td>Modal</td><td>18px</td><td>Download popup</td></tr>
+<tr><td>Shadow (pink)</td><td>0 10px 30px rgba(236,26,111,.30)</td><td>Primary CTA</td></tr>
+<tr><td>Focus ring</td><td>0 0 0 3px rgba(236,26,111,.15)</td><td>Input focus</td></tr>
+</table>
+
+<h2 class="section" id="s7"><span class="n">7 ·</span> Do &amp; don't</h2>
+<div class="callout do"><strong>Do</strong> — lead with pink as the action color, keep backgrounds clean white/off-white, let the brain mascot carry personality, keep copy personal and playful, use pink-tinted shadows.</div>
+<div class="callout dont"><strong>Don't</strong> — use indigo/amber (that was a stale earlier concept), use gray shadows, crowd the mascot, write in a corporate or intimidating voice, or use pink for large text blocks (reserve it for accents and CTAs).</div>
+
+<footer>
+  Braindex Brand Guide · Built from the live braindexapp.com design system<br>
+  © 2026 Braindex. All rights reserved.
+</footer>
+
+</div>
+</body>
+</html>

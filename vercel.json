@@ -2,8 +2,14 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/play", "destination": "/play/index.html" },
-    { "source": "/play/", "destination": "/play/index.html" }
+    {
+      "source": "/play",
+      "destination": "/play/index.html"
+    },
+    {
+      "source": "/play/",
+      "destination": "/play/index.html"
+    }
   ],
   "headers": [
     {
@@ -35,6 +41,43 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/ig",
+      "destination": "/?utm_source=instagram&utm_medium=social&utm_campaign=daily",
+      "permanent": false
+    },
+    {
+      "source": "/tt",
+      "destination": "/?utm_source=tiktok&utm_medium=social&utm_campaign=daily",
+      "permanent": false
+    },
+    {
+      "source": "/fb",
+      "destination": "/?utm_source=facebook&utm_medium=social&utm_campaign=daily",
+      "permanent": false
+    },
+    {
+      "source": "/x",
+      "destination": "/?utm_source=x&utm_medium=social&utm_campaign=daily",
+      "permanent": false
+    },
+    {
+      "source": "/r",
+      "destination": "/?utm_source=reddit&utm_medium=social&utm_campaign=daily",
+      "permanent": false
+    },
+    {
+      "source": "/yt",
+      "destination": "/?utm_source=youtube&utm_medium=social&utm_campaign=daily",
+      "permanent": false
+    },
+    {
+      "source": "/li",
+      "destination": "/?utm_source=linkedin&utm_medium=social&utm_campaign=daily",
+      "permanent": false
     }
   ]
 }
