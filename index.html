@@ -29,452 +29,309 @@
 
   <style>
     :root{
-      --primary:#EC1A6F;
-      --primary-dark:#C2185B;
-      --accent:#0E1A4A;
-      --text:#1a1a2e;
-      --text-muted:#5a5a73;
-      --bg:#ffffff;
-      --surface:#faf9fc;
-      --border:#e8e6ee;
-      --radius:16px;
+      --ink:#13205C;
+      --pink:#EC1A6F;
+      --cream:#FFF7FA;
       --font:'SF Pro Display',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     }
     *{box-sizing:border-box;margin:0;padding:0}
     html{-webkit-text-size-adjust:100%}
+
     body{
       font-family:var(--font);
       color:#fff;
-      background:linear-gradient(165deg,#FF8FB8 0%,#FF5C96 45%,#EC1A6F 100%);
+      /* Lighter ground than before: the deep magenta made the pink
+         character disappear into it. */
+      background:linear-gradient(170deg,#FFA3C4 0%,#FF77A8 38%,#F44489 100%);
       background-attachment:fixed;
-      line-height:1.5;
-      -webkit-font-smoothing:antialiased;
-      display:flex;
-      flex-direction:column;
       min-height:100vh;
       min-height:100dvh;
-    }
-    /* Desktop is a fixed single screen: header, hero, footer, no
-       scrollbar. Below the breakpoint the page goes back to normal
-       document flow, because forcing a phone to fit everything into
-       one viewport is how you get 9px type. */
-    @media (min-width:1041px) and (min-height:620px){
-      body{height:100vh;height:100dvh;overflow:hidden}
-    }
-
-    /* ── Header ─────────────────────────────────────────────── */
-    header{
-      padding:clamp(12px,1.8vh,20px) 24px;
-      flex-shrink:0;
       display:flex;
-      align-items:center;
-      justify-content:space-between;
-      max-width:1100px;
-      width:100%;
-      margin:0 auto;
+      flex-direction:column;
+      -webkit-font-smoothing:antialiased;
     }
-    .wordmark{
-      display:flex;align-items:center;gap:9px;
-      font-weight:700;font-size:19px;letter-spacing:-0.02em;
-      color:#fff;text-decoration:none;
-    }
-    .wordmark img{width:30px;height:30px}
-    .nav-link{
-      font-size:15px;font-weight:600;color:rgba(255,255,255,.85);
-      text-decoration:none;
-    }
-    .nav-link:hover{color:#fff}
 
-    /* ── Hero ───────────────────────────────────────────────── */
-    /* Desktop: one screen, no scrolling. Phones flank the centre
-       column rather than sitting below it, so the whole proposition
-       (what it is, where to get it, what it looks like) is visible
-       without a scroll. Collapses to a single column on narrow
-       screens, where vertical space is cheap and width is not. */
+    /* ── Header ─────────────────────────────────────────────────── */
+    header{
+      width:100%;max-width:1360px;margin:0 auto;
+      padding:18px clamp(16px,3vw,36px);
+      display:flex;align-items:center;justify-content:space-between;
+      gap:16px;
+    }
+    .logo{display:block;line-height:0}
+    /* The full lockup, not the icon plus a typed word. Only the _hero
+       file has a transparent background; braindex_logo.png and
+       _tight.png are matted onto opaque white and show as a white box
+       on any coloured ground. */
+    .logo img{height:clamp(30px,4.6vw,44px);width:auto;display:block}
+    .nav{
+      font-size:15px;font-weight:600;color:#fff;text-decoration:none;
+      padding:8px 16px;border-radius:999px;
+      background:rgba(255,255,255,.16);
+      border:1px solid rgba(255,255,255,.3);
+      white-space:nowrap;
+    }
+    .nav:hover{background:rgba(255,255,255,.26)}
+
+    /* ── Hero ───────────────────────────────────────────────────── */
+    /* Flex, not a fixed grid with vh clamps. The previous version
+       pinned sizes to viewport height and fell apart on a short, wide
+       window (1268x604): items centred inside an overflowing row and
+       the layout came apart. Flex with wrapping degrades predictably
+       at every size instead. */
     main{
       flex:1;
-      display:grid;
-      grid-template-columns:1fr minmax(320px,520px) 1fr;
-      align-items:center;
-      justify-items:center;
-      gap:clamp(8px,2vw,40px);
-      text-align:center;
-      padding:8px clamp(16px,3vw,40px) 16px;
-      max-width:1400px;
-      margin:0 auto;
-      width:100%;
-      min-height:0;
+      width:100%;max-width:1360px;margin:0 auto;
+      padding:clamp(8px,2vh,28px) clamp(16px,3vw,36px) clamp(24px,4vh,48px);
+      display:flex;align-items:center;justify-content:center;
+      gap:clamp(16px,3vw,56px);
     }
+
     .centre{
       display:flex;flex-direction:column;align-items:center;
-      grid-column:2;width:100%;
+      text-align:center;
+      flex:0 1 560px;min-width:0;
     }
-    .brain{
-      width:clamp(76px,11vh,118px);
-      height:clamp(76px,11vh,118px);
-      /* White halo so the pink character separates from the pink
-         ground; without it the body merges and the eyes stop reading. */
-      filter:drop-shadow(0 0 10px rgba(255,255,255,.55))
-             drop-shadow(0 8px 18px rgba(0,0,0,.16));
-      filter:drop-shadow(0 10px 22px rgba(0,0,0,.18));
-      object-fit:contain;
-      margin-bottom:clamp(10px,2vh,22px);
-      animation:float 4s ease-in-out infinite;
+
+    /* Brain sits on a white disc. This is the fix for "the eyes aren't
+       white": the character is pink-on-pink, so its white eyes had
+       nothing to read against and picked up the ground. A white disc
+       gives them contrast and makes the mascot the focal point. */
+    .mascot{
+      width:clamp(104px,15vw,150px);
+      aspect-ratio:1;
+      border-radius:50%;
+      background:#fff;
+      display:grid;place-items:center;
+      box-shadow:0 14px 34px rgba(0,0,0,.18);
+      margin-bottom:clamp(16px,2.6vh,26px);
+      animation:float 4.5s ease-in-out infinite;
     }
+    .mascot img{width:76%;height:76%;object-fit:contain;display:block}
     @keyframes float{
       0%,100%{transform:translateY(0)}
-      50%{transform:translateY(-10px)}
-    }
-    @media (prefers-reduced-motion:reduce){
-      .brain{animation:none}
+      50%{transform:translateY(-9px)}
     }
 
     h1{
-      font-size:clamp(34px,6.4vh,58px);
-      line-height:1.02;
-      letter-spacing:-0.035em;
-      font-weight:800;
-      margin-bottom:clamp(12px,2.4vh,24px);
+      font-size:clamp(36px,5.6vw,62px);
+      line-height:1.02;letter-spacing:-0.035em;font-weight:800;
+      text-shadow:0 3px 18px rgba(0,0,0,.12);
+      margin-bottom:12px;
     }
-    h1{text-shadow:0 3px 16px rgba(0,0,0,.14)}
-    h1 .pink{color:#FFE14D}
+    h1 .alt{color:#FFE566}
+
     .sub{
-      font-size:clamp(16px,4vw,19px);
-      color:var(--text-muted);
-      max-width:430px;
-      margin-bottom:38px;
+      font-size:clamp(15px,1.7vw,18px);
+      color:rgba(255,255,255,.92);
+      max-width:30ch;
+      margin-bottom:clamp(20px,3vh,30px);
     }
 
-    /* ── Store buttons ──────────────────────────────────────── */
-    .stores{
-      display:flex;gap:12px;flex-wrap:wrap;
-      justify-content:center;margin-bottom:0;
-    }
+    /* ── Store badges ───────────────────────────────────────────── */
+    .stores{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
     .store{
       display:flex;align-items:center;gap:11px;
-      background:#000;color:#fff;
-      box-shadow:0 5px 16px rgba(0,0,0,.2);
-      text-decoration:none;
-      padding:9px 18px;border-radius:11px;
-      border:1px solid rgba(255,255,255,.28);
-      min-width:168px;
-      transition:transform .15s ease,opacity .15s ease;
+      background:#000;color:#fff;text-decoration:none;
+      padding:9px 18px;border-radius:12px;
+      min-width:170px;
+      box-shadow:0 6px 18px rgba(0,0,0,.22);
+      transition:transform .15s ease;
     }
-    .store:hover{transform:translateY(-2px);opacity:.92}
+    .store:hover{transform:translateY(-2px)}
     .store svg{width:25px;height:25px;flex-shrink:0}
-    .store-text{text-align:left;line-height:1.15}
-    .store-text small{display:block;font-size:10px;opacity:.9;font-weight:400;letter-spacing:.01em}
-    .store-text strong{display:block;font-size:17px;font-weight:600;letter-spacing:-0.02em;line-height:1.15}
-
-    /* ── Play now ───────────────────────────────────────────── */
-    .play{
-      display:inline-flex;align-items:center;justify-content:center;gap:10px;
-      background:var(--accent);color:#fff;
-      font-size:17px;font-weight:700;letter-spacing:-0.01em;
-      text-decoration:none;
-      padding:clamp(13px,1.8vh,17px) clamp(30px,4vw,46px);border-radius:999px;font-size:clamp(16px,2vh,18px);
-      box-shadow:0 6px 20px rgba(14,26,74,.32);
-      transition:transform .15s ease,box-shadow .15s ease;
-      margin-top:10px;
-    }
-    .play:hover{
-      transform:translateY(-2px);
-      box-shadow:0 10px 28px rgba(14,26,74,.4);
-    }
-    .play-note{
-      font-size:13.5px;color:var(--text-muted);
-      margin-top:11px;
-    }
-
-
+    .store span{text-align:left;line-height:1.15}
+    .store small{display:block;font-size:10px;opacity:.9}
+    .store strong{display:block;font-size:17px;font-weight:600;letter-spacing:-0.02em}
 
     .or{
-      font-size:12.5px;font-weight:700;letter-spacing:.14em;
-      color:rgba(255,255,255,.72);margin:clamp(10px,2vh,20px) 0 clamp(8px,1.4vh,14px);
+      font-size:12px;font-weight:700;letter-spacing:.16em;
+      color:rgba(255,255,255,.75);
+      margin:clamp(16px,2.4vh,24px) 0 clamp(12px,1.8vh,18px);
     }
-    /* Live dot: a small signal that this is the real game running now,
-       not a demo or a video. */
-    .play .dot{
+
+    .play{
+      display:inline-flex;align-items:center;justify-content:center;gap:11px;
+      background:var(--ink);color:#fff;text-decoration:none;
+      font-size:clamp(16px,1.9vw,19px);font-weight:700;letter-spacing:-0.01em;
+      padding:16px 42px;border-radius:999px;
+      box-shadow:0 10px 26px rgba(19,32,92,.4);
+      transition:transform .15s ease,box-shadow .15s ease;
+    }
+    .play:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(19,32,92,.5)}
+    .dot{
       width:9px;height:9px;border-radius:50%;background:#4ADE80;
       box-shadow:0 0 0 0 rgba(74,222,128,.7);
-      animation:pulse 1.8s infinite;
+      animation:pulse 1.9s infinite;
     }
     @keyframes pulse{
       0%{box-shadow:0 0 0 0 rgba(74,222,128,.7)}
-      70%{box-shadow:0 0 0 9px rgba(74,222,128,0)}
+      70%{box-shadow:0 0 0 10px rgba(74,222,128,0)}
       100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}
     }
-    .play-note{
-      font-size:13.5px;color:rgba(255,255,255,.8);margin-top:11px;
-    }
+    .note{font-size:13.5px;color:rgba(255,255,255,.85);margin-top:11px}
 
-    /* Hand-off overlay. The app is an 18MB download, so without this the
-       click appears to do nothing for several seconds and people click
-       again or leave. Covers that gap with something deliberate. */
-    #handoff{
-      position:fixed;inset:0;z-index:999;
-      display:none;align-items:center;justify-content:center;
-      flex-direction:column;gap:22px;
-      background:linear-gradient(165deg,#FF8FB8 0%,#FF5C96 45%,#EC1A6F 100%);
-      opacity:0;transition:opacity .3s ease;
-    }
-    #handoff.on{display:flex;opacity:1}
-    #handoff img{
-      width:86px;height:86px;
-      animation:hop .95s cubic-bezier(.3,.05,.3,1) infinite;
-      transform-origin:center bottom;
-    }
-    @keyframes hop{
-      0%,100%{transform:translateY(0) scale(1,1)}
-      30%{transform:translateY(-22px) scale(.95,1.05)}
-      55%{transform:translateY(0) scale(1.07,.93)}
-    }
-    #handoff p{
-      color:#fff;font-size:15.5px;font-weight:600;
-    }
-    @media (prefers-reduced-motion:reduce){
-      .play .dot,#handoff img{animation:none}
-    }
-
-    /* ── Phone mockups ────────────────────────────────────────
-       Built in CSS rather than screenshots on purpose: the store
-       screenshots on disk are all from the pre-redesign app (single
-       "Daily" button home) and would advertise a product that no
-       longer exists. These track the current design and never go
-       stale. Swap in real captures when fresh ones exist. */
-    .phone-side{
-      display:flex;align-items:center;justify-content:center;
-      perspective:1400px;min-width:0;
-    }
-    .phone-side.left{grid-column:1}
-    .phone-side.right{grid-column:3}
+    /* ── Phone mockups ──────────────────────────────────────────── */
+    /* Drawn in CSS rather than screenshotted: every store screenshot on
+       disk predates the app redesign and would advertise a product that
+       no longer exists. */
     .phone{
-      /* Height-driven so the phones never push the page past one
-         screen on a short laptop display. */
-      width:clamp(150px,20vh,236px);
-      flex-shrink:0;
-      background:#0E1A4A;border-radius:30px;padding:7px;
-      box-shadow:0 22px 50px rgba(0,0,0,.28);
+      width:clamp(190px,17vw,250px);
+      flex:0 0 auto;
+      background:var(--ink);
+      border-radius:30px;padding:7px;
+      box-shadow:0 24px 54px rgba(0,0,0,.3);
     }
-    .phone.tilt-l{transform:rotateY(16deg) rotate(-4deg)}
-    .phone.tilt-r{transform:rotateY(-16deg) rotate(4deg)}
-    .screen{
-      background:#fff;border-radius:24px;overflow:hidden;
-      color:var(--text);text-align:left;
-    }
-    .notch{
-      height:22px;display:flex;align-items:center;justify-content:center;
-    }
-    .notch span{width:62px;height:5px;border-radius:99px;background:#0E1A4A;opacity:.18}
-    .scr-pad{padding:0 14px 16px}
-    .scr-top{
+    .phone.l{transform:rotate(-4deg)}
+    .phone.r{transform:rotate(4deg)}
+    .screen{background:#fff;border-radius:24px;overflow:hidden;color:var(--ink);text-align:left}
+    .notch{height:22px;display:grid;place-items:center}
+    .notch i{display:block;width:60px;height:5px;border-radius:99px;background:var(--ink);opacity:.16}
+    .pad{padding:0 14px 16px}
+    .top{
       display:flex;align-items:center;justify-content:space-between;
-      font-size:10.5px;font-weight:700;color:var(--text-muted);margin-bottom:12px;
+      font-size:10.5px;font-weight:700;color:#6B7194;margin-bottom:12px;
     }
-    .flame{color:var(--primary)}
-    .q{
-      font-size:13.5px;font-weight:750;line-height:1.3;
-      letter-spacing:-0.01em;margin-bottom:12px;color:var(--accent);
-    }
+    .q{font-size:13.5px;font-weight:750;line-height:1.3;margin-bottom:12px}
     .opt{
-      border:1.5px solid var(--border);border-radius:10px;
-      padding:8px 10px;font-size:11.5px;font-weight:600;
-      margin-bottom:7px;color:#2a2a3e;
+      border:1.5px solid #E6E8F2;border-radius:10px;
+      padding:8px 10px;font-size:11.5px;font-weight:600;margin-bottom:7px;color:#2A2F55;
     }
-    .opt.right{
-      background:#E7F8EE;border-color:#34C77B;color:#17804A;
-    }
-    /* leaderboard screen */
-    .score-big{
-      text-align:center;font-size:40px;font-weight:800;color:var(--primary);
-      letter-spacing:-0.03em;line-height:1;margin:6px 0 2px;
-    }
-    .score-cap{
-      text-align:center;font-size:10px;font-weight:650;
-      color:var(--text-muted);margin-bottom:14px;
-    }
-    .row{
-      display:flex;align-items:center;gap:8px;
-      padding:6.5px 8px;border-radius:9px;font-size:11px;font-weight:600;
-      margin-bottom:5px;color:#2a2a3e;
-    }
-    .row.me{background:#FFE9F2;color:var(--primary-dark);font-weight:750}
-    .rk{width:14px;font-weight:800;color:var(--text-faint);font-size:10px}
-    .row.me .rk{color:var(--primary)}
+    .opt.ok{background:#E7F8EE;border-color:#34C77B;color:#17804A}
+    .big{text-align:center;font-size:40px;font-weight:800;color:var(--pink);letter-spacing:-0.03em;line-height:1;margin:6px 0 2px}
+    .cap{text-align:center;font-size:10px;font-weight:650;color:#6B7194;margin-bottom:14px}
+    .row{display:flex;align-items:center;gap:8px;padding:6.5px 8px;border-radius:9px;font-size:11px;font-weight:600;margin-bottom:5px;color:#2A2F55}
+    .row.me{background:#FFE9F2;color:#B4125A;font-weight:750}
+    .rk{width:14px;font-weight:800;color:#A6ABC6;font-size:10px}
+    .row.me .rk{color:var(--pink)}
     .nm{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
     .pts{font-weight:800}
-    /* Tablet and below: single column. The phones move under the
-       centre column and sit side by side, which still shows both
-       screens without squeezing the headline. */
-    @media (max-width:1040px){
-      main{
-        grid-template-columns:1fr;
-        padding-top:20px;padding-bottom:36px;
-      }
-      .centre{grid-column:1}
-      .phone-side{grid-column:1}
-      .phone-side.left,.phone-side.right{display:none}
-      .phones-stacked{
-        display:flex;gap:16px;justify-content:center;
-        margin-top:clamp(20px,4vh,40px);perspective:1200px;
-      }
-    }
-    @media (min-width:1041px){ .phones-stacked{display:none} }
 
-    @media (max-width:640px){
-      .phones-stacked{gap:12px;margin-top:28px}
-      .phone{width:146px;border-radius:22px;padding:5px}
-      .phone.tilt-l,.phone.tilt-r{transform:none}
-      .scr-pad{padding:0 10px 12px}
-      .q{font-size:11px}
-      .opt{font-size:9.5px;padding:6px 8px}
-      .score-big{font-size:30px}
-      .row{font-size:9.5px;padding:5px 6px}
+    /* ── Responsive ─────────────────────────────────────────────── */
+    /* Under 1100px the flanking phones would squeeze the headline, so
+       they move below the centre column and sit side by side. */
+    @media (max-width:1100px){
+      main{flex-direction:column;gap:clamp(24px,4vh,40px)}
+      .centre{flex:0 1 auto;order:1}
+      .phones{display:flex;gap:16px;justify-content:center;order:2}
+      .phone.side{display:none}
+      .phone{width:clamp(160px,36vw,210px)}
+    }
+    @media (min-width:1101px){ .phones{display:none} }
+    @media (max-width:420px){
+      .phone{width:46vw}
+      .store{min-width:0;flex:1 1 150px}
     }
 
-    /* ── Footer ─────────────────────────────────────────────── */
     footer{
-      border-top:1px solid rgba(255,255,255,.22);
-      padding:clamp(10px,1.6vh,20px) 24px;
-      flex-shrink:0;
-      text-align:center;
-      font-size:13.5px;color:rgba(255,255,255,.82);
+      border-top:1px solid rgba(255,255,255,.24);
+      padding:18px 24px;text-align:center;
+      font-size:13.5px;color:rgba(255,255,255,.85);
     }
-    footer nav{
-      display:flex;gap:20px;flex-wrap:wrap;
-      justify-content:center;margin-bottom:9px;
-    }
-    footer a{color:rgba(255,255,255,.82);text-decoration:none}
+    footer nav{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-bottom:8px}
+    footer a{color:rgba(255,255,255,.85);text-decoration:none}
     footer a:hover{color:#fff}
+
+    @media (prefers-reduced-motion:reduce){
+      .mascot,.dot{animation:none}
+    }
   </style>
 </head>
 <body>
 
   <header>
-    <a class="wordmark" href="/">
-      <img src="brain-character.png" alt="" />
-      Braindex
-    </a>
-    <a class="nav-link" href="/about">About</a>
+    <a class="logo" href="/"><img src="braindex_logo_hero.png" alt="Braindex" /></a>
+    <a class="nav" href="/about">About</a>
   </header>
 
   <main>
 
-    <div class="phone-side left">
-      <div class="phone tilt-l">
-        <div class="screen">
-          <div class="notch"><span></span></div>
-          <div class="scr-pad">
-            <div class="scr-top">
-              <span>Question 3 of 6</span>
-              <span class="flame">&#128293; 42</span>
-            </div>
-            <div class="q">Which planet has the most moons?</div>
-            <div class="opt">Jupiter</div>
-            <div class="opt right">Saturn</div>
-            <div class="opt">Neptune</div>
-            <div class="opt">Uranus</div>
-          </div>
+    <div class="phone l side">
+      <div class="screen">
+        <div class="notch"><i></i></div>
+        <div class="pad">
+          <div class="top"><span>Question 3 of 6</span><span>&#128293; 42</span></div>
+          <div class="q">Which planet has the most moons?</div>
+          <div class="opt">Jupiter</div>
+          <div class="opt ok">Saturn</div>
+          <div class="opt">Neptune</div>
+          <div class="opt">Uranus</div>
         </div>
       </div>
     </div>
 
     <div class="centre">
-    <img class="brain" src="brain-character.png" alt="The Braindex brain character" />
+      <div class="mascot"><img src="brain-character.png" alt="" /></div>
 
-    <h1>The daily<br><span class="pink">trivia game.</span></h1>
+      <h1>The daily<br><span class="alt">trivia game.</span></h1>
+      <p class="sub">Same questions for everyone, every day.</p>
 
-    <div class="stores">
-      <a class="store" href="https://apps.apple.com/us/app/braindex/id6766744989"
-         onclick="gtag('event','store_click',{store:'ios'})">
-        <svg viewBox="0 0 24 24" aria-hidden="true" fill="#fff"><path d="M17.05 12.04c-.02-2.27 1.85-3.36 1.94-3.41-1.06-1.55-2.7-1.76-3.29-1.78-1.4-.14-2.73.82-3.44.82-.71 0-1.8-.8-2.96-.78-1.52.02-2.93.88-3.71 2.24-1.58 2.74-.4 6.8 1.13 9.02.75 1.09 1.65 2.31 2.82 2.27 1.13-.05 1.56-.73 2.93-.73s1.75.73 2.95.71c1.22-.02 1.99-1.11 2.74-2.2.86-1.26 1.22-2.48 1.24-2.55-.03-.01-2.37-.91-2.4-3.61zM14.8 5.37c.62-.76 1.04-1.8.93-2.85-.9.04-1.99.6-2.63 1.35-.57.67-1.07 1.74-.94 2.76 1 .08 2.02-.51 2.64-1.26z"/></svg>
-        <span class="store-text">
-          <small>Download on the</small>
-          <strong>App Store</strong>
-        </span>
-      </a>
+      <div class="stores">
+        <a class="store" href="https://apps.apple.com/us/app/braindex/id6766744989"
+           onclick="gtag('event','store_click',{store:'ios'})">
+          <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M17.05 12.04c-.02-2.27 1.85-3.36 1.94-3.41-1.06-1.55-2.7-1.76-3.29-1.78-1.4-.14-2.73.82-3.44.82-.71 0-1.8-.8-2.96-.78-1.52.02-2.93.88-3.71 2.24-1.58 2.74-.4 6.8 1.13 9.02.75 1.09 1.65 2.31 2.82 2.27 1.13-.05 1.56-.73 2.93-.73s1.75.73 2.95.71c1.22-.02 1.99-1.11 2.74-2.2.86-1.26 1.22-2.48 1.24-2.55-.03-.01-2.37-.91-2.4-3.61zM14.8 5.37c.62-.76 1.04-1.8.93-2.85-.9.04-1.99.6-2.63 1.35-.57.67-1.07 1.74-.94 2.76 1 .08 2.02-.51 2.64-1.26z"/></svg>
+          <span><small>Download on the</small><strong>App Store</strong></span>
+        </a>
+        <a class="store" href="https://play.google.com/store/apps/details?id=com.braindex.app"
+           onclick="gtag('event','store_click',{store:'android'})">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#00D4FF" d="M3.3 2.3c-.3.3-.4.7-.4 1.3v16.8c0 .6.1 1 .4 1.3l.1.1 9.4-9.4v-.2L3.4 2.2l-.1.1z"/>
+            <path fill="#FFCE00" d="M16.2 15.7l-3.4-3.3v-.2l3.4-3.4.1.1 4 2.3c1.1.7 1.1 1.7 0 2.3l-4 2.2z"/>
+            <path fill="#FF3A44" d="M16.3 15.6L12.8 12.3 3.3 21.8c.4.4 1 .4 1.7.1l11.3-6.3"/>
+            <path fill="#00E676" d="M16.3 8.9L5 2.6c-.7-.4-1.3-.3-1.7.1l9.5 9.5 3.5-3.3z"/>
+          </svg>
+          <span><small>Get it on</small><strong>Google Play</strong></span>
+        </a>
+      </div>
 
-      <a class="store" href="https://play.google.com/store/apps/details?id=com.braindex.app"
-         onclick="gtag('event','store_click',{store:'android'})">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="#00D4FF" d="M3.3 2.3c-.3.3-.4.7-.4 1.3v16.8c0 .6.1 1 .4 1.3l.1.1 9.4-9.4v-.2L3.4 2.2l-.1.1z"/>
-          <path fill="#FFCE00" d="M16.2 15.7l-3.4-3.3v-.2l3.4-3.4.1.1 4 2.3c1.1.7 1.1 1.7 0 2.3l-4 2.2z"/>
-          <path fill="#FF3A44" d="M16.3 15.6L12.8 12.3 3.3 21.8c.4.4 1 .4 1.7.1l11.3-6.3"/>
-          <path fill="#00E676" d="M16.3 8.9L5 2.6c-.7-.4-1.3-.3-1.7.1l9.5 9.5 3.5-3.3z"/>
-        </svg>
-        <span class="store-text">
-          <small>Get it on</small>
-          <strong>Google Play</strong>
-        </span>
-      </a>
-    </div>
+      <div class="or">or</div>
 
-    <div class="or">or</div>
+      <a class="play" id="playNow" href="/app"><span class="dot"></span>Play online now</a>
+      <p class="note">Free, no download, plays in your browser</p>
 
-    <a class="play" id="playNow" href="/app">
-      <span class="dot"></span>
-      Play online now
-    </a>
-    <p class="play-note">Free, no download, plays in your browser</p>
-
-
-
-
-      <div class="phones-stacked" aria-label="Braindex on a phone">
-        <div class="phone tilt-l">
+      <div class="phones">
+        <div class="phone l">
           <div class="screen">
-            <div class="notch"><span></span></div>
-            <div class="scr-pad">
-              <div class="scr-top">
-              <span>Question 3 of 6</span>
-              <span class="flame">&#128293; 42</span>
-            </div>
+            <div class="notch"><i></i></div>
+            <div class="pad">
+              <div class="top"><span>Question 3 of 6</span><span>&#128293; 42</span></div>
               <div class="q">Which planet has the most moons?</div>
               <div class="opt">Jupiter</div>
-              <div class="opt right">Saturn</div>
+              <div class="opt ok">Saturn</div>
               <div class="opt">Neptune</div>
               <div class="opt">Uranus</div>
+            </div>
           </div>
         </div>
-        </div>
-        <div class="phone tilt-r">
+        <div class="phone r">
           <div class="screen">
-            <div class="notch"><span></span></div>
-            <div class="scr-pad">
-              <div class="scr-top">
-              <span>Today&rsquo;s leaderboard</span>
-              <span class="flame">&#127942;</span>
-            </div>
-              <div class="score-big">847</div>
-              <div class="score-cap">your score today</div>
+            <div class="notch"><i></i></div>
+            <div class="pad">
+              <div class="top"><span>Today&rsquo;s leaderboard</span><span>&#127942;</span></div>
+              <div class="big">847</div>
+              <div class="cap">your score today</div>
               <div class="row"><span class="rk">1</span><span class="nm">Aoife</span><span class="pts">912</span></div>
               <div class="row me"><span class="rk">2</span><span class="nm">You</span><span class="pts">847</span></div>
               <div class="row"><span class="rk">3</span><span class="nm">Mark</span><span class="pts">806</span></div>
               <div class="row"><span class="rk">4</span><span class="nm">Siobhan</span><span class="pts">781</span></div>
-              <div class="row"><span class="rk">5</span><span class="nm">Dec</span><span class="pts">764</span></div>
+            </div>
           </div>
-        </div>
         </div>
       </div>
     </div>
 
-    <div class="phone-side right">
-      <div class="phone tilt-r">
-        <div class="screen">
-          <div class="notch"><span></span></div>
-          <div class="scr-pad">
-            <div class="scr-top">
-              <span>Today&rsquo;s leaderboard</span>
-              <span class="flame">&#127942;</span>
-            </div>
-            <div class="score-big">847</div>
-            <div class="score-cap">your score today</div>
-            <div class="row"><span class="rk">1</span><span class="nm">Aoife</span><span class="pts">912</span></div>
-            <div class="row me"><span class="rk">2</span><span class="nm">You</span><span class="pts">847</span></div>
-            <div class="row"><span class="rk">3</span><span class="nm">Mark</span><span class="pts">806</span></div>
-            <div class="row"><span class="rk">4</span><span class="nm">Siobhan</span><span class="pts">781</span></div>
-            <div class="row"><span class="rk">5</span><span class="nm">Dec</span><span class="pts">764</span></div>
-          </div>
+    <div class="phone r side">
+      <div class="screen">
+        <div class="notch"><i></i></div>
+        <div class="pad">
+          <div class="top"><span>Today&rsquo;s leaderboard</span><span>&#127942;</span></div>
+          <div class="big">847</div>
+          <div class="cap">your score today</div>
+          <div class="row"><span class="rk">1</span><span class="nm">Aoife</span><span class="pts">912</span></div>
+          <div class="row me"><span class="rk">2</span><span class="nm">You</span><span class="pts">847</span></div>
+          <div class="row"><span class="rk">3</span><span class="nm">Mark</span><span class="pts">806</span></div>
+          <div class="row"><span class="rk">4</span><span class="nm">Siobhan</span><span class="pts">781</span></div>
+          <div class="row"><span class="rk">5</span><span class="nm">Dec</span><span class="pts">764</span></div>
         </div>
       </div>
     </div>
@@ -490,25 +347,13 @@
     &copy; 2026 Braindex
   </footer>
 
-
-  <div id="handoff" aria-hidden="true">
-    <img src="brain-character.png" alt="" />
-    <p>Starting today's round...</p>
-  </div>
-
   <script>
     (function(){
-      var btn = document.getElementById('playNow');
-      var veil = document.getElementById('handoff');
-      if(!btn || !veil) return;
-      btn.addEventListener('click', function(e){
-        // Let modifier-clicks and middle-clicks open a new tab normally.
-        if(e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-        e.preventDefault();
+      var btn=document.getElementById('playNow');
+      if(!btn) return;
+      btn.addEventListener('click',function(e){
+        if(e.metaKey||e.ctrlKey||e.shiftKey||e.button!==0) return;
         if(window.gtag) gtag('event','play_web_click');
-        veil.classList.add('on');
-        // Short beat so the overlay is actually seen, then navigate.
-        setTimeout(function(){ window.location.href = btn.href; }, 450);
       });
     })();
   </script>
