@@ -44,8 +44,9 @@
     html{-webkit-text-size-adjust:100%}
     body{
       font-family:var(--font);
-      color:var(--text);
-      background:var(--bg);
+      color:#fff;
+      background:linear-gradient(165deg,#FF3D8B 0%,var(--primary) 42%,#C2185B 100%);
+      background-attachment:fixed;
       line-height:1.5;
       -webkit-font-smoothing:antialiased;
       display:flex;
@@ -67,14 +68,14 @@
     .wordmark{
       display:flex;align-items:center;gap:9px;
       font-weight:700;font-size:19px;letter-spacing:-0.02em;
-      color:var(--text);text-decoration:none;
+      color:#fff;text-decoration:none;
     }
     .wordmark img{width:30px;height:30px}
     .nav-link{
-      font-size:15px;font-weight:500;color:var(--text-muted);
+      font-size:15px;font-weight:600;color:rgba(255,255,255,.85);
       text-decoration:none;
     }
-    .nav-link:hover{color:var(--primary)}
+    .nav-link:hover{color:#fff}
 
     /* ── Hero ───────────────────────────────────────────────── */
     main{
@@ -85,12 +86,13 @@
       justify-content:center;
       text-align:center;
       padding:32px 24px 56px;
-      max-width:620px;
+      max-width:980px;
       margin:0 auto;
       width:100%;
     }
     .brain{
-      width:148px;height:148px;
+      width:132px;height:132px;
+      filter:drop-shadow(0 10px 22px rgba(0,0,0,.18));
       object-fit:contain;
       margin-bottom:28px;
       animation:float 4s ease-in-out infinite;
@@ -110,11 +112,8 @@
       font-weight:800;
       margin-bottom:18px;
     }
-    h1 .pink{
-      background:linear-gradient(135deg,var(--primary),#FF6FA5);
-      -webkit-background-clip:text;background-clip:text;
-      -webkit-text-fill-color:transparent;
-    }
+    h1{text-shadow:0 3px 16px rgba(0,0,0,.14)}
+    h1 .pink{color:#FFE14D}
     .sub{
       font-size:clamp(16px,4vw,19px);
       color:var(--text-muted);
@@ -128,51 +127,177 @@
       justify-content:center;margin-bottom:18px;
     }
     .store{
-      display:flex;align-items:center;gap:10px;
-      background:var(--accent);color:#fff;
+      display:flex;align-items:center;gap:11px;
+      background:#000;color:#fff;
+      box-shadow:0 5px 16px rgba(0,0,0,.2);
       text-decoration:none;
-      padding:11px 20px;border-radius:13px;
+      padding:9px 18px;border-radius:11px;
+      border:1px solid rgba(255,255,255,.28);
+      min-width:168px;
       transition:transform .15s ease,opacity .15s ease;
     }
     .store:hover{transform:translateY(-2px);opacity:.92}
-    .store svg{width:23px;height:23px;flex-shrink:0;fill:#fff}
+    .store svg{width:25px;height:25px;flex-shrink:0}
     .store-text{text-align:left;line-height:1.15}
-    .store-text small{display:block;font-size:10px;opacity:.8;font-weight:500}
-    .store-text strong{display:block;font-size:15px;font-weight:600;letter-spacing:-0.01em}
+    .store-text small{display:block;font-size:10px;opacity:.9;font-weight:400;letter-spacing:.01em}
+    .store-text strong{display:block;font-size:17px;font-weight:600;letter-spacing:-0.02em;line-height:1.15}
 
     /* ── Play now ───────────────────────────────────────────── */
     .play{
-      display:inline-flex;align-items:center;gap:9px;
-      background:var(--primary);color:#fff;
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      background:var(--accent);color:#fff;
       font-size:17px;font-weight:700;letter-spacing:-0.01em;
       text-decoration:none;
-      padding:15px 38px;border-radius:999px;
-      box-shadow:0 5px 18px rgba(236,26,111,.3);
+      padding:17px 44px;border-radius:999px;font-size:18px;
+      box-shadow:0 6px 20px rgba(14,26,74,.32);
       transition:transform .15s ease,box-shadow .15s ease;
       margin-top:10px;
     }
     .play:hover{
       transform:translateY(-2px);
-      box-shadow:0 8px 24px rgba(236,26,111,.38);
+      box-shadow:0 10px 28px rgba(14,26,74,.4);
     }
     .play-note{
       font-size:13.5px;color:var(--text-muted);
       margin-top:11px;
     }
 
+
+
+    .or{
+      font-size:12.5px;font-weight:700;letter-spacing:.14em;
+      color:rgba(255,255,255,.6);margin:20px 0 14px;
+    }
+    /* Live dot: a small signal that this is the real game running now,
+       not a demo or a video. */
+    .play .dot{
+      width:9px;height:9px;border-radius:50%;background:#4ADE80;
+      box-shadow:0 0 0 0 rgba(74,222,128,.7);
+      animation:pulse 1.8s infinite;
+    }
+    @keyframes pulse{
+      0%{box-shadow:0 0 0 0 rgba(74,222,128,.7)}
+      70%{box-shadow:0 0 0 9px rgba(74,222,128,0)}
+      100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}
+    }
+    .play-note{
+      font-size:13.5px;color:rgba(255,255,255,.8);margin-top:11px;
+    }
+
+    /* Hand-off overlay. The app is an 18MB download, so without this the
+       click appears to do nothing for several seconds and people click
+       again or leave. Covers that gap with something deliberate. */
+    #handoff{
+      position:fixed;inset:0;z-index:999;
+      display:none;align-items:center;justify-content:center;
+      flex-direction:column;gap:22px;
+      background:linear-gradient(165deg,#FF3D8B 0%,var(--primary) 42%,#C2185B 100%);
+      opacity:0;transition:opacity .3s ease;
+    }
+    #handoff.on{display:flex;opacity:1}
+    #handoff img{
+      width:86px;height:86px;
+      animation:hop .95s cubic-bezier(.3,.05,.3,1) infinite;
+      transform-origin:center bottom;
+    }
+    @keyframes hop{
+      0%,100%{transform:translateY(0) scale(1,1)}
+      30%{transform:translateY(-22px) scale(.95,1.05)}
+      55%{transform:translateY(0) scale(1.07,.93)}
+    }
+    #handoff p{
+      color:#fff;font-size:15.5px;font-weight:600;
+    }
+    @media (prefers-reduced-motion:reduce){
+      .play .dot,#handoff img{animation:none}
+    }
+
+    /* ── Phone mockups ────────────────────────────────────────
+       Built in CSS rather than screenshots on purpose: the store
+       screenshots on disk are all from the pre-redesign app (single
+       "Daily" button home) and would advertise a product that no
+       longer exists. These track the current design and never go
+       stale. Swap in real captures when fresh ones exist. */
+    .phones{
+      display:flex;justify-content:center;align-items:flex-end;
+      gap:26px;margin-top:54px;perspective:1200px;
+    }
+    .phone{
+      width:218px;flex-shrink:0;
+      background:#0E1A4A;border-radius:30px;padding:7px;
+      box-shadow:0 22px 50px rgba(0,0,0,.28);
+    }
+    .phone.tilt-l{transform:rotateY(13deg) rotate(-3deg)}
+    .phone.tilt-r{transform:rotateY(-13deg) rotate(3deg)}
+    .screen{
+      background:#fff;border-radius:24px;overflow:hidden;
+      color:var(--text);text-align:left;
+    }
+    .notch{
+      height:22px;display:flex;align-items:center;justify-content:center;
+    }
+    .notch span{width:62px;height:5px;border-radius:99px;background:#0E1A4A;opacity:.18}
+    .scr-pad{padding:0 14px 16px}
+    .scr-top{
+      display:flex;align-items:center;justify-content:space-between;
+      font-size:10.5px;font-weight:700;color:var(--text-muted);margin-bottom:12px;
+    }
+    .flame{color:var(--primary)}
+    .q{
+      font-size:13.5px;font-weight:750;line-height:1.3;
+      letter-spacing:-0.01em;margin-bottom:12px;color:var(--accent);
+    }
+    .opt{
+      border:1.5px solid var(--border);border-radius:10px;
+      padding:8px 10px;font-size:11.5px;font-weight:600;
+      margin-bottom:7px;color:#2a2a3e;
+    }
+    .opt.right{
+      background:#E7F8EE;border-color:#34C77B;color:#17804A;
+    }
+    /* leaderboard screen */
+    .score-big{
+      text-align:center;font-size:40px;font-weight:800;color:var(--primary);
+      letter-spacing:-0.03em;line-height:1;margin:6px 0 2px;
+    }
+    .score-cap{
+      text-align:center;font-size:10px;font-weight:650;
+      color:var(--text-muted);margin-bottom:14px;
+    }
+    .row{
+      display:flex;align-items:center;gap:8px;
+      padding:6.5px 8px;border-radius:9px;font-size:11px;font-weight:600;
+      margin-bottom:5px;color:#2a2a3e;
+    }
+    .row.me{background:#FFE9F2;color:var(--primary-dark);font-weight:750}
+    .rk{width:14px;font-weight:800;color:var(--text-faint);font-size:10px}
+    .row.me .rk{color:var(--primary)}
+    .nm{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+    .pts{font-weight:800}
+    @media (max-width:640px){
+      .phones{gap:12px;margin-top:40px}
+      .phone{width:150px;border-radius:22px;padding:5px}
+      .phone.tilt-l,.phone.tilt-r{transform:none}
+      .scr-pad{padding:0 10px 12px}
+      .q{font-size:11px}
+      .opt{font-size:9.5px;padding:6px 8px}
+      .score-big{font-size:30px}
+      .row{font-size:9.5px;padding:5px 6px}
+    }
+
     /* ── Footer ─────────────────────────────────────────────── */
     footer{
-      border-top:1px solid var(--border);
+      border-top:1px solid rgba(255,255,255,.22);
       padding:22px 24px;
       text-align:center;
-      font-size:13.5px;color:var(--text-muted);
+      font-size:13.5px;color:rgba(255,255,255,.82);
     }
     footer nav{
       display:flex;gap:20px;flex-wrap:wrap;
       justify-content:center;margin-bottom:9px;
     }
-    footer a{color:var(--text-muted);text-decoration:none}
-    footer a:hover{color:var(--primary)}
+    footer a{color:rgba(255,255,255,.82);text-decoration:none}
+    footer a:hover{color:#fff}
   </style>
 </head>
 <body>
@@ -190,15 +315,10 @@
 
     <h1>The daily<br><span class="pink">trivia game.</span></h1>
 
-    <p class="sub">
-      Everyone gets the same questions each day. One attempt,
-      then see where you landed.
-    </p>
-
     <div class="stores">
       <a class="store" href="https://apps.apple.com/us/app/braindex/id6766744989"
          onclick="gtag('event','store_click',{store:'ios'})">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05 12.04c-.02-2.27 1.85-3.36 1.94-3.41-1.06-1.55-2.7-1.76-3.29-1.78-1.4-.14-2.73.82-3.44.82-.71 0-1.8-.8-2.96-.78-1.52.02-2.93.88-3.71 2.24-1.58 2.74-.4 6.8 1.13 9.02.75 1.09 1.65 2.31 2.82 2.27 1.13-.05 1.56-.73 2.93-.73s1.75.73 2.95.71c1.22-.02 1.99-1.11 2.74-2.2.86-1.26 1.22-2.48 1.24-2.55-.03-.01-2.37-.91-2.4-3.61zM14.8 5.37c.62-.76 1.04-1.8.93-2.85-.9.04-1.99.6-2.63 1.35-.57.67-1.07 1.74-.94 2.76 1 .08 2.02-.51 2.64-1.26z"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="#fff"><path d="M17.05 12.04c-.02-2.27 1.85-3.36 1.94-3.41-1.06-1.55-2.7-1.76-3.29-1.78-1.4-.14-2.73.82-3.44.82-.71 0-1.8-.8-2.96-.78-1.52.02-2.93.88-3.71 2.24-1.58 2.74-.4 6.8 1.13 9.02.75 1.09 1.65 2.31 2.82 2.27 1.13-.05 1.56-.73 2.93-.73s1.75.73 2.95.71c1.22-.02 1.99-1.11 2.74-2.2.86-1.26 1.22-2.48 1.24-2.55-.03-.01-2.37-.91-2.4-3.61zM14.8 5.37c.62-.76 1.04-1.8.93-2.85-.9.04-1.99.6-2.63 1.35-.57.67-1.07 1.74-.94 2.76 1 .08 2.02-.51 2.64-1.26z"/></svg>
         <span class="store-text">
           <small>Download on the</small>
           <strong>App Store</strong>
@@ -207,7 +327,12 @@
 
       <a class="store" href="https://play.google.com/store/apps/details?id=com.braindex.app"
          onclick="gtag('event','store_click',{store:'android'})">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 2.2c-.3.3-.5.8-.5 1.4v16.8c0 .6.2 1.1.5 1.4l.1.1 9.4-9.4v-.2L3.7 2.1l-.1.1zm12.6 6.3L13.9 11l2.3 2.3 2.8-1.6c.8-.5.8-1.3 0-1.8l-2.8-1.6v.2zm-2.9 2.9L4 20.7c.3.3.7.3 1.2 0l10.2-5.8-2.1-2.1v.6zM5.2 3.3c-.5-.3-.9-.3-1.2 0l9.3 9.3 2.1-2.1L5.2 3.3z"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#00D4FF" d="M3.3 2.3c-.3.3-.4.7-.4 1.3v16.8c0 .6.1 1 .4 1.3l.1.1 9.4-9.4v-.2L3.4 2.2l-.1.1z"/>
+          <path fill="#FFCE00" d="M16.2 15.7l-3.4-3.3v-.2l3.4-3.4.1.1 4 2.3c1.1.7 1.1 1.7 0 2.3l-4 2.2z"/>
+          <path fill="#FF3A44" d="M16.3 15.6L12.8 12.3 3.3 21.8c.4.4 1 .4 1.7.1l11.3-6.3"/>
+          <path fill="#00E676" d="M16.3 8.9L5 2.6c-.7-.4-1.3-.3-1.7.1l9.5 9.5 3.5-3.3z"/>
+        </svg>
         <span class="store-text">
           <small>Get it on</small>
           <strong>Google Play</strong>
@@ -215,20 +340,88 @@
       </a>
     </div>
 
-    <a class="play" href="/app" onclick="gtag('event','play_web_click')">
-      Play now
+    <div class="or">or</div>
+
+    <a class="play" id="playNow" href="/app">
+      <span class="dot"></span>
+      Play online now
     </a>
-    <p class="play-note">No download needed. Plays in your browser.</p>
+    <p class="play-note">Free, no download, plays in your browser</p>
+
+
+    <div class="phones" aria-label="Braindex on a phone">
+
+      <div class="phone tilt-l">
+        <div class="screen">
+          <div class="notch"><span></span></div>
+          <div class="scr-pad">
+            <div class="scr-top">
+              <span>Question 3 of 6</span>
+              <span class="flame">&#128293; 42</span>
+            </div>
+            <div class="q">Which planet has the most moons?</div>
+            <div class="opt">Jupiter</div>
+            <div class="opt right">Saturn</div>
+            <div class="opt">Neptune</div>
+            <div class="opt">Uranus</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phone tilt-r">
+        <div class="screen">
+          <div class="notch"><span></span></div>
+          <div class="scr-pad">
+            <div class="scr-top">
+              <span>Today&rsquo;s leaderboard</span>
+              <span class="flame">&#127942;</span>
+            </div>
+            <div class="score-big">847</div>
+            <div class="score-cap">your score today</div>
+            <div class="row"><span class="rk">1</span><span class="nm">Aoife</span><span class="pts">912</span></div>
+            <div class="row me"><span class="rk">2</span><span class="nm">You</span><span class="pts">847</span></div>
+            <div class="row"><span class="rk">3</span><span class="nm">Mark</span><span class="pts">806</span></div>
+            <div class="row"><span class="rk">4</span><span class="nm">Siobhan</span><span class="pts">781</span></div>
+            <div class="row"><span class="rk">5</span><span class="nm">Dec</span><span class="pts">764</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
   </main>
 
   <footer>
     <nav>
       <a href="/about">About</a>
-      <a href="/support.html">Support</a>
-      <a href="/privacy-policy.html">Privacy</a>
+      <a href="/support">Support</a>
+      <a href="/privacy-policy">Privacy</a>
     </nav>
     &copy; 2026 Braindex
   </footer>
+
+
+  <div id="handoff" aria-hidden="true">
+    <img src="brain-character.png" alt="" />
+    <p>Starting today's round...</p>
+  </div>
+
+  <script>
+    (function(){
+      var btn = document.getElementById('playNow');
+      var veil = document.getElementById('handoff');
+      if(!btn || !veil) return;
+      btn.addEventListener('click', function(e){
+        // Let modifier-clicks and middle-clicks open a new tab normally.
+        if(e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+        e.preventDefault();
+        if(window.gtag) gtag('event','play_web_click');
+        veil.classList.add('on');
+        // Short beat so the overlay is actually seen, then navigate.
+        setTimeout(function(){ window.location.href = btn.href; }, 450);
+      });
+    })();
+  </script>
 
 </body>
 </html>
