@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About | Braindex</title>
+  <meta name="description" content="Braindex is a daily trivia game built by David Carr. A note on why it exists and where it is going." />
+  <link rel="icon" type="image/png" href="brain-character.png" />
+  <link rel="apple-touch-icon" href="brain-character.png" />
+  <meta property="og:title" content="About | Braindex" />
+  <meta property="og:description" content="A note from the creator of Braindex." />
+  <meta property="og:image" content="https://braindexapp.com/braindex_logo_hero.png" />
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K0GWY53ZN1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K0GWY53ZN1');
+  </script>
+
+  <style>
+    :root{
+      --primary:#EC1A6F;--accent:#0E1A4A;--text:#1a1a2e;
+      --text-muted:#5a5a73;--bg:#ffffff;--surface:#faf9fc;--border:#e8e6ee;
+      --font:'SF Pro Display',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:var(--font);color:var(--text);background:var(--bg);
+      line-height:1.65;-webkit-font-smoothing:antialiased;
+      display:flex;flex-direction:column;min-height:100vh;
+    }
+    header{
+      padding:20px 24px;display:flex;align-items:center;justify-content:space-between;
+      max-width:1100px;width:100%;margin:0 auto;
+    }
+    .wordmark{
+      display:flex;align-items:center;gap:9px;font-weight:700;font-size:19px;
+      letter-spacing:-0.02em;color:var(--text);text-decoration:none;
+    }
+    .wordmark img{width:30px;height:30px}
+    .nav-link{font-size:15px;font-weight:600;color:var(--primary);text-decoration:none}
+
+    main{
+      flex:1;max-width:660px;margin:0 auto;width:100%;
+      padding:30px 24px 64px;
+    }
+    .portrait{
+      width:94px;height:94px;border-radius:50%;object-fit:cover;
+      margin-bottom:22px;border:3px solid var(--border);
+    }
+    h1{
+      font-size:clamp(30px,7vw,42px);line-height:1.1;letter-spacing:-0.03em;
+      font-weight:800;margin-bottom:8px;
+    }
+    .byline{color:var(--text-muted);font-size:15px;margin-bottom:32px}
+    p{margin-bottom:19px;font-size:17px;color:#2a2a3e}
+    p strong{font-weight:650}
+    a{color:var(--primary)}
+    .sign{
+      margin-top:30px;padding-top:22px;border-top:1px solid var(--border);
+      font-size:15px;color:var(--text-muted);
+    }
+    .back{
+      display:inline-flex;align-items:center;gap:7px;
+      background:var(--primary);color:#fff;text-decoration:none;
+      font-weight:700;font-size:16px;padding:13px 30px;border-radius:999px;
+      margin-top:28px;
+    }
+    footer{
+      border-top:1px solid var(--border);padding:22px 24px;text-align:center;
+      font-size:13.5px;color:var(--text-muted);
+    }
+    footer nav{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-bottom:9px}
+    footer a{color:var(--text-muted);text-decoration:none}
+    footer a:hover{color:var(--primary)}
+  </style>
+</head>
+<body>
+
+  <header>
+    <a class="wordmark" href="/">
+      <img src="brain-character.png" alt="" />
+      Braindex
+    </a>
+    <a class="nav-link" href="/">Play</a>
+  </header>
+
+  <main>
+    <img class="portrait" src="david-carr.jpg" alt="David Carr, creator of Braindex" />
+    <h1>A note from the creator</h1>
+    <p class="byline">David Carr, creator of Braindex</p>
+
+    <p>Hi, I'm David. Genuinely, thank you for being here. Braindex is still young, and every person who signs up, plays, shares a score or sends a note makes a real difference. We are slowly growing a small, loyal community of people who like a bit of competition first thing in the morning.</p>
+
+    <p>The idea is simple. <strong>Everyone in the world gets the same questions each day.</strong> That one rule is what makes it worth playing, because a score means nothing until you can compare it. You get one attempt, same as everyone, and then you find out how you did against your friends, your family and the rest of the board.</p>
+
+    <p>I read every piece of feedback personally, and I ship updates most weeks: new questions, new game modes, and fixes for whatever people tell me is annoying. If something feels off, or you have an idea, please do tell me. It genuinely shapes what gets built next.</p>
+
+    <p>A little about me for anyone who does not know me. I previously created <a href="https://onelink.to/k3w68d" target="_blank" rel="noopener"><strong>Pi-Squared</strong></a> and <a href="https://movietoons.co" target="_blank" rel="noopener"><strong>MovieToons</strong></a>, and Braindex is my latest project. It came out of two things I love: learning through competition, and the daily-game habit. I wanted to put those together into something you would actually look forward to opening.</p>
+
+    <p>So thanks for being here early. I really do appreciate it.</p>
+
+    <div class="sign">
+      David Carr, creator of Braindex<br />
+      Reach me directly: <a href="mailto:david@movietoons.co">david@movietoons.co</a>
+    </div>
+
+    <a class="back" href="/">Play today's round</a>
+  </main>
+
+  <footer>
+    <nav>
+      <a href="/">Play</a>
+      <a href="/support.html">Support</a>
+      <a href="/privacy-policy.html">Privacy</a>
+    </nav>
+    &copy; 2026 Braindex
+  </footer>
+
+</body>
+</html>

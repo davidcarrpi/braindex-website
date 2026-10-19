@@ -1,890 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#EC1A6F" />
-  <title>Braindex — the daily trivia game</title>
-  <meta name="description" content="A new trivia round every day. Everyone gets the same questions, one attempt, then the leaderboard. Free on iOS and Android." />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Braindex | The daily trivia game</title>
+  <meta name="description" content="A new trivia round every day. Everyone gets the same questions, one attempt, then the leaderboard. Free on iOS, Android and the web." />
 
-  <!-- Open Graph / social previews. Two image flavours so the right
-       one shows up per platform:
-       - Default og:image is the WIDE Braindex logo (1536×1024). LinkedIn,
-         Facebook, Slack, iMessage, and Twitter's summary_large_image card
-         all render wide and will pick this up. We declare exact dimensions
-         so scrapers don't reject it.
-       - We also expose the SQUARE brain mascot as a second og:image so
-         platforms that prefer 1:1 (older Slack, some chat clients) can
-         pick the square version. Most modern platforms will use the first
-         (wide) image; the square is a fallback, not a primary preview.
-       Absolute URLs required — scrapers don't resolve relative paths. -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Braindex — the daily trivia game" />
-  <meta property="og:description" content="Same questions for everyone, every day. One attempt, then the leaderboard." />
-  <meta property="og:image" content="https://braindexapp.com/braindex_logo.png" />
-  <meta property="og:image:width" content="1536" />
-  <meta property="og:image:height" content="1024" />
-  <meta property="og:image:alt" content="Braindex logo" />
-  <meta property="og:image" content="https://braindexapp.com/brain-character.png" />
-  <meta property="og:image:width" content="500" />
-  <meta property="og:image:height" content="500" />
-  <meta property="og:image:alt" content="Braindex pink brain mascot" />
-  <meta property="og:url" content="https://braindexapp.com" />
-  <meta property="og:site_name" content="Braindex" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Braindex — the daily trivia game" />
-  <meta name="twitter:description" content="Same questions for everyone, every day. One attempt, then the leaderboard." />
-  <meta name="twitter:image" content="https://braindexapp.com/braindex_logo.png" />
-
-  <!-- Favicon — the same brain character. -->
   <link rel="icon" type="image/png" href="brain-character.png" />
   <link rel="apple-touch-icon" href="brain-character.png" />
 
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Braindex | The daily trivia game" />
+  <meta property="og:description" content="Everyone gets the same questions each day. One attempt, then the leaderboard." />
+  <meta property="og:image" content="https://braindexapp.com/braindex_logo_hero.png" />
+  <meta property="og:url" content="https://braindexapp.com" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Braindex | The daily trivia game" />
+  <meta name="twitter:description" content="Everyone gets the same questions each day. One attempt, then the leaderboard." />
+  <meta name="twitter:image" content="https://braindexapp.com/braindex_logo_hero.png" />
 
-    :root {
-      --primary: #EC1A6F;
-      --primary-light: #F06292;
-      --primary-dark: #C2185B;
-      --accent: #0E1A4A;
-      --text: #1a1a2e;
-      --text-muted: #5a5a73;
-      --text-faint: #9a9aae;
-      --bg: #ffffff;
-      --surface: #faf9fc;
-      --border: #e8e6ee;
-    }
-
-    body {
-      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: var(--text);
-      background: transparent;
-      line-height: 1.55;
-      -webkit-font-smoothing: antialiased;
-    }
-    html { background: var(--bg); }
-
-    /* Heavily-blurred doodle background sitting behind everything.
-       Two stacked layers: the actual image (CSS-blurred, scaled
-       slightly larger than viewport so blur-edge bleed doesn't show
-       as gutters), and a translucent white tint over it so headings
-       and body text keep enough contrast to read cleanly. */
-    .bg-blur {
-      position: fixed; inset: 0;
-      z-index: -2;
-      background: url('bg-doodle.jpg') center / cover no-repeat;
-      filter: blur(40px) saturate(1.15);
-      transform: scale(1.12);
-      pointer-events: none;
-    }
-    .bg-tint {
-      position: fixed; inset: 0;
-      z-index: -1;
-      background: rgba(255, 255, 255, 0.78);
-      pointer-events: none;
-    }
-
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
-
-    /* ─── Header ───────────────────────────────────────── */
-    header {
-      padding: 24px 0;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(8px);
-      z-index: 10;
-    }
-    header .row { display: flex; align-items: center; justify-content: space-between; }
-    header img.logo { height: 60px; }
-    header nav a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      margin-left: 24px;
-      transition: color 0.15s;
-    }
-    header nav a:hover { color: var(--primary); }
-
-    /* ─── Hero ───────────────────────────────────────── */
-    /* Tight vertical rhythm so logo + headline + signup card sit
-       above the fold on a standard laptop viewport (700-900px tall). */
-    section.hero {
-      /* Fill the viewport on first paint so the App Store / Play badges
-         sit at the bottom of the visible area. min-height vs height
-         lets short content still grow if the user zooms text or shows a
-         long form-error message. */
-      min-height: 100vh;
-      padding: 24px 0 32px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-    }
-    section.hero .container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 18px;
-    }
-    /* Center the upper content block (logo + headline + CTA + signup)
-       inside the free space, with store badges anchored at the bottom. */
-    section.hero .hero-top {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      gap: 14px;
-    }
-    section.hero img.bighero {
-      max-width: 640px;
-      width: 86%;
-      height: auto;
-      display: block;
-      margin: 0 auto;
-    }
-    section.hero h1 {
-      font-size: clamp(30px, 4.4vw, 48px);
-      font-weight: 800;
-      line-height: 1.08;
-      letter-spacing: -1.2px;
-      color: var(--accent);
-      margin: 0;
-    }
-    section.hero h1 .gradient-text {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: var(--primary);
-    }
-
-    /* ─── Newsletter ───────────────────────────────────────── */
-    /* Big "PLAY" CTA in the hero — the primary action on the landing page. */
-    .play-cta-big {
-      display: block;
-      max-width: 340px;
-      margin: 4px auto 22px;
-      padding: 18px 32px;
-      background: var(--primary);
-      color: #fff;
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: 6px;
-      text-align: center;
-      text-decoration: none;
-      border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(236, 26, 111, 0.30);
-      transition: transform 0.05s, box-shadow 0.15s, background-color 0.15s;
-    }
-    .play-cta-big:hover {
-      background: var(--primary-dark);
-      box-shadow: 0 14px 36px rgba(236, 26, 111, 0.40);
-    }
-    .play-cta-big:active { transform: scale(0.99); }
-
-    /* Subtle "play online" link at the very bottom of the landing page,
-       just above the footer chrome — for visitors who scroll past
-       everything and want a discrete way to try it. */
-    .play-link-bottom {
-      text-align: center;
-      padding: 28px 16px 8px;
-      border-top: 1px solid var(--border);
-    }
-    .play-link-bottom a {
-      display: inline-block;
-      font-size: 13px; font-weight: 600;
-      color: var(--primary);
-      text-decoration: none;
-      padding: 4px 6px;
-      letter-spacing: 0.2px;
-      border-bottom: 1px solid transparent;
-      transition: color 0.15s, border-color 0.15s;
-    }
-    .play-link-bottom a:hover {
-      color: var(--primary-dark);
-      border-bottom-color: var(--primary-dark);
-    }
-    .signup-card {
-      max-width: 520px;
-      margin: 0 auto 18px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px 22px;
-      text-align: left;
-    }
-    .signup-card h3 {
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-    .signup-card p.sub {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-bottom: 18px;
-    }
-    .signup-form {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .signup-form input {
-      flex: 1 1 240px;
-      padding: 14px 16px;
-      font-size: 15px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #fff;
-      color: var(--text);
-      transition: border-color 0.15s, box-shadow 0.15s;
-      font-family: inherit;
-    }
-    .signup-form input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(236, 26, 111, 0.15);
-    }
-    .signup-form button {
-      padding: 14px 24px;
-      font-size: 15px;
-      font-weight: 700;
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: background-color 0.15s, transform 0.05s;
-    }
-    .signup-form button:hover:not(:disabled) {
-      background: var(--primary-dark);
-    }
-    .signup-form button:active:not(:disabled) {
-      transform: scale(0.98);
-    }
-    .signup-form button:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-    .signup-msg {
-      margin-top: 12px;
-      font-size: 13px;
-      color: var(--text-muted);
-      min-height: 18px;
-    }
-    .signup-msg.success { color: #1d8a44; }
-    .signup-msg.error { color: #c2185b; }
-
-    /* ─── Store badges ───────────────────────────────────────── */
-    .store-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: center;
-      margin-top: 8px;
-    }
-    .store-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 22px 12px 18px;
-      background: #000;
-      color: #fff;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 15px;
-      transition: transform 0.1s, opacity 0.15s;
-    }
-    /* Colour only, no transform: a lift on the store badges makes the
-       row twitch under the cursor, on the one element people are aiming
-       for. */
-    .store-badge:hover { filter: brightness(1.12); }
-    .store-badge.disabled {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-    .store-badge svg {
-      width: 28px;
-      height: 28px;
-      flex-shrink: 0;
-    }
-    .store-badge .label-row {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.1;
-      text-align: left;
-    }
-    .store-badge .small {
-      font-size: 10px;
-      font-weight: 400;
-      letter-spacing: 0.3px;
-      opacity: 0.8;
-    }
-    .store-badge .big {
-      font-size: 16px;
-      font-weight: 700;
-    }
-    .store-note {
-      max-width: 520px;
-      margin: 14px auto 8px;
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.5;
-      text-align: center;
-    }
-    .store-note a { color: var(--primary); font-weight: 600; text-decoration: none; }
-    .store-note a:hover { text-decoration: underline; }
-
-    /* ─── Download popup (Substack-style) ─────────────────── */
-    .dl-popup {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .dl-popup.is-open { display: flex; }
-    .dl-popup-backdrop {
-      position: absolute;
-      inset: 0;
-      background: rgba(14, 26, 74, 0.55);
-      backdrop-filter: blur(4px);
-    }
-    .dl-popup-card {
-      position: relative;
-      background: #fff;
-      border-radius: 18px;
-      max-width: 420px;
-      width: 100%;
-      padding: 36px 28px 24px;
-      text-align: center;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.25);
-      animation: dl-popup-in 0.25s ease-out;
-    }
-    @keyframes dl-popup-in {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .dl-popup-close {
-      position: absolute;
-      top: 8px;
-      right: 12px;
-      background: transparent;
-      border: 0;
-      font-size: 28px;
-      line-height: 1;
-      color: var(--text-faint);
-      cursor: pointer;
-      padding: 6px 10px;
-    }
-    .dl-popup-close:hover { color: var(--text); }
-    .dl-popup-logo {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 14px;
-      display: block;
-    }
-    .dl-popup h3 {
-      font-size: 22px;
-      margin-bottom: 8px;
-      color: var(--text);
-    }
-    .dl-popup-body {
-      font-size: 15px;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-      line-height: 1.5;
-    }
-    .dl-popup-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: #000;
-      color: #fff;
-      padding: 14px 26px;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 16px;
-      transition: transform 0.1s;
-    }
-    /* Popup CTAs: colour only, same reasoning as the store badges. */
-    .dl-popup-cta:hover { filter: brightness(1.12); }
-    .dl-popup-cta svg { width: 24px; height: 24px; }
-    .dl-popup-android {
-      margin-top: 18px;
-      font-size: 13px;
-      color: var(--text-faint);
-    }
-    .dl-popup-android a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    /* ─── Features ───────────────────────────────────────── */
-    section.features {
-      padding: 80px 0;
-      background: var(--surface);
-    }
-    section.features h2 {
-      font-size: 32px;
-      font-weight: 800;
-      text-align: center;
-      color: var(--accent);
-      margin-bottom: 48px;
-      letter-spacing: -0.5px;
-    }
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 24px;
-    }
-    .feature {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px 24px;
-    }
-    .feature .icon {
-      width: 44px;
-      height: 44px;
-      background: rgba(236, 26, 111, 0.1);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-      font-size: 22px;
-    }
-    .feature h4 {
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-    .feature p {
-      font-size: 14px;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    /* ─── How it works ───────────────────────────────────────── */
-    section.how {
-      padding: 80px 0;
-    }
-    section.how h2 {
-      font-size: 32px;
-      font-weight: 800;
-      text-align: center;
-      color: var(--accent);
-      margin-bottom: 48px;
-      letter-spacing: -0.5px;
-    }
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-      max-width: 980px;
-      margin: 0 auto;
-    }
-    @media (max-width: 720px) {
-      .steps { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 380px) {
-      .steps { grid-template-columns: 1fr; }
-    }
-    .step {
-      text-align: center;
-    }
-    .step .num {
-      width: 48px;
-      height: 48px;
-      background: var(--primary);
-      color: #fff;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      font-weight: 800;
-      margin-bottom: 14px;
-    }
-    .step h4 {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-    .step p {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    /* ─── Founder message ───────────────────────────────────── */
-    section.founder {
-      padding: 60px 0 40px;
-      background: rgba(255, 255, 255, 0.55);
-      border-top: 1px solid var(--border);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-    }
-    section.founder .container { max-width: 880px; }
-    section.founder .founder-row {
-      display: flex; gap: 36px; align-items: flex-start;
-    }
-    section.founder .founder-photo {
-      flex: 0 0 220px;
-    }
-    section.founder .founder-photo img {
-      width: 100%; height: auto; aspect-ratio: 4 / 5;
-      object-fit: cover; border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(14, 26, 74, 0.12);
-      display: block;
-    }
-    section.founder .founder-photo .caption {
-      font-size: 12px; color: var(--text-faint);
-      letter-spacing: 0.2px;
-      margin-top: 10px; text-align: center;
-    }
-    section.founder .founder-body { flex: 1 1 auto; min-width: 0; }
-    section.founder h2 {
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--accent);
-      margin-bottom: 18px;
-      letter-spacing: -0.3px;
-    }
-    section.founder p {
-      font-size: 15px;
-      line-height: 1.7;
-      color: var(--text-muted);
-      margin-bottom: 14px;
-    }
-    section.founder p.founder-contact {
-      margin-top: 18px;
-      font-size: 14px;
-      color: var(--text-faint);
-    }
-    section.founder p.founder-contact a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
-    }
-    section.founder p.founder-contact a:hover { text-decoration: underline; }
-    @media (max-width: 720px) {
-      section.founder .founder-row {
-        flex-direction: column; gap: 20px; align-items: stretch;
-      }
-      section.founder .founder-photo {
-        flex: 0 0 auto;
-        max-width: 180px; margin: 0 auto;
-      }
-    }
-
-    /* ─── Footer ───────────────────────────────────────── */
-    footer {
-      padding: 48px 0 32px;
-      border-top: 1px solid var(--border);
-      background: var(--bg);
-    }
-    footer .row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-    }
-    footer img.logo { height: 72px; }
-    footer nav a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 14px;
-      margin-left: 18px;
-    }
-    footer nav a:hover { color: var(--primary); }
-    footer .copyright {
-      font-size: 12px;
-      color: var(--text-faint);
-      margin-top: 24px;
-      text-align: center;
-    }
-
-    @media (max-width: 600px) {
-      header nav a { margin-left: 12px; font-size: 13px; }
-      footer img.logo { height: 56px; }
-      section.hero { padding: 56px 0 40px; }
-      .signup-form button { flex: 1 1 100%; }
-    }
-  </style>
-
-  <!-- Vercel Web Analytics + Speed Insights (privacy-friendly, no
-       cookies). Paths are rewritten by Vercel's edge to load the
-       actual scripts. Enable in Project Settings → Analytics. -->
-  <script defer src="/_vercel/insights/script.js"></script>
-  <script defer src="/_vercel/speed-insights/script.js"></script>
-
-  <!-- GA4. The web stream (G-K0GWY53ZN1) existed in Analytics for months
-       but was never installed here, so the site had NO click tracking —
-       only Vercel Insights, which can't attribute a per-channel campaign.
-       Needed before any /ig /tt /fb /x /r marketing link can be measured. -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-K0GWY53ZN1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-K0GWY53ZN1');
-
-    // Store-button clicks, tagged with the channel the visitor arrived
-    // from. utm_source comes off the per-channel redirect, so a TikTok
-    // click and a Reddit click are distinguishable even when the store
-    // itself reports nothing back.
-    document.addEventListener('click', function (e) {
-      var a = e.target.closest && e.target.closest('a.store-badge');
-      if (!a) return;
-      var isPlay = a.href.indexOf('play.google.com') !== -1;
-      gtag('event', 'store_click', {
-        store: isPlay ? 'google_play' : 'app_store',
-        channel: new URLSearchParams(location.search).get('utm_source') || 'direct'
-      });
-    });
   </script>
+
+  <style>
+    :root{
+      --primary:#EC1A6F;
+      --primary-dark:#C2185B;
+      --accent:#0E1A4A;
+      --text:#1a1a2e;
+      --text-muted:#5a5a73;
+      --bg:#ffffff;
+      --surface:#faf9fc;
+      --border:#e8e6ee;
+      --radius:16px;
+      --font:'SF Pro Display',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-text-size-adjust:100%}
+    body{
+      font-family:var(--font);
+      color:var(--text);
+      background:var(--bg);
+      line-height:1.5;
+      -webkit-font-smoothing:antialiased;
+      display:flex;
+      flex-direction:column;
+      min-height:100vh;
+      min-height:100dvh;
+    }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    header{
+      padding:20px 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      max-width:1100px;
+      width:100%;
+      margin:0 auto;
+    }
+    .wordmark{
+      display:flex;align-items:center;gap:9px;
+      font-weight:700;font-size:19px;letter-spacing:-0.02em;
+      color:var(--text);text-decoration:none;
+    }
+    .wordmark img{width:30px;height:30px}
+    .nav-link{
+      font-size:15px;font-weight:500;color:var(--text-muted);
+      text-decoration:none;
+    }
+    .nav-link:hover{color:var(--primary)}
+
+    /* ── Hero ───────────────────────────────────────────────── */
+    main{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:32px 24px 56px;
+      max-width:620px;
+      margin:0 auto;
+      width:100%;
+    }
+    .brain{
+      width:148px;height:148px;
+      object-fit:contain;
+      margin-bottom:28px;
+      animation:float 4s ease-in-out infinite;
+    }
+    @keyframes float{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-10px)}
+    }
+    @media (prefers-reduced-motion:reduce){
+      .brain{animation:none}
+    }
+
+    h1{
+      font-size:clamp(38px,9vw,60px);
+      line-height:1.05;
+      letter-spacing:-0.035em;
+      font-weight:800;
+      margin-bottom:18px;
+    }
+    h1 .pink{
+      background:linear-gradient(135deg,var(--primary),#FF6FA5);
+      -webkit-background-clip:text;background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+    .sub{
+      font-size:clamp(16px,4vw,19px);
+      color:var(--text-muted);
+      max-width:430px;
+      margin-bottom:38px;
+    }
+
+    /* ── Store buttons ──────────────────────────────────────── */
+    .stores{
+      display:flex;gap:12px;flex-wrap:wrap;
+      justify-content:center;margin-bottom:18px;
+    }
+    .store{
+      display:flex;align-items:center;gap:10px;
+      background:var(--accent);color:#fff;
+      text-decoration:none;
+      padding:11px 20px;border-radius:13px;
+      transition:transform .15s ease,opacity .15s ease;
+    }
+    .store:hover{transform:translateY(-2px);opacity:.92}
+    .store svg{width:23px;height:23px;flex-shrink:0;fill:#fff}
+    .store-text{text-align:left;line-height:1.15}
+    .store-text small{display:block;font-size:10px;opacity:.8;font-weight:500}
+    .store-text strong{display:block;font-size:15px;font-weight:600;letter-spacing:-0.01em}
+
+    /* ── Play now ───────────────────────────────────────────── */
+    .play{
+      display:inline-flex;align-items:center;gap:9px;
+      background:var(--primary);color:#fff;
+      font-size:17px;font-weight:700;letter-spacing:-0.01em;
+      text-decoration:none;
+      padding:15px 38px;border-radius:999px;
+      box-shadow:0 5px 18px rgba(236,26,111,.3);
+      transition:transform .15s ease,box-shadow .15s ease;
+      margin-top:10px;
+    }
+    .play:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 24px rgba(236,26,111,.38);
+    }
+    .play-note{
+      font-size:13.5px;color:var(--text-muted);
+      margin-top:11px;
+    }
+
+    /* ── Footer ─────────────────────────────────────────────── */
+    footer{
+      border-top:1px solid var(--border);
+      padding:22px 24px;
+      text-align:center;
+      font-size:13.5px;color:var(--text-muted);
+    }
+    footer nav{
+      display:flex;gap:20px;flex-wrap:wrap;
+      justify-content:center;margin-bottom:9px;
+    }
+    footer a{color:var(--text-muted);text-decoration:none}
+    footer a:hover{color:var(--primary)}
+  </style>
 </head>
 <body>
 
-  <!-- Fixed full-viewport background layers (blurred doodle + white
-       tint). aria-hidden so screen readers skip the decoration. -->
-  <div class="bg-blur" aria-hidden="true"></div>
-  <div class="bg-tint" aria-hidden="true"></div>
+  <header>
+    <a class="wordmark" href="/">
+      <img src="brain-character.png" alt="" />
+      Braindex
+    </a>
+    <a class="nav-link" href="/about">About</a>
+  </header>
 
-  <!-- Landing page intentionally has no header — straight to the hero. -->
+  <main>
+    <img class="brain" src="brain-character.png" alt="The Braindex brain character" />
 
-  <!-- ────────────────── HERO ────────────────── -->
-  <section class="hero">
-    <div class="container">
-     <div class="hero-top">
-      <img class="bighero" src="braindex_logo_hero.png" alt="Braindex" />
-      <h1>The daily<br><span class="gradient-text">trivia game.</span></h1>
+    <h1>The daily<br><span class="pink">trivia game.</span></h1>
 
-      <!-- Big PLAY button — the primary CTA on the landing page. Sends
-           visitors straight to the lightweight web game at /play. -->
-      <a class="play-cta-big" href="/trivia/">PLAY</a>
-      <!-- The trivia sample is now the primary try-before-you-download,
-           matching the app's positioning. The AI word game stays available
-           as a secondary link. -->
-      <p style="margin: 10px 0 0; font-size: 13px;">
-        <a href="/play/" style="color: var(--text-dim, #666);">or try the AI word game</a>
-      </p>
+    <p class="sub">
+      Everyone gets the same questions each day. One attempt,
+      then see where you landed.
+    </p>
 
-      <!-- Store badges — both platforms live. -->
-      <div class="store-row">
-        <a class="store-badge" href="https://apps.apple.com/us/app/braindex/id6766744989" target="_blank" rel="noopener" aria-label="Download Braindex on the App Store">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
-          <span class="label-row">
-            <span class="small">Download on the</span>
-            <span class="big">App Store</span>
-          </span>
-        </a>
+    <div class="stores">
+      <a class="store" href="https://apps.apple.com/us/app/braindex/id6766744989"
+         onclick="gtag('event','store_click',{store:'ios'})">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05 12.04c-.02-2.27 1.85-3.36 1.94-3.41-1.06-1.55-2.7-1.76-3.29-1.78-1.4-.14-2.73.82-3.44.82-.71 0-1.8-.8-2.96-.78-1.52.02-2.93.88-3.71 2.24-1.58 2.74-.4 6.8 1.13 9.02.75 1.09 1.65 2.31 2.82 2.27 1.13-.05 1.56-.73 2.93-.73s1.75.73 2.95.71c1.22-.02 1.99-1.11 2.74-2.2.86-1.26 1.22-2.48 1.24-2.55-.03-.01-2.37-.91-2.4-3.61zM14.8 5.37c.62-.76 1.04-1.8.93-2.85-.9.04-1.99.6-2.63 1.35-.57.67-1.07 1.74-.94 2.76 1 .08 2.02-.51 2.64-1.26z"/></svg>
+        <span class="store-text">
+          <small>Download on the</small>
+          <strong>App Store</strong>
+        </span>
+      </a>
 
-        <!-- Android is LIVE on Google Play (since ~Jul 2026). This used to
-             be a mailto asking people to request closed-beta access, which
-             stayed up for weeks after launch and sent every Android visitor
-             to an email client instead of the store. -->
-        <a class="store-badge" href="https://play.google.com/store/apps/details?id=com.braindex.app" target="_blank" rel="noopener" aria-label="Get Braindex on Google Play">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.583-3.583a.996.996 0 0 1 0 1.732l-2.498 1.437L13.792 12l1.792-1.793 2.498 1.437zM5.864 2.658L16.802 8.99l-2.302 2.302L5.864 2.658z"/></svg>
-          <span class="label-row">
-            <span class="small">Get it on</span>
-            <span class="big">Google Play</span>
-          </span>
-        </a>
-      </div>
-
-
-      <!-- Newsletter signup — POSTs to /api/newsletter (Vercel
-           serverless function that writes to Firestore /newsletter). -->
-      <div class="signup-card">
-        <h3>Subscribe to the newsletter</h3>
-        <p class="sub">Occasional updates from David.</p>
-        <form
-          id="signup-form"
-          class="signup-form"
-          novalidate
-        >
-          <!-- Spam honeypot — bots fill this; humans don't see it. -->
-          <p style="display:none;">
-            <label>Don't fill this out: <input name="bot-field" /></label>
-          </p>
-          <input
-            id="signup-email"
-            type="email"
-            name="email"
-            placeholder="you@example.com"
-            autocomplete="email"
-            required
-          />
-          <button id="signup-button" type="submit">Subscribe</button>
-        </form>
-        <div id="signup-msg" class="signup-msg" role="status" aria-live="polite"></div>
-      </div>
-     </div><!-- /.hero-top -->
+      <a class="store" href="https://play.google.com/store/apps/details?id=com.braindex.app"
+         onclick="gtag('event','store_click',{store:'android'})">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 2.2c-.3.3-.5.8-.5 1.4v16.8c0 .6.2 1.1.5 1.4l.1.1 9.4-9.4v-.2L3.7 2.1l-.1.1zm12.6 6.3L13.9 11l2.3 2.3 2.8-1.6c.8-.5.8-1.3 0-1.8l-2.8-1.6v.2zm-2.9 2.9L4 20.7c.3.3.7.3 1.2 0l10.2-5.8-2.1-2.1v.6zM5.2 3.3c-.5-.3-.9-.3-1.2 0l9.3 9.3 2.1-2.1L5.2 3.3z"/></svg>
+        <span class="store-text">
+          <small>Get it on</small>
+          <strong>Google Play</strong>
+        </span>
+      </a>
     </div>
-  </section>
 
-  <!-- ────────────────── HOW IT WORKS ────────────────── -->
-  <section class="founder">
-    <div class="container">
-      <div class="founder-row">
-        <div class="founder-photo">
-          <img src="david-carr.jpg" alt="David Carr, creator of Braindex" />
-          <p class="caption">David Carr &mdash; creator of Braindex</p>
-        </div>
-        <div class="founder-body">
-          <h2>A note from the creator</h2>
-          <p>Hi, I&rsquo;m David. Really, genuinely &mdash; thank you for joining us on this journey! Braindex is still in its infancy, and every person who signs up, plays, shares their scores, or sends a note makes a huge difference. We&rsquo;re slowly growing a small, loyal community of people who want to have fun <em>and</em> get a little sharper at AI every day. That&rsquo;s the goal: have fun &amp; upskill together.</p>
-          <p>I read every piece of feedback personally, and I&rsquo;m committing to iterating on the app every week &mdash; new words, new game modes, app improvements &mdash; based on what you tell me. If something feels off, or you&rsquo;ve got an idea, please do let me know! It really does shape what gets built next.</p>
-          <p>A little about me for those who might not know me: I previously created <a href="https://onelink.to/k3w68d" target="_blank" rel="noopener"><strong>Pi-Squared</strong></a> &amp; <a href="https://movietoons.co" target="_blank" rel="noopener"><strong>MovieToons</strong></a>, and Braindex is now my latest project. It came out of two things I love &mdash; education through competitive gamification, and the daily-game habit. I wanted to put those together to help people feel less behind on AI, one tiny daily session at a time.</p>
-          <p>So &mdash; thanks so much for being here early. I really appreciate it!</p>
-          <p>&mdash; David Carr, creator of Braindex</p>
-          <p class="founder-contact">Reach me directly: <a href="mailto:david@movietoons.co">david@movietoons.co</a></p>
-        </div>
-      </div>
-    </div>
-  </section>
+    <a class="play" href="/app" onclick="gtag('event','play_web_click')">
+      Play now
+    </a>
+    <p class="play-note">No download needed. Plays in your browser.</p>
+  </main>
 
-  <!-- Subtle play link for anyone who's scrolled the whole page. -->
-  <div class="play-link-bottom">
-    <a href="/play/">Play online as a guest →</a>
-  </div>
-
-  <!-- ────────────────── FOOTER ────────────────── -->
   <footer>
-    <div class="container">
-      <div class="row">
-        <img class="logo" src="braindex_logo.png" alt="Braindex" />
-        <nav>
-          <a href="privacy-policy.html">Privacy</a>
-          <a href="support.html">Support</a>
-        </nav>
-      </div>
-      <p class="copyright">© 2026 Braindex. All rights reserved.</p>
-    </div>
+    <nav>
+      <a href="/about">About</a>
+      <a href="/support.html">Support</a>
+      <a href="/privacy-policy.html">Privacy</a>
+    </nav>
+    &copy; 2026 Braindex
   </footer>
-
-  <!-- ────────────────── DOWNLOAD POPUP (Substack-style) ──────────────────
-       Appears once per 7-day window per browser. Pops up 8s after page
-       load. Primary CTA links to the App Store. -->
-  <div id="download-popup" class="dl-popup" role="dialog" aria-modal="true" aria-labelledby="dl-popup-title" aria-hidden="true">
-    <div class="dl-popup-backdrop" data-dl-dismiss></div>
-    <div class="dl-popup-card">
-      <button class="dl-popup-close" type="button" aria-label="Close" data-dl-dismiss>&times;</button>
-      <img class="dl-popup-logo" src="brain-character.png" alt="" />
-      <h3 id="dl-popup-title">Braindex is out now</h3>
-      <p class="dl-popup-body">A new trivia round every day. Same questions for everyone.</p>
-      <a class="dl-popup-cta" href="https://apps.apple.com/us/app/braindex/id6766744989" target="_blank" rel="noopener" data-dl-cta>
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
-        <span>Download on the App Store</span>
-      </a>
-      <!-- Was a mailto asking for closed-beta access. Android has been
-           live on Google Play since ~Jul 2026; this popup kept sending
-           Android visitors to email long after launch. -->
-      <a class="dl-popup-cta" href="https://play.google.com/store/apps/details?id=com.braindex.app" target="_blank" rel="noopener" data-dl-cta>
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.583-3.583a.996.996 0 0 1 0 1.732l-2.498 1.437L13.792 12l1.792-1.793 2.498 1.437zM5.864 2.658L16.802 8.99l-2.302 2.302L5.864 2.658z"/></svg>
-        <span>Get it on Google Play</span>
-      </a>
-    </div>
-  </div>
-
-  <script>
-    (function () {
-      const STORAGE_KEY = 'braindex.dlPopup.dismissedAt';
-      const COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
-      const DELAY_MS = 1000;
-      const popup = document.getElementById('download-popup');
-      if (!popup) return;
-
-      const dismissedAt = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
-      if (dismissedAt && Date.now() - dismissedAt < COOLDOWN_MS) return;
-
-      const close = () => {
-        popup.classList.remove('is-open');
-        popup.setAttribute('aria-hidden', 'true');
-        try { localStorage.setItem(STORAGE_KEY, String(Date.now())); } catch (_) {}
-      };
-      const open = () => {
-        popup.classList.add('is-open');
-        popup.setAttribute('aria-hidden', 'false');
-      };
-      setTimeout(open, DELAY_MS);
-
-      popup.querySelectorAll('[data-dl-dismiss]').forEach((el) => el.addEventListener('click', close));
-      popup.querySelectorAll('[data-dl-cta]').forEach((el) => el.addEventListener('click', () => {
-        try { localStorage.setItem(STORAGE_KEY, String(Date.now())); } catch (_) {}
-      }));
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && popup.classList.contains('is-open')) close();
-      });
-    })();
-  </script>
-
-  <!-- ────────────────── NEWSLETTER (Vercel + Firestore) ────────────────── -->
-  <!--
-    Submits to /api/newsletter (Vercel serverless function in
-    api/newsletter.js). The function writes to Firestore
-    /newsletter/{sha256-of-email}. View submissions at:
-    https://console.firebase.google.com/project/braindexapp/firestore
-    /databases/-default-/data → newsletter collection.
-  -->
-  <script>
-    const form = document.getElementById('signup-form');
-    const input = document.getElementById('signup-email');
-    const button = document.getElementById('signup-button');
-    const msg = document.getElementById('signup-msg');
-
-    function setMsg(text, type) {
-      msg.textContent = text;
-      msg.className = 'signup-msg' + (type ? ' ' + type : '');
-    }
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = input.value.trim().toLowerCase();
-      if (!email || !email.includes('@') || !email.includes('.')) {
-        setMsg('Please enter a valid email address.', 'error');
-        return;
-      }
-
-      button.disabled = true;
-      setMsg('Saving…', '');
-
-      try {
-        const res = await fetch('/api/newsletter', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, 'bot-field': '' }),
-        });
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          throw new Error(body.error || ('HTTP ' + res.status));
-        }
-        setMsg("You're on the list. We'll be in touch.", 'success');
-        input.value = '';
-      } catch (err) {
-        console.error('newsletter signup failed', err);
-        setMsg('Could not save. Try again in a moment.', 'error');
-      } finally {
-        button.disabled = false;
-      }
-    });
-  </script>
 
 </body>
 </html>
