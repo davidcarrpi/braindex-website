@@ -27,7 +27,7 @@
       "destination": "/app/index.html"
     },
     {
-      "source": "/app/((?!assets|canvaskit|icons|flutter|main\\.dart|version\\.json|manifest\\.json|favicon).*)",
+      "source": "/app/:path*",
       "destination": "/app/index.html"
     }
   ],
