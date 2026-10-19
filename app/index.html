@@ -51,13 +51,102 @@
 </head>
 <body>
   <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
+    Boot splash.
+    ============
+    Flutter web ships ~18MB (engine + app + CanvasKit) before it can paint
+    anything, and until it does the page is a blank white rectangle. On a
+    slow connection that reads as "broken", which is the worst possible
+    first impression for a visitor who has never seen the app.
 
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
+    This is plain HTML/CSS with one 5KB icon, so it paints on the first
+    frame the browser gets, long before Flutter has downloaded. It is
+    removed when Flutter fires `flutter-first-frame`.
+
+    Keep it dependency-free. Anything that needs to download defeats the
+    point of having it.
   -->
+  <style>
+    #boot {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 26px;
+      background: linear-gradient(165deg, #FF3D8B 0%, #EC1A6F 42%, #C2185B 100%);
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont,
+                   "Segoe UI", Roboto, sans-serif;
+      transition: opacity .35s ease;
+    }
+    #boot.done { opacity: 0; pointer-events: none; }
+
+    #boot .brain {
+      width: 92px; height: 92px;
+      animation: bounce 1.1s cubic-bezier(.3,.05,.3,1) infinite;
+      transform-origin: center bottom;
+    }
+    /* Squash on landing, stretch on the way up, same feel as Brainy
+       inside the app so the boot screen and the app agree. */
+    @keyframes bounce {
+      0%   { transform: translateY(0)     scale(1,1); }
+      30%  { transform: translateY(-26px) scale(.94,1.06); }
+      55%  { transform: translateY(0)     scale(1.08,.92); }
+      75%  { transform: translateY(-6px)  scale(1,1); }
+      100% { transform: translateY(0)     scale(1,1); }
+    }
+
+    #boot .shadow {
+      width: 46px; height: 7px; margin-top: -20px;
+      border-radius: 50%;
+      background: rgba(0,0,0,.18);
+      animation: shrink 1.1s cubic-bezier(.3,.05,.3,1) infinite;
+    }
+    @keyframes shrink {
+      0%,100% { transform: scaleX(1);   opacity: .22; }
+      30%     { transform: scaleX(.55); opacity: .10; }
+    }
+
+    #boot .word {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: .02em;
+      opacity: .9;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #boot .brain, #boot .shadow { animation: none; }
+    }
+  </style>
+
+  <div id="boot">
+    <img class="brain" src="icons/Icon-192.png" alt="" />
+    <div class="shadow"></div>
+    <div class="word">Loading today's questions</div>
+  </div>
+
+  <script>
+    (function () {
+      var boot = document.getElementById('boot');
+      if (!boot) return;
+      var gone = false;
+      function dismiss() {
+        if (gone) return;
+        gone = true;
+        boot.classList.add('done');
+        // Remove only after the fade, so it cannot swallow taps.
+        setTimeout(function () { boot.remove(); }, 400);
+      }
+      // Flutter fires this once it has actually painted.
+      window.addEventListener('flutter-first-frame', dismiss);
+      // Safety net: never trap the user behind the splash if that event
+      // does not arrive (older engine, a failed boot, an extension).
+      setTimeout(dismiss, 20000);
+    })();
+  </script>
+
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
