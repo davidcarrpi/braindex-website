@@ -3,6 +3,14 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/daily/",
+      "destination": "/daily/index.html"
+    },
+    {
+      "source": "/daily",
+      "destination": "/daily/index.html"
+    },
+    {
       "source": "/about",
       "destination": "/about.html"
     },

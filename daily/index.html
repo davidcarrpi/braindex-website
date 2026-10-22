@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Daily Trivia | Braindex</title>
+<meta name="description" content="Six questions. Same for everyone, every day. Play free in your browser." />
+<link rel="icon" type="image/png" href="/brain-character.png" />
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K0GWY53ZN1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date()); gtag('config','G-K0GWY53ZN1');
+</script>
+
+<style>
+  :root{
+    --ink:#13205C; --pink:#EC1A6F; --muted:#6B7194;
+    --line:#E8EAF2; --ok:#17804A; --okbg:#E7F8EE; --bad:#B4123C; --badbg:#FDEBEF;
+    --font:'SF Pro Display',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:var(--font); color:var(--ink);
+    background:linear-gradient(170deg,#FFF1F6 0%,#FFE0ED 45%,#FFC9DF 100%);
+    background-attachment:fixed;
+    min-height:100vh; min-height:100dvh;
+    display:flex; flex-direction:column;
+    -webkit-font-smoothing:antialiased;
+  }
+  header{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:14px clamp(14px,4vw,24px);
+    max-width:620px;width:100%;margin:0 auto;
+  }
+  .brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);font-weight:800;font-size:17px}
+  .brand img{width:30px;height:30px}
+  .streak{font-size:13px;font-weight:700;color:var(--muted)}
+
+  main{
+    flex:1;width:100%;max-width:620px;margin:0 auto;
+    padding:0 clamp(14px,4vw,24px) 28px;
+    display:flex;flex-direction:column;
+  }
+  .card{
+    background:#fff;border-radius:20px;
+    padding:clamp(18px,4vw,26px);
+    box-shadow:0 10px 30px rgba(19,32,92,.1);
+  }
+
+  /* progress */
+  .bar{display:flex;gap:5px;margin-bottom:18px}
+  .bar i{flex:1;height:5px;border-radius:99px;background:var(--line)}
+  .bar i.done{background:var(--pink)}
+  .meta{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:12px}
+
+  .q{font-size:clamp(19px,4.6vw,24px);font-weight:750;line-height:1.28;letter-spacing:-0.02em;margin-bottom:20px}
+
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{
+    text-align:left;width:100%;font:inherit;cursor:pointer;
+    border:2px solid var(--line);background:#fff;color:var(--ink);
+    border-radius:14px;padding:14px 16px;font-size:16px;font-weight:600;
+    transition:border-color .12s ease,background .12s ease,transform .08s ease;
+  }
+  .opt:hover:not(:disabled){border-color:#C9CEE4}
+  .opt:active:not(:disabled){transform:scale(.99)}
+  .opt:disabled{cursor:default}
+  .opt.correct{background:var(--okbg);border-color:#34C77B;color:var(--ok)}
+  .opt.wrong{background:var(--badbg);border-color:#F0829B;color:var(--bad)}
+
+  .fact{
+    margin-top:16px;padding:14px 16px;border-radius:12px;
+    background:#F6F7FB;font-size:14.5px;line-height:1.5;color:#3C4365;
+  }
+  .next{
+    margin-top:16px;width:100%;font:inherit;cursor:pointer;
+    background:var(--ink);color:#fff;border:0;border-radius:999px;
+    padding:15px;font-size:16px;font-weight:700;
+  }
+
+  /* results */
+  .score{text-align:center}
+  .score .n{font-size:64px;font-weight:800;color:var(--pink);letter-spacing:-0.04em;line-height:1}
+  .score .of{font-size:14px;font-weight:650;color:var(--muted);margin-top:4px}
+  .score h2{font-size:22px;margin:18px 0 6px;letter-spacing:-0.02em}
+  .lb{margin-top:20px}
+  .row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-size:14px;font-weight:600}
+  .row.me{background:#FFE9F2;color:#B4125A;font-weight:750}
+  .rk{width:18px;color:#A6ABC6;font-weight:800;font-size:12px}
+  .nm{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .cta{display:block;text-align:center;margin-top:18px;background:var(--pink);color:#fff;text-decoration:none;border-radius:999px;padding:15px;font-weight:700}
+  .ghost{display:block;text-align:center;margin-top:10px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:600}
+
+  .state{text-align:center;padding:50px 20px;color:var(--muted)}
+  .state img{width:72px;height:72px;margin-bottom:14px;animation:hop 1s cubic-bezier(.3,.05,.3,1) infinite;transform-origin:center bottom}
+  @keyframes hop{0%,100%{transform:translateY(0) scale(1,1)}30%{transform:translateY(-14px) scale(.96,1.04)}55%{transform:translateY(0) scale(1.05,.95)}}
+  @media (prefers-reduced-motion:reduce){.state img{animation:none}}
+  footer{text-align:center;padding:16px;font-size:12.5px;color:#9AA0BE}
+  footer a{color:#9AA0BE}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="/"><img src="/brain-character.png" alt="" />Braindex</a>
+  <span class="streak" id="dateLabel"></span>
+</header>
+
+<main>
+  <div id="root">
+    <div class="state">
+      <img src="/brain-character.png" alt="" />
+      <div>Loading today's questions…</div>
+    </div>
+  </div>
+</main>
+
+<footer>Same six questions for everyone, every day. <a href="/">About Braindex</a></footer>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, signInAnonymously, onAuthStateChanged }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, collection, query, orderBy, limit, getDocs }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getFunctions, httpsCallable }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js';
+
+// Firebase web keys are public identifiers, not secrets. Access is
+// governed entirely by Firestore rules, which require a signed-in user
+// for the daily set and deny the answer key to every client.
+const app = initializeApp({
+  apiKey: 'AIzaSyCW-crxgYTrrvIleqdz2YIou0CPpOZIwR8',
+  authDomain: 'braindexapp.firebaseapp.com',
+  projectId: 'braindexapp',
+  storageBucket: 'braindexapp.firebasestorage.app',
+  messagingSenderId: '147424640420',
+  appId: '1:147424640420:web:7494b7b011420949c19531',
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+const fns = getFunctions(app);
+
+const root = document.getElementById('root');
+const todayKey = () => new Date().toISOString().slice(0, 10);
+
+let set = null, idx = 0, choices = [], startedAt = 0, locked = false;
+
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function fail(msg) {
+  root.innerHTML = `<div class="card state"><strong>${esc(msg)}</strong></div>`;
+}
+
+function renderQuestion() {
+  const q = set.questions[idx];
+  root.innerHTML = `
+    <div class="card">
+      <div class="bar">${set.questions.map((_, i) =>
+        `<i class="${i < idx ? 'done' : ''}"></i>`).join('')}</div>
+      <div class="meta"><span>Question ${idx + 1} of ${set.questions.length}</span>
+        <span>${esc(q.topic || '').replace(/_/g, ' ')}</span></div>
+      <div class="q">${esc(q.question)}</div>
+      <div class="opts">${q.options.map((o, i) =>
+        `<button class="opt" data-i="${i}">${esc(o)}</button>`).join('')}</div>
+    </div>`;
+  root.querySelectorAll('.opt').forEach(b =>
+    b.addEventListener('click', () => choose(Number(b.dataset.i))));
+}
+
+function choose(i) {
+  if (locked) return;
+  locked = true;
+  choices[idx] = i;
+  // The client does NOT know the right answer: correctIndex and the
+  // facts live in a collection no client can read, and come back from
+  // scoreDailySet once the whole attempt is submitted. So we simply
+  // record the pick and move on.
+  root.querySelectorAll('.opt').forEach((b, n) => {
+    b.disabled = true;
+    if (n === i) b.style.borderColor = '#13205C';
+  });
+  setTimeout(() => {
+    locked = false;
+    idx++;
+    if (idx < set.questions.length) renderQuestion();
+    else submit();
+  }, 220);
+}
+
+async function submit() {
+  root.innerHTML = `<div class="state"><img src="/brain-character.png" alt="" /><div>Marking your answers…</div></div>`;
+  try {
+    const call = httpsCallable(fns, 'scoreDailySet');
+    const res = await call({
+      date: todayKey(),
+      choices,
+      secondsUsed: Math.round((Date.now() - startedAt) / 1000),
+      displayName: 'Web player',
+    });
+    renderResults(res.data);
+  } catch (e) {
+    if (String(e.message || e).includes('already')) {
+      fail("You've already played today. Come back tomorrow.");
+    } else {
+      fail("Couldn't submit your answers. Check your connection and try again.");
+    }
+  }
+}
+
+async function renderResults(r) {
+  const rows = set.questions.map((q, i) => {
+    const right = choices[i] === r.answers[i];
+    return `<div style="margin-bottom:12px">
+      <div style="font-weight:700;font-size:14.5px;margin-bottom:5px">${esc(q.question)}</div>
+      <div style="font-size:13.5px;color:${right ? 'var(--ok)' : 'var(--bad)'};font-weight:650">
+        ${right ? '✓ ' : '✗ '}${esc(q.options[r.answers[i]])}</div>
+      ${r.facts[i] ? `<div class="fact" style="margin-top:7px">${esc(r.facts[i])}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  root.innerHTML = `
+    <div class="card score">
+      <div class="n">${r.score}</div>
+      <div class="of">${r.correct} of ${r.total} correct</div>
+      <h2>Nice one</h2>
+      <div class="lb" id="lb"></div>
+      <a class="cta" href="https://apps.apple.com/us/app/braindex/id6766744989"
+         onclick="gtag('event','store_click',{store:'ios'})">Get the app for all 21 games</a>
+      <a class="ghost" href="/">Back to Braindex</a>
+    </div>
+    <div class="card" style="margin-top:14px;text-align:left">${rows}</div>`;
+
+  try {
+    const snap = await getDocs(query(
+      collection(db, 'leaderboards_trivia', todayKey(), 'scores'),
+      orderBy('score', 'desc'), limit(10)));
+    const me = auth.currentUser?.uid;
+    document.getElementById('lb').innerHTML = snap.docs.map((d, i) => {
+      const x = d.data();
+      return `<div class="row ${d.id === me ? 'me' : ''}">
+        <span class="rk">${i + 1}</span>
+        <span class="nm">${esc(x.displayName || 'Player')}</span>
+        <strong>${x.score}</strong></div>`;
+    }).join('') || '';
+  } catch (_) { /* leaderboard is a bonus, never block the result */ }
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { signInAnonymously(auth).catch(() => fail('Could not start a session.')); return; }
+  document.getElementById('dateLabel').textContent =
+    new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
+  try {
+    const snap = await getDoc(doc(db, 'daily_sets', todayKey()));
+    if (!snap.exists()) { fail("Today's questions aren't published yet. Try again shortly."); return; }
+    set = snap.data();
+    if (!set.questions?.length) { fail('No questions for today.'); return; }
+    choices = new Array(set.questions.length).fill(-1);
+    startedAt = Date.now();
+    gtag('event', 'daily_web_start');
+    renderQuestion();
+  } catch (e) {
+    fail("Couldn't load today's questions.");
+  }
+});
+</script>
+</body>
+</html>

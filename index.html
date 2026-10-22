@@ -178,7 +178,6 @@
       70%{box-shadow:0 0 0 10px rgba(74,222,128,0)}
       100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}
     }
-    .note{font-size:13.5px;color:#5B6287;margin-top:11px}
 
     /* ── Phone mockups ──────────────────────────────────────────── */
     /* Drawn in CSS rather than screenshotted: every store screenshot on
@@ -234,15 +233,27 @@
     }
     /* ── Tablet portrait ─────────────────────────────────────── */
     @media (max-width:760px){
-      h1{font-size:clamp(32px,8.5vw,44px)}
+      main{padding-top:clamp(14px,3vh,24px);gap:clamp(18px,3vh,28px)}
+      h1{font-size:clamp(30px,8.2vw,42px);margin-bottom:10px}
+      .sub{font-size:15.5px;margin-bottom:18px}
+      .mascot{width:clamp(84px,20vw,112px);margin-bottom:14px}
+      .or{margin:14px 0 10px}
+      .play{width:100%;max-width:340px;padding:15px 24px}
       .phone{width:clamp(150px,40vw,190px)}
-      .play{width:100%;max-width:340px}
     }
 
     /* ── Phone: stores stack full width, thumb-sized targets ──── */
     @media (max-width:520px){
-      .stores{width:100%;max-width:340px;flex-direction:column;gap:10px}
-      .store{min-width:0;width:100%;justify-content:center}
+      /* Side by side, not stacked: two shorter badges keep the Play
+         button above the fold, which matters more than badge width. */
+      .stores{width:100%;gap:8px;flex-wrap:nowrap}
+      .store{
+        min-width:0;flex:1 1 0;
+        padding:8px 10px;gap:7px;justify-content:center;
+      }
+      .store svg{width:21px;height:21px}
+      .store small{font-size:8.5px}
+      .store strong{font-size:13.5px}
       .phone{width:min(44vw,180px)}
       .phones{gap:11px}
     }
@@ -250,9 +261,12 @@
     /* ── Small phone (iPhone SE and narrower) ─────────────────── */
     @media (max-width:360px){
       .phone{width:43vw}
-      .brand,.logo img{max-width:60vw}
+      .logo img{max-width:58vw}
+      .store strong{font-size:12.5px}
+      .store small{font-size:8px}
       .q{font-size:12px}
       .opt{font-size:10.5px;padding:7px 9px}
+      h1{font-size:28px}
     }
 
     footer{
@@ -321,7 +335,6 @@
       <div class="or">or</div>
 
       <a class="play" id="playNow" href="/app"><span class="dot"></span>Play online now</a>
-      <p class="note">Free, no download, plays in your browser</p>
 
       <div class="phones">
         <div class="phone l">
